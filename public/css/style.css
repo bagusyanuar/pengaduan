@@ -1,0 +1,379 @@
+:root {
+    --primaryColor: #f55400;
+    --primaryShade: #dd4c00;
+    --primaryLight: #feeee6;
+    --accentColor: #6e0000;
+    --accentShade: #580000;
+    --warningColor: #EF5B0C;
+    --warningShade: #cc9b30;
+    --infoColor: #0078AA;
+    --infoShade: #006088;
+    --dangerColor: #EB1D36;
+    --dangerShade: #bc172b;
+    --darkColor: #100F0F;
+}
+
+body {
+    font-family: 'Josefin Sans', sans-serif !important;
+    background-color: white;
+}
+
+.f14 {
+    font-size: 14px;
+}
+
+.f12 {
+    font-size: 12px;
+}
+
+.hero {
+    height: 200px;
+    background-color: var(--primaryColor);
+}
+
+.custom-nav {
+    background: none !important;
+    height: 100px;
+}
+
+.login-body {
+    height: 100vh;
+    background-color: var(--primaryColor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-icon {
+    height: 40px;
+    object-fit: contain;
+}
+
+.login-title {
+    font-weight: bold;
+    letter-spacing: 0.2em;
+    font-size: 20px;
+}
+
+.breadcrumb-transparent {
+    padding: 0 0;
+    background-color: inherit;
+}
+
+.bg-main {
+    background-color: var(--primaryColor);
+    color: white;
+}
+
+.bg-accent {
+    background-color: var(--accentColor);
+    color: white;
+}
+
+.main-text {
+    color: var(--primaryColor);
+}
+
+.main-button {
+    padding: .5em 1em;
+    border: 1px solid var(--primaryColor);
+    border-radius: 5px;
+    background-color: var(--primaryColor);
+    color: white;
+}
+
+.main-button:hover {
+    background-color: var(--primaryShade);
+    border: 1px solid var(--primaryShade);
+    cursor: pointer;
+    color: white;
+    -webkit-transition: all .3s ease-in;
+    -ms-transition: all .3s ease-in;
+    transition: all .3s ease-in;
+}
+
+.accent-button {
+    padding: .5em 1em;
+    border: 1px solid var(--accentColor);
+    border-radius: 5px;
+    background-color: var(--accentColor);
+    color: white;
+}
+
+.accent-button:hover {
+    background-color: var(--accentShade);
+    border: 1px solid var(--accentShade);
+    cursor: pointer;
+    color: white;
+    -webkit-transition: all .3s ease-in;
+    -ms-transition: all .3s ease-in;
+    transition: all .3s ease-in;
+}
+
+.main-button-outline {
+    padding: .5em 1em;
+    border: 1px solid var(--primaryColor);
+    border-radius: 5px;
+    background-color: white;
+    color: var(--primaryColor);
+}
+
+.main-button-outline:hover {
+    background-color: var(--primaryShade);
+    border: 1px solid var(--primaryShade);
+    cursor: pointer;
+    color: white;
+    -webkit-transition: all .3s ease-in;
+    -ms-transition: all .3s ease-in;
+    transition: all .3s ease-in;
+}
+
+.main-button-sm {
+    padding: .2em .7em;
+    border: 1px solid var(--primaryColor);
+    border-radius: 5px;
+    background-color: var(--primaryColor);
+    color: white;
+}
+
+.main-button-sm:hover {
+    background-color: var(--primaryShade);
+    border: 1px solid var(--primaryShade);
+    cursor: pointer;
+    color: white;
+}
+
+.warning-button {
+    padding: .5em 1em;
+    border: 1px solid var(--warningColor);
+    border-radius: 5px;
+    background-color: var(--warningColor);
+    color: var(--darkColor);
+}
+
+.warning-button:hover {
+    background-color: var(--warningShade);
+    border: 1px solid var(--warningShade);
+    cursor: pointer;
+    color: var(--darkColor);
+}
+
+.warning-button-sm {
+    padding: .2em .7em;
+    border: 1px solid var(--warningColor);
+    border-radius: 5px;
+    background-color: var(--warningColor);
+    color: var(--darkColor);
+}
+
+.warning-button-sm:hover {
+    background-color: var(--warningShade);
+    border: 1px solid var(--warningShade);
+    cursor: pointer;
+    color: var(--darkColor);
+}
+
+.info-button {
+    padding: .5em 1em;
+    border: 1px solid var(--infoColor);
+    border-radius: 5px;
+    background-color: var(--infoColor);
+    color: white;
+}
+
+.info-button:hover {
+    background-color: var(--infoShade);
+    border: 1px solid var(--infoShade);
+    cursor: pointer;
+    color: white;
+}
+
+.info-button-sm {
+    padding: .2em .7em;
+    border: 1px solid var(--infoColor);
+    border-radius: 5px;
+    background-color: var(--infoColor);
+    color: white;
+}
+
+.info-button-sm:hover {
+    background-color: var(--infoShade);
+    border: 1px solid var(--infoShade);
+    cursor: pointer;
+    color: white;
+}
+
+.danger-button {
+    padding: .5em 1em;
+    border: 1px solid var(--dangerColor);
+    border-radius: 5px;
+    background-color: var(--dangerColor);
+    color: white;
+}
+
+.danger-button:hover {
+    background-color: var(--dangerShade);
+    border: 1px solid var(--dangerShade);
+    cursor: pointer;
+    color: white;
+}
+
+.danger-button-sm {
+    padding: .2em .7em;
+    border: 1px solid var(--dangerColor);
+    border-radius: 5px;
+    background-color: var(--dangerColor);
+    color: white;
+}
+
+.danger-button-sm:hover {
+    background-color: var(--dangerShade);
+    border: 1px solid var(--dangerShade);
+    cursor: pointer;
+    color: white;
+}
+
+.lazy-backdrop{
+    position: fixed;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+}
+
+/*admin lte*/
+.navbar-link-item {
+    text-decoration: none;
+    color: rgba(0, 0, 0, .5);
+}
+
+.navbar-link-item:hover {
+    text-decoration: none;
+    color: #4C4C4C;
+}
+
+.sidebar-dark-primary {
+    background-color: var(--accentColor);
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: var(--primaryColor);
+}
+
+.sidebar-dark-primary .sidebar a {
+    color: white;
+}
+
+.breadcrumb-item a {
+    color: var(--primaryColor);
+    font-weight: bold;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--primaryShade);
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    display: inline-block;
+    color: #6c757d;
+    content: "\00BB";
+}
+
+.card-warning.card-outline {
+    border-top: 3px solid var(--primaryColor);
+}
+
+/*datatable*/
+
+table.dataTable tr.odd {
+    background-color: var(--primaryLight);
+}
+
+table.dataTable tr.even {
+    background-color: white;
+}
+
+table.dataTable {
+    margin-bottom: 2em;
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: var(--primaryColor);
+    border-color: var(--primaryColor);
+}
+
+.page-link {
+    color: var(--primaryColor);
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
+.page-link:hover {
+    color: var(--primaryColor);
+    background-color: var(--primaryLight);
+    border: 1px solid #dee2e6;
+}
+
+.dataTables_scrollBody {
+    overflow: visible !important;
+    -ms-overflow: visible !important;
+}
+
+/*select2*/
+.select2-selection {
+    min-height: 35px !important;
+    line-height: 40px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444 !important;
+    line-height: 30px !important;
+}
+
+.select2-container .select2-selection--single .select2-selection__rendered {
+    display: block !important;
+    padding-left: 0 !important;
+    padding-right: 10px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 14px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 34px !important;
+    position: absolute !important;
+    top: 1px !important;
+    right: 1px !important;
+    width: 20px !important;
+}
+
+.select2-container--default .select2-results > .select2-results__options {
+    max-height: 200px !important;
+    overflow-y: auto !important;
+    font-size: 14px !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: var(--primaryColor) !important;
+    color: white !important;
+}
+
+.select2-container--default .select2-results__option[aria-selected="true"] {
+    background-color: var(--primaryLight) !important;
+    color: #212529 !important;
+}
+
+.select2-container--default .select2-results__option[aria-selected="true"]:hover {
+    color: white !important;
+    background-color: var(--primaryColor) !important;
+}
