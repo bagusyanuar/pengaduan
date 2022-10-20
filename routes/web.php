@@ -12,7 +12,13 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::match(['post', 'get'], '/login', [\App\Http\Controllers\Admin\AuthController::class, 'login']);
+Route::get('/logout', [\App\Http\Controllers\Admin\AuthController::class, 'logout'])->middleware('auth:web');
 Route::get('/', function () {
     return view('landing-page');
+});
+
+//admin page
+Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
+    Route::get('/', [\App\Http\Controllers\Admin\Dashboard::class, 'index']);
 });
