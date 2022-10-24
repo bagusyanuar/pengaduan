@@ -2,7 +2,7 @@
 
 @section('content')
     <section id="hero">
-        <div class="pt-3 pr-5 pl-5">
+        <div class="pt-5 pr-5 pl-5">
             <div class="hero p-5 align-items-center d-flex">
                 <div class="row flex-column-reverse flex-lg-row align-items-center">
                     <div class="col-lg-6 col-md-6 col-sm-12">
@@ -11,7 +11,8 @@
                         <p style="font-size: 20px;">Sampaikan laporan Anda langsung kepada instansi pemerintah
                             berwenang</p>
                         <div class="d-flex">
-                            <a href="#" class="main-button">Buat Pengaduan</a>
+                            <a href="/pengaduan" class="main-button mr-2">Buat Pengaduan</a>
+                            <a href="#" class="main-button-outline">Permintaan Informasi</a>
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12">
@@ -80,9 +81,9 @@
         <div class="pr-5 pl-5">
             <h2 class="font-weight-bold text-center">Prosedur Pengaduan</h2>
             <p style="font-size: 18px;" class="text-center mb-5">Berikut adalah prosedur pengaduan</p>
-            <div class="d-flex justify-content-center w-100 mb-5">
+            <div class="d-flex justify-content-center w-100">
                 <div class="row w-75 justify-content-center">
-                    <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-5">
                         <div class="procedure-palette p-5 d-flex align-items-center">
                             <div>
                                 <p class="font-weight-bold mb-0">1. Daftar / Masuk</p>
@@ -92,7 +93,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-5">
                         <div class="procedure-palette p-5 d-flex align-items-center">
                             <div>
                                 <p class="font-weight-bold mb-0">2. Tulis Pengaduan</p>
@@ -104,9 +105,9 @@
                     </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-center w-100 mb-5">
+            <div class="d-flex justify-content-center w-100">
                 <div class="row w-75 justify-content-center">
-                    <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-5">
                         <div class="procedure-palette p-5 d-flex align-items-center">
                             <div>
                                 <p class="font-weight-bold mb-0">3. Verifikasi Pengaduan</p>
@@ -116,7 +117,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-5">
                         <div class="procedure-palette p-5 d-flex align-items-center">
                             <div>
                                 <p class="font-weight-bold mb-0">4. Proses Tindak Lanjut</p>
@@ -128,9 +129,9 @@
                     </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-center w-100 mb-5">
+            <div class="d-flex justify-content-center w-100">
                 <div class="row w-75 justify-content-center">
-                    <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-5">
                         <div class="procedure-palette p-5 d-flex align-items-center">
                             <div>
                                 <p class="font-weight-bold mb-0">5. Beri Tanggapan</p>
@@ -140,7 +141,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-5">
                         <div class="procedure-palette p-5 d-flex align-items-center">
                             <div>
                                 <p class="font-weight-bold mb-0">6. Selesai</p>
@@ -153,7 +154,5 @@
                 </div>
             </div>
         </div>
-
-
     </section>
 @endsection
