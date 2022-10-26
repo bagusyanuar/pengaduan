@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePpk extends Migration
+class CreateUserPpk extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,15 @@ class CreatePpk extends Migration
      */
     public function up()
     {
-        Schema::create('ppk', function (Blueprint $table) {
+        Schema::create('user_ppk', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('ppk_id')->unsigned();
             $table->string('name');
+            $table->string('phone');
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('ppk_id')->references('id')->on('ppk');
         });
     }
 
@@ -27,6 +32,6 @@ class CreatePpk extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ppk');
+        Schema::dropIfExists('user_ppk');
     }
 }
