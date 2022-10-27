@@ -20,4 +20,8 @@ Route::get('/pengaduan', [\App\Http\Controllers\HomeController::class, 'complain
 //admin page
 Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
     Route::get('/', [\App\Http\Controllers\Admin\Dashboard::class, 'index']);
+
+    Route::group(['prefix' => 'complain'], function (){
+        Route::get('/dashboard', [\App\Http\Controllers\Admin\Dashboard::class, 'complain_data']);
+    });
 });
