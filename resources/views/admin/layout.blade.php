@@ -30,7 +30,7 @@
         </li>
         <li class="nav-item">
             <div>
-                Sistem Informasi Pengaduan
+                Sistem e-PPID
             </div>
         </li>
     </ul>
@@ -49,22 +49,75 @@
 </nav>
 <aside class="main-sidebar sidebar-dark-primary elevation-1">
     <div class="sidebar">
-        <a href="/admin" class="brand-link" style="border-bottom: 1px solid #a0aec0">
+        <a href="{{ route('dashboard') }}" class="brand-link" style="border-bottom: 1px solid #a0aec0">
             <img src="{{ asset('assets/icons/customer-service.png') }}" style="width: 34px !important;"
                  alt="AdminLTE Logo"
                  class="brand-image text-center"
             >
-            <span class="brand-text font-weight-light">PUPR</span>
+            <span class="brand-text font-weight-light">e-PPID</span>
         </a>
         <div class="my-sidebar-menu">
             <ul class="nav nav-sidebar nav-pills flex-column">
                 <nav class="mt-2 nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                      data-accordion="false">
                     <li class="nav-item">
-                        <a href="/admin"
-                           class="nav-link {{ \Illuminate\Support\Facades\Request::path() == 'admin' ? 'active' : ''}}">
+                        <a href="{{ route('dashboard') }}"
+                           class="nav-link {{ request()->is('admin') ? 'active' : ''}}">
                             <i class="fa fa-tachometer nav-icon" aria-hidden="true"></i>
                             <p>Dashboard</p>
+                        </a>
+                    </li>
+                    <li class="nav-item has-treeview {{ request()->is('admin/users*') ? 'menu-open' : ''}}">
+                        <a href="#" class="nav-link {{ request()->is('admin/users*') ? 'active' : ''}}">
+                            <i class="nav-icon fa fa-users"></i>
+                            <p>
+                                Users
+                                <i class="right fa fa-angle-down"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('users.index') }}"
+                                   class="nav-link {{ request()->is('admin/users') ? 'active' : ''}}">
+                                    <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                    <p>Admin</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/admin"
+                                   class="nav-link">
+                                    <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                    <p>UKI</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/member"
+                                   class="nav-link">
+                                    <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                    <p>Satuan Kerja</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/member"
+                                   class="nav-link">
+                                    <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                    <p>PPK</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('unit.index') }}"
+                           class="nav-link {{ request()->is('admin/satker*') ? 'active' : ''}}">
+                            <i class="fa fa-bookmark nav-icon" aria-hidden="true"></i>
+                            <p>Satuan Kerja</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('ppk.index') }}"
+                           class="nav-link {{ request()->is('admin/ppk*') ? 'active' : '' }}">
+                            <i class="fa fa-tag nav-icon" aria-hidden="true"></i>
+                            <p>PPK</p>
                         </a>
                     </li>
                 </nav>

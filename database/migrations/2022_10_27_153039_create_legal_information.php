@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUki extends Migration
+class CreateLegalInformation extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateUki extends Migration
      */
     public function up()
     {
-        Schema::create('user_uki', function (Blueprint $table) {
+        Schema::create('legal_information', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned();
-            $table->string('name');
-            $table->string('phone');
+            $table->bigInteger('information_id')->unsigned();
+            $table->text('assignment');
+            $table->text('ad_art');
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('information_id')->references('id')->on('information');
         });
     }
 
@@ -30,6 +30,6 @@ class CreateUki extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_uki');
+        Schema::dropIfExists('legal_information');
     }
 }
