@@ -37,4 +37,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function uki()
+    {
+        return $this->hasOne(UserUki::class, 'user_id');
+    }
+
+    public function satker()
+    {
+        return $this->hasOne(UserSatuanKerja::class, 'user_id');
+    }
+
+    public function ppk()
+    {
+        return $this->hasOne(UserPPK::class, 'user_id');
+    }
 }

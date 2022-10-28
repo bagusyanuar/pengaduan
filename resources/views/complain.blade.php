@@ -1,6 +1,11 @@
 @extends('layout')
 
 @section('content')
+    @if (\Illuminate\Support\Facades\Session::has('success'))
+        <script>
+            Swal.fire("Berhasil!", '{{\Illuminate\Support\Facades\Session::get('success')}}', "success")
+        </script>
+    @endif
     <section id="complain">
         <div class="p-5">
             <div class="row">
@@ -26,25 +31,26 @@
                              aria-labelledby="pills-home-tab">
                             <div class="card">
                                 <div class="card-body">
-                                    <form>
+                                    <form method="post">
                                         @csrf
+                                        <input type="hidden" name="type" value="0">
                                         <div class="form-group mb-1">
                                             <label for="name">Nama</label>
                                             <input type="text" class="form-control" id="name"
-                                                   aria-describedby="emailHelp" placeholder="Nama">
+                                                   aria-describedby="emailHelp" placeholder="Nama" name="name">
                                             <small id="nameHelp" class="form-text text-muted">Contoh : Yanuar
                                                 Ihsan</small>
                                         </div>
                                         <div class="form-group mb-1">
                                             <label for="address">Alamat</label>
                                             <textarea rows="3" class="form-control" id="address"
-                                                      aria-describedby="addressHelp" placeholder="Alamat"></textarea>
+                                                      aria-describedby="addressHelp" placeholder="Alamat" name="address"></textarea>
                                             <small id="addressHelp" class="form-text text-muted">Contoh : Jl. Arjuna no.
                                                 16, Kec. Serengan, Surakarta</small>
                                         </div>
                                         <div class="form-group mb-1">
                                             <label for="job">Pekerjaan</label>
-                                            <input type="text" class="form-control" id="job" aria-describedby="jobHelp"
+                                            <input type="text" class="form-control" id="job" name="job" aria-describedby="jobHelp"
                                                    placeholder="Pekerjaan">
                                             <small id="jobHelp" class="form-text text-muted">Contoh : Wiraswasta</small>
                                         </div>
@@ -55,14 +61,14 @@
                                                     <span class="input-group-text" id="basic-addon1">+62</span>
                                                 </div>
                                                 <input type="number" class="form-control" id="phone"
-                                                       aria-describedby="phoneHelp" placeholder="No. Whatsapp">
+                                                       aria-describedby="phoneHelp" placeholder="No. Whatsapp" name="phone">
                                             </div>
                                             <small id="phoneHelp" class="form-text text-muted">Contoh :
                                                 895422630233</small>
                                         </div>
                                         <div class="form-group mb-1">
                                             <label for="email">Email</label>
-                                            <input type="email" class="form-control" id="job"
+                                            <input type="email" class="form-control" id="email" name="email"
                                                    aria-describedby="emailHelp"
                                                    placeholder="Email">
                                             <small id="emailHelp" class="form-text text-muted">Contoh :
@@ -70,7 +76,7 @@
                                         </div>
                                         <div class="form-group mb-1">
                                             <label for="complain">Saran / Pengaduan</label>
-                                            <textarea rows="3" class="form-control" id="complain"
+                                            <textarea rows="3" class="form-control" id="complain" name="complain"
                                                       aria-describedby="complainHelp"
                                                       placeholder="Saran / Pengaduan"></textarea>
                                             <small id="complainHelp" class="form-text text-muted">Contoh : Jl. Arjuna
@@ -91,8 +97,9 @@
                              aria-labelledby="pills-profile-tab">
                             <div class="card">
                                 <div class="card-body">
-                                    <form>
+                                    <form method="post">
                                         @csrf
+                                        <input type="hidden" name="type" value="1">
                                         <div class="form-group mb-1">
                                             <label for="name">Nama</label>
                                             <input type="text" class="form-control" id="name"
@@ -155,27 +162,6 @@
                                             <small id="complainHelp" class="form-text text-muted">Contoh : Jl. Arjuna
                                                 no.
                                                 16, Kec. Serengan, Surakarta</small>
-                                        </div>
-                                        <div class="form-group mb-1">
-                                            <label for="complain">Example</label>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
-                                                <label class="form-check-label" for="exampleRadios1">
-                                                    Default radio
-                                                </label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-                                                <label class="form-check-label" for="exampleRadios2">
-                                                    Second default radio
-                                                </label>
-                                            </div>
-                                            <div class="form-check disabled">
-                                                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3" disabled>
-                                                <label class="form-check-label" for="exampleRadios3">
-                                                    Disabled radio
-                                                </label>
-                                            </div>
                                         </div>
                                         <hr>
                                         <div class="text-right">

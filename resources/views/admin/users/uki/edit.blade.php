@@ -18,7 +18,7 @@
                     <a href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('users.index') }}">Admin</a>
+                    <a href="{{ route('users.uki.index') }}">User UKI</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">Edit
                 </li>
@@ -27,7 +27,7 @@
         <section>
             <div class="card card-outline card-warning">
                 <div class="card-header">
-                    <p class="mb-0">Form Data Admin</p>
+                    <p class="mb-0">Form Data User UKI</p>
                 </div>
                 <div class="card-body">
                     <form method="post">
@@ -41,6 +41,16 @@
                             <label for="username" class="form-label f14">Username</label>
                             <input type="text" class="form-control f14" id="username" placeholder="Username"
                                    name="username" value="{{ $data->username }}" required>
+                        </div>
+                        <div class="w-100 mb-4">
+                            <label for="name" class="form-label f14">Name</label>
+                            <input type="text" class="form-control f14" id="name" placeholder="Name"
+                                   name="name" value="{{ $data->uki->name }}" required>
+                        </div>
+                        <div class="w-100 mb-4">
+                            <label for="phone" class="form-label f14">No. Hp</label>
+                            <input type="number" class="form-control f14" id="phone" placeholder="No. Hp"
+                                   name="phone" value="{{ $data->uki->phone }}" required>
                         </div>
                         <hr>
                         <div class="w-100 text-right">

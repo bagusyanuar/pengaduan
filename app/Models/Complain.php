@@ -19,7 +19,11 @@ class Complain extends Model
         'email',
         'complain',
         'type',
-        'status'
+        'status',
+        'target',
+        'satker_id',
+        'ppk_id',
+        'description',
     ];
 
     public function legal()

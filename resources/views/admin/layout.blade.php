@@ -84,22 +84,22 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="/admin"
-                                   class="nav-link">
+                                <a href="{{ route('users.uki.index') }}"
+                                   class="nav-link {{ request()->is('admin/users/uki') ? 'active' : ''}}">
                                     <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
                                     <p>UKI</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="/member"
-                                   class="nav-link">
+                                <a href="{{ route('users.satker.index') }}"
+                                   class="nav-link {{ request()->is('admin/users/satuan-kerja') ? 'active' : ''}}">
                                     <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
                                     <p>Satuan Kerja</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="/member"
-                                   class="nav-link">
+                                <a href="{{ route('users.ppk.index') }}"
+                                   class="nav-link {{ request()->is('admin/users/ppk') ? 'active' : ''}}">
                                     <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
                                     <p>PPK</p>
                                 </a>

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::match(['post', 'get'], '/login', [\App\Http\Controllers\Admin\AuthController::class, 'login']);
 Route::get('/logout', [\App\Http\Controllers\Admin\AuthController::class, 'logout'])->middleware('auth:web');
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index']);
-Route::get('/pengaduan', [\App\Http\Controllers\HomeController::class, 'complain_page']);
+Route::match(['post', 'get'], '/pengaduan', [\App\Http\Controllers\ComplainController::class, 'index']);
 
 //admin page
 Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
@@ -26,11 +26,31 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('users.index');
         Route::match(['post', 'get'], '/tambah', [\App\Http\Controllers\Admin\AdminController::class, 'add'])->name('users.add');
         Route::match(['post', 'get'], '/{id}/edit', [\App\Http\Controllers\Admin\AdminController::class, 'patch'])->name('users.patch');
-        Route::match(['post', 'get'], '/{id}/password', [\App\Http\Controllers\Admin\AdminController::class, 'change_password']);
+//        Route::match(['post', 'get'], '/{id}/password', [\App\Http\Controllers\Admin\AdminController::class, 'change_password']);
         Route::post( '/{id}/delete', [\App\Http\Controllers\Admin\AdminController::class, 'destroy'])->name('users.destroy');
 
         Route::group(['prefix' => 'uki'], function () {
+            Route::get('/', [\App\Http\Controllers\Admin\UserUkiController::class, 'index'])->name('users.uki.index');
+            Route::match(['post', 'get'], '/tambah', [\App\Http\Controllers\Admin\UserUkiController::class, 'add'])->name('users.uki.add');
+            Route::match(['post', 'get'], '/{id}/edit', [\App\Http\Controllers\Admin\UserUkiController::class, 'patch'])->name('users.uki.patch');
+//            Route::match(['post', 'get'], '/{id}/password', [\App\Http\Controllers\Admin\UserUkiController::class, 'change_password']);
+            Route::post( '/{id}/delete', [\App\Http\Controllers\Admin\UserUkiController::class, 'destroy'])->name('users.uki.destroy');
+        });
 
+        Route::group(['prefix' => 'satuan-kerja'], function () {
+            Route::get('/', [\App\Http\Controllers\Admin\UserSatuanKerjaController::class, 'index'])->name('users.satker.index');
+            Route::match(['post', 'get'], '/tambah', [\App\Http\Controllers\Admin\UserSatuanKerjaController::class, 'add'])->name('users.satker.add');
+            Route::match(['post', 'get'], '/{id}/edit', [\App\Http\Controllers\Admin\UserSatuanKerjaController::class, 'patch'])->name('users.satker.patch');
+//            Route::match(['post', 'get'], '/{id}/password', [\App\Http\Controllers\Admin\UserUkiController::class, 'change_password']);
+            Route::post( '/{id}/delete', [\App\Http\Controllers\Admin\UserSatuanKerjaController::class, 'destroy'])->name('users.satker.destroy');
+        });
+
+        Route::group(['prefix' => 'ppk'], function () {
+            Route::get('/', [\App\Http\Controllers\Admin\UserPPKController::class, 'index'])->name('users.ppk.index');
+            Route::match(['post', 'get'], '/tambah', [\App\Http\Controllers\Admin\UserPPKController::class, 'add'])->name('users.ppk.add');
+            Route::match(['post', 'get'], '/{id}/edit', [\App\Http\Controllers\Admin\UserPPKController::class, 'patch'])->name('users.ppk.patch');
+//            Route::match(['post', 'get'], '/{id}/password', [\App\Http\Controllers\Admin\UserUkiController::class, 'change_password']);
+            Route::post( '/{id}/delete', [\App\Http\Controllers\Admin\UserPPKController::class, 'destroy'])->name('users.ppk.destroy');
         });
     });
 

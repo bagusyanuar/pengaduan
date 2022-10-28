@@ -6,10 +6,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helper\CustomController;
 use App\Models\User;
+use App\Models\UserUki;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class AdminController extends CustomController
+class UserUkiController extends CustomController
 {
     public function __construct()
     {
@@ -18,8 +19,8 @@ class AdminController extends CustomController
 
     public function index()
     {
-        $data = User::where('role', '=', 'admin')->get();
-        return view('admin.users.admin.index')->with(['data' => $data]);
+        $data = User::with('uki')->where('role', '=', 'uki')->get();
+        return view('admin.users.uki.index')->with(['data' => $data]);
     }
 
     public function add()
@@ -31,9 +32,15 @@ class AdminController extends CustomController
                     'username' => $this->postField('username'),
                     'email' => $this->postField('email'),
                     'password' => Hash::make($this->postField('password')),
-                    'role' => 'admin'
+                    'role' => 'uki'
                 ];
-                User::create($user_data);
+                $user = User::create($user_data);
+                $uki_data = [
+                    'user_id' => $user->id,
+                    'name' => $this->postField('name'),
+                    'phone' => $this->postField('phone'),
+                ];
+                UserUki::create($uki_data);
                 DB::commit();
                 return redirect()->back()->with('success', 'Berhasil Menambahkan Data...');
             } catch (\Exception $e) {
@@ -41,12 +48,12 @@ class AdminController extends CustomController
                 return redirect()->back()->with('failed', 'Terjadi Kesalahan Server...');
             }
         }
-        return view('admin.users.admin.add');
+        return view('admin.users.uki.add');
     }
 
     public function patch($id)
     {
-        $data = User::findOrfail($id);
+        $data = User::with('uki')->findOrfail($id);
         if ($this->request->method() === 'POST') {
             DB::beginTransaction();
             try {
@@ -54,14 +61,19 @@ class AdminController extends CustomController
                     'username' => $this->postField('username'),
                     'email' => $this->postField('email'),
                 ]);
+
+                $data->uki()->update([
+                    'name' => $this->postField('name'),
+                    'phone' => $this->postField('phone'),
+                ]);
                 DB::commit();
-                return redirect()->route('users.index')->with('success', 'Berhasil Merubah Data...');
+                return redirect()->route('users.uki.index')->with('success', 'Berhasil Merubah Data...');
             } catch (\Exception $e) {
                 DB::rollBack();
                 return redirect()->back()->with('failed', 'Terjadi Kesalahan Server...');
             }
         }
-        return view('admin.users.admin.edit')->with(['data' => $data]);
+        return view('admin.users.uki.edit')->with(['data' => $data]);
     }
 
     public function change_password($id)
@@ -84,6 +96,7 @@ class AdminController extends CustomController
     {
         DB::beginTransaction();
         try {
+            UserUki::where('user_id', '=', $id)->delete();
             User::destroy($id);
             DB::commit();
             return $this->jsonResponse('success', 200);

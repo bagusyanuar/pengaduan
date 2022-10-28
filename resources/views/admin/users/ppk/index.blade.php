@@ -12,7 +12,7 @@
                 <li class="breadcrumb-item">
                     <a href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">Admin
+                <li class="breadcrumb-item active" aria-current="page">User PPK
                 </li>
             </ol>
         </div>
@@ -21,8 +21,8 @@
         <div class="card card-outline card-warning">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0">Data Admin</p>
-                    <a href="{{ route('users.add') }}" class="main-button f14">
+                    <p class="mb-0">Data User PPK</p>
+                    <a href="{{ route('users.ppk.add') }}" class="main-button f14">
                         <i class="fa fa-plus mr-1"></i>
                         <span>Tambah</span>
                     </a>
@@ -33,8 +33,11 @@
                     <thead>
                     <tr>
                         <th width="5%" class="text-center f14">#</th>
-                        <th class="f14" width="20%">Email</th>
+                        <th class="f14">Email</th>
                         <th class="f14">Username</th>
+                        <th class="f14">PPK</th>
+                        <th class="f14">Nama</th>
+                        <th class="f14">No. Hp</th>
                         <th width="10%" class="text-center f14"></th>
                     </tr>
                     </thead>
@@ -44,13 +47,16 @@
                             <td width="5%" class="text-center f14">{{ $loop->index + 1 }}</td>
                             <td class="f14">{{ $v->email }}</td>
                             <td class="f14">{{ $v->username }}</td>
+                            <td class="f14">{{ $v->ppk->ppk->name }}</td>
+                            <td class="f14">{{ $v->ppk->name }}</td>
+                            <td class="f14">{{ $v->ppk->phone }}</td>
                             <td width="10%" class="text-center">
                                 <div class="dropdown">
                                     <a href="#" class="main-button-outline" data-toggle="dropdown">
                                         <span style="font-size: 12px;">Kelola</span>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu dropdown-menu-right">
-                                        <a href="{{ route('users.patch', ['id' => $v->id])  }}"
+                                        <a href="{{ route('users.ppk.patch', ['id' => $v->id])  }}"
                                            class="dropdown-item f12">Edit</a>
 {{--                                        <a href="{{ env('PREFIX_URL') }}/admin/admin/{{$v->id}}/password"--}}
 {{--                                           class="dropdown-item f12">Ganti Password</a>--}}
@@ -75,7 +81,7 @@
         var prefix_url = '{{ env('PREFIX_URL') }}';
 
         function destroy(id) {
-            AjaxPost(prefix_url + '/admin/users/' + id + '/delete', function () {
+            AjaxPost(prefix_url + '/admin/users/ppk/' + id + '/delete', function () {
                 window.location.reload();
             })
         }

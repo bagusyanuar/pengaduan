@@ -18,7 +18,7 @@
                     <a href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('users.index') }}">Admin</a>
+                    <a href="{{ route('users.ppk.index') }}">User PPK</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">Edit
                 </li>
@@ -27,7 +27,7 @@
         <section>
             <div class="card card-outline card-warning">
                 <div class="card-header">
-                    <p class="mb-0">Form Data Admin</p>
+                    <p class="mb-0">Form Data User PPK</p>
                 </div>
                 <div class="card-body">
                     <form method="post">
@@ -42,6 +42,25 @@
                             <input type="text" class="form-control f14" id="username" placeholder="Username"
                                    name="username" value="{{ $data->username }}" required>
                         </div>
+                        <div class="form-group w-100 mb-2">
+                            <label for="ppk" class="f14">PPK</label>
+                            <select class="select2 f14" name="ppk" id="ppk" style="width: 100%;">
+                                @foreach($ppk as $v)
+                                    <option value="{{ $v->id }}" {{ $data->ppk->ppk_id == $v->id ? 'selected' : '' }}
+                                            class="f14">{{ $v->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="w-100 mb-4">
+                            <label for="name" class="form-label f14">Name</label>
+                            <input type="text" class="form-control f14" id="name" placeholder="Name"
+                                   name="name" value="{{ $data->ppk->name }}" required>
+                        </div>
+                        <div class="w-100 mb-4">
+                            <label for="phone" class="form-label f14">No. Hp</label>
+                            <input type="number" class="form-control f14" id="phone" placeholder="No. Hp"
+                                   name="phone" value="{{ $data->ppk->phone }}" required>
+                        </div>
                         <hr>
                         <div class="w-100 text-right">
                             <button type="submit" class="main-button f14">
@@ -55,4 +74,21 @@
 
         </section>
     </div>
+@endsection
+
+@section('css')
+    <link href="{{ asset('/adminlte/plugins/select2/select2.css') }}" rel="stylesheet">
+@endsection
+
+@section('js')
+    <script src="{{ asset('/adminlte/plugins/select2/select2.js') }}"></script>
+    <script src="{{ asset('/adminlte/plugins/select2/select2.full.js') }}"></script>
+    <script src="{{ asset('/js/helper.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.select2').select2({
+                width: 'resolve'
+            });
+        })
+    </script>
 @endsection

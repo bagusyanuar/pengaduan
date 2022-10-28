@@ -17,9 +17,4 @@ class HomeController extends CustomController
     {
         return view('landing-page');
     }
-
-    public function complain_page()
-    {
-        return view('complain');
-    }
 }
