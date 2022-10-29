@@ -120,6 +120,13 @@
                             <p>PPK</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('complain.index') }}"
+                           class="nav-link {{ request()->is('admin/pengaduan*') ? 'active' : '' }}">
+                            <i class="fa fa-exclamation nav-icon" aria-hidden="true"></i>
+                            <p>Pengaduan</p>
+                        </a>
+                    </li>
                 </nav>
             </ul>
         </div>

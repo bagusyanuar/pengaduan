@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helper\CustomController;
 use App\Models\Complain;
+use App\Models\ComplainAnswer;
 
 class Dashboard extends CustomController
 {
@@ -17,15 +18,21 @@ class Dashboard extends CustomController
     public function index()
     {
         $data = Complain::with('legal')->orderBy('created_at', 'DESC')->limit(10)->get();
-        return view('admin.dashboard')->with(['data' => $data]);
+        $answers = Complain::with('answers')
+            ->whereHas('answers', function ($q) {
+                return $q->where('status', '=', 9);
+            })
+            ->orderBy('date', 'ASC')
+            ->get();
+        return view('admin.dashboard')->with(['data' => $data, 'answers' => $answers]);
     }
 
     public function complain_data()
     {
         try {
-            $data = Complain::with('legal')->orderBy('created_at', 'DESC')->limit(10)->get();
+            $data = Complain::with('legal')->orderBy('id', 'DESC')->limit(10)->get();
             return $this->basicDataTables($data);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             return $this->basicDataTables([]);
         }
     }

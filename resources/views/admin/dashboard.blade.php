@@ -15,7 +15,7 @@
                     <p>Pengaduan Baru</p>
                 </div>
                 <div class="icon">
-                    <i class="fa fa-bell"></i>
+                    <i class="fa fa-exclamation"></i>
                 </div>
                 <a href="#" class="small-box-footer">Lihat lebih <i class="fa fa-arrow-circle-right"></i></a>
             </div>
@@ -33,31 +33,68 @@
             </div>
         </div>
     </div>
-
-    <div class="card card-outline card-warning mt-3">
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <p class="mb-0">Data Pengaduan</p>
+    <div class="row">
+        <div class="col-lg-7 col-md-12 col-sm-12">
+            <div class="card card-outline card-warning mt-3">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="mb-0">Data Pengaduan</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="table-data" class="display w-100 table table-bordered nowarp">
+                        <thead>
+                        <tr>
+                            <th width="5%" class="text-center f14 no-sort"></th>
+                            <th width="5%" class="text-center f14">#</th>
+                            <th width="10%" class="f14">Tanggal</th>
+                            <th width="30%" class="f14">No. Tiket</th>
+                            <th width="20%" class="f14">Nama</th>
+                            <th width="15%" class="f14">Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="card-body">
-            <table id="table-data" class="display w-100 table table-bordered">
-                <thead>
-                <tr>
-                    <th width="5%" class="text-center f14 no-sort"></th>
-                    <th width="5%" class="text-center f14">#</th>
-                    <th width="10%" class="f14">Tanggal</th>
-                    <th width="15%" class="f14">No. Tiket</th>
-                    <th width="20%" class="f14">Nama</th>
-                    <th width="30%" class="f14">Pengaduan</th>
-                    <th width="15%" class="f14">Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+        <div class="col-lg-5 col-md-12 col-sm-12">
+            <div class="card card-outline card-success mt-3">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="mb-0">Pengaduan Di Jawab</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col" width="10%">#</th>
+                            <th scope="col" width="75%">No. Tiket</th>
+                            <th scope="col" width="15%" class="text-center">Aksi</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @forelse($answers as $answer)
+                            <tr>
+                                <th scope="row">{{ $loop->index + 1 }}</th>
+                                <td>{{ $answer->ticket_id }}</td>
+                                <td class="text-center">
+                                    <a href="#" data-ticket="{{ $answer->ticket_id }}"
+                                       data-contact="{{ $answer->phone }}" class="wa-send"><i
+                                            class="fa fa-whatsapp"></i></a>
+                                </td>
+                            </tr>
+                        @empty
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
+
 @endsection
 
 @section('js')
@@ -68,11 +105,30 @@
 
         function detailElement(d) {
             let type = 'Individu';
+            let assignment = '';
+            let ad_art = '';
             if (d['type'] === 1) {
-                type = 'Badan Hukum';
+                type = 'Badan Hukum / Organisasi';
+                let tmp_assignment = d['legal'] !== null ? d['legal']['assignment'] : '-';
+                let tmp_ad_art = d['legal'] !== null ? d['legal']['ad_art'] : '-';
+                assignment = '<div class="row mb-0">' +
+                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                    '<p class="mb-0">Surat Tugas / Surat Kuasa </p>' +
+                    '</div>' +
+                    '<div class="col-lg-9 col-md-8 col-sm-6">: <a href="' + prefix_url + tmp_assignment + '" target="_blank">Preview</a></div>' +
+                    '</div>';
+
+                ad_art = '<div class="row mb-0">' +
+                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                    '<p class="mb-0">AD ART</p>' +
+                    '</div>' +
+                    '<div class="col-lg-9 col-md-8 col-sm-6">: <a href="' + prefix_url + tmp_ad_art + '" target="_blank">Preview</a></div>' +
+                    '</div>';
             }
+
+
             return '<div>' +
-                '<p class="font-weight-bold">Informasi Pengaduan</p>' +
+                '<p class="font-weight-bold">Informasi Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">Jenis Pengaduan</p>' +
@@ -91,6 +147,8 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['email'] + '</div>' +
                 '</div>' +
+                assignment +
+                ad_art +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">Alamat</p>' +
@@ -99,9 +157,15 @@
                 '</div>' +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p>Pekerjaan</p>' +
+                '<p class="mb-0">Pekerjaan</p>' +
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
+                '</div>' +
+                '<div class="row">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p>Isi Saran / Pengaduan</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['complain'] + '</div>' +
                 '</div>' +
                 '</div>';
         }
@@ -144,7 +208,7 @@
                 {data: 'date'},
                 {data: 'ticket_id'},
                 {data: 'name'},
-                {data: 'complain'},
+                // {data: 'phone'},
                 {
                     data: null, render: function (data, type, row, meta) {
                         let status = 'menunggu';
@@ -166,14 +230,25 @@
                 },
             ], [], function (d) {
             }, {
-                scrollX: true,
-                responsive: true,
+                "scrollX": true,
                 "fnDrawCallback": function (settings) {
                     setExpand();
                 },
                 dom: 'ft',
             });
             setExpand();
+
+            $('.wa-send').on('click', function (e) {
+                e.preventDefault();
+                AjaxPost
+                let phone = this.dataset.contact;
+                let ticket = this.dataset.ticket;
+                let text = 'https://api.whatsapp.com/send/?phone=' + phone + '&text=Cek Jawaban Ticket '+ticket+' klik link https://stackoverflow.com/';
+                var win = window.open(text, '_blank');
+                if (win) {
+                    win.focus();
+                }
+            })
         });
     </script>
 @endsection

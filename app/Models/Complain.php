@@ -30,4 +30,9 @@ class Complain extends Model
     {
         return $this->hasOne(LegalComplain::class, 'complain_id');
     }
+
+    public function answers()
+    {
+        return $this->hasMany(ComplainAnswer::class, 'complain_id');
+    }
 }
