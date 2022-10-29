@@ -20,6 +20,7 @@ class HomeController extends CustomController
 
     public function complain_page()
     {
+		
         return view('complain');
     }
 }
