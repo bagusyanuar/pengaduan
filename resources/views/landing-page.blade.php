@@ -1,11 +1,86 @@
 @extends('layout')
 
 @section('content')
+	<section class="section section-lg" id="permohonan">
+		<div class="container">
+			<div class="row row-grid align-items-center mb-5 mb-lg-7">
+				<div class="col-12 col-lg-5">
+					<h2 class="mb-4">Permohonan Informasi</h2>
+					<p>Layanan permohonan informasi secara mudah, tepat, dan transparan.</p>
+					<p>Sampaikan permohonan informasi anda disini</p>
+					<a href="#" class="btn btn-dark mt-3 animate-up-2">
+						Permohonan Informasi
+						<span class="icon icon-xs ml-2">
+							<i class="fas fa-external-link-alt"></i>
+						</span>
+					</a>
+				</div>
+				<div class="col-12 col-lg-6 ml-lg-auto">
+					<img src="{{ asset('/img/hero.png') }}" class="w-100" alt="">
+				</div>
+			</div>
+		</div>
+	</section>
+	<section class="section section-lg" id="pengaduan">
+		<div class="container">
+			<div class="row row-grid align-items-center mb-5 mb-lg-7">
+                    <div class="col-12 col-lg-5 order-lg-2">
+                        <h2 class="mb-4">Pengaduan</h2>
+                        <p>Layanan Pengaduan mencakup pengaduan jalan dan selain pengaduan jalan</p>
+                        <p></p>
+                        <a href="#" class="btn btn-dark mt-3 animate-up-2">
+                            Pengaduan Jalan
+                            <span class="icon icon-xs ml-2">
+                                <i class="fas fa-external-link-alt"></i>
+                            </span>
+                        </a>
+						<a href="#" class="btn btn-dark mt-3 animate-up-2">
+                            Pengaduan Non Jalan
+                            <span class="icon icon-xs ml-2">
+                                <i class="fas fa-external-link-alt"></i>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-12 col-lg-6 mr-lg-auto">
+                        <img src="{{ asset('/img/complain-hero.png') }}" class="w-100" alt="">
+                    </div>
+               </div>
+		</div>
+	</section>
+	<section class="section section-lg" id="lacak">
+		<div class="container">
+			<div class="row row-grid align-items-center mb-5 mb-lg-7">
+                    <div class="col-12 col-lg-5 order-lg-2">
+                        <h2 class="mb-4">Tracing Laporan Anda</h2>
+                        <p>Masukkan nomer registrasi laporan anda </p>
+                        <p></p>
+                         <form action="#">
+							<div class="form-row mb-2">
+								<div class="col-12">
+									<input type="text" class="form-control mb-2" placeholder="example: xxx/PPID/BM/PUPR/PIP/mm/yyyy" name="email" aria-label="Subscribe form" required>
+								</div>
+								<div class="col-12">
+									<button type="submit" class="btn btn-dark shadow-soft btn-block" data-loading-text="Sending">
+										<span>Lacak</span>
+									</button>
+								</div>
+							</div>
+						</form>
+                    </div>
+                    <div class="col-12 col-lg-6 mr-lg-auto">
+                        <img src="{{ asset('/img/scene-3.svg') }}" class="w-100" alt="">
+                    </div>
+               </div>
+		</div>
+	</section>
     <section id="hero">
         <div class="pt-5 pr-5 pl-5">
             <div class="hero p-5 align-items-center d-flex">
                 <div class="row flex-column-reverse flex-lg-row align-items-center">
                     <div class="col-lg-6 col-md-6 col-sm-12">
+                        <img src="{{ asset('/assets/icons/logo.png') }}" class="w-75">
+                    </div>
+					<div class="col-lg-6 col-md-6 col-sm-12">
                         <h1 class="font-weight-bold " style="font-size: 44px">Layanan Pengaduan
                             Online Masyarakat</h1>
                         <p style="font-size: 20px;">Sampaikan laporan Anda langsung kepada instansi pemerintah
@@ -15,9 +90,7 @@
                             <a href="#" class="main-button-outline">Permintaan Informasi</a>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <img src="{{ asset('/assets/icons/hero.png') }}" class="w-100">
-                    </div>
+                    
                 </div>
             </div>
         </div>
