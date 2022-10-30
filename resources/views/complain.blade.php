@@ -97,7 +97,7 @@
                              aria-labelledby="pills-profile-tab">
                             <div class="card">
                                 <div class="card-body">
-                                    <form method="post">
+                                    <form method="post" enctype="multipart/form-data">
                                         @csrf
                                         <input type="hidden" name="type" value="1">
                                         <div class="form-group mb-1">

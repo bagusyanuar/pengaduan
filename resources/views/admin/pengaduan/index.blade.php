@@ -41,7 +41,7 @@
         <div class="card card-outline card-warning">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0">Data Satuan Kerja</p>
+                    <p class="mb-0">Data Saran / Pengaduan</p>
                     <a href="{{ route('unit.add') }}" class="main-button f14">
                         <i class="fa fa-plus mr-1"></i>
                         <span>Tambah</span>
@@ -49,34 +49,18 @@
                 </div>
             </div>
             <div class="card-body">
-                <table id="table-data" class="display w-100 table table-bordered">
+                <table id="table-data-waiting" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
+                        <th width="5%" class="text-center f14 no-sort"></th>
                         <th width="5%" class="text-center f14">#</th>
+                        <th class="f14" width="12%">Tanggal</th>
+                        <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
-                        <th width="10%" class="text-center f14"></th>
+                        <th class="f14" width="15%">Legalitas</th>
                     </tr>
                     </thead>
                     <tbody>
-{{--                    @foreach($data as $v)--}}
-{{--                        <tr>--}}
-{{--                            <td width="5%" class="text-center f14">{{ $loop->index + 1 }}</td>--}}
-{{--                            <td class="f14">{{ $v->name }}</td>--}}
-{{--                            <td width="10%" class="text-center">--}}
-{{--                                <div class="dropdown">--}}
-{{--                                    <a href="#" class="main-button-outline" data-toggle="dropdown">--}}
-{{--                                        <span style="font-size: 12px;">Kelola</span>--}}
-{{--                                    </a>--}}
-{{--                                    <div class="dropdown-menu dropdown-menu dropdown-menu-right">--}}
-{{--                                        <a href="{{ route('unit.patch', ['id' => $v->id]) }}"--}}
-{{--                                           class="dropdown-item f12">Edit</a>--}}
-{{--                                        <a href="#" data-id="{{ $v->id }}"--}}
-{{--                                           class="dropdown-item f12 btn-delete">Delete</a>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </td>--}}
-{{--                        </tr>--}}
-{{--                    @endforeach--}}
                     </tbody>
                 </table>
             </div>
@@ -87,32 +71,128 @@
 @section('js')
     <script src="{{ asset('/js/helper.js') }}"></script>
     <script type="text/javascript">
+        var table;
         var prefix_url = '{{ env('PREFIX_URL') }}';
 
-        function destroy(id) {
-            AjaxPost(prefix_url + '/admin/satker/' + id + '/delete', function () {
-                window.location.reload();
-            })
+        function detailElement(d) {
+            let type = 'Individu';
+            let assignment = '';
+            let ad_art = '';
+            if (d['type'] === 1) {
+                type = 'Badan Hukum / Organisasi';
+                let tmp_assignment = d['legal'] !== null ? d['legal']['assignment'] : '-';
+                let tmp_ad_art = d['legal'] !== null ? d['legal']['ad_art'] : '-';
+                assignment = '<div class="row mb-0">' +
+                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                    '<p class="mb-0">Surat Tugas / Surat Kuasa </p>' +
+                    '</div>' +
+                    '<div class="col-lg-9 col-md-8 col-sm-6">: <a href="' + prefix_url + tmp_assignment + '" target="_blank">Preview</a></div>' +
+                    '</div>';
+
+                ad_art = '<div class="row mb-0">' +
+                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                    '<p class="mb-0">AD ART</p>' +
+                    '</div>' +
+                    '<div class="col-lg-9 col-md-8 col-sm-6">: <a href="' + prefix_url + tmp_ad_art + '" target="_blank">Preview</a></div>' +
+                    '</div>';
+            }
+
+
+            return '<div>' +
+                '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">No. Whatsapp</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['phone'] + '</div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Email</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['email'] + '</div>' +
+                '</div>' +
+                assignment +
+                ad_art +
+                '<div class="row">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Alamat</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['address'] + '</div>' +
+                '</div>' +
+                '<div class="row">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Pekerjaan</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
+                '</div>' +
+                '<div class="row">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p>Isi Saran / Pengaduan</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['complain'] + '</div>' +
+                '</div>' +
+                '<div class="w-100 text-right">' +
+                '<a href="#" class="main-button"><i class="fa fa-paper-plane mr-2"></i>Proses</a>' +
+                '</div>'+
+                '</div>';
         }
 
-        function eventDelete() {
-            $('.btn-delete').on('click', function (e) {
-                e.preventDefault();
-                let id = this.dataset.id;
-                AlertConfirm('Apakah anda yakin menghapus?', 'Data yang dihapus tidak dapat dikembalikan!', function () {
-                    destroy(id);
-                })
+        function setExpand() {
+            $('#table-data-waiting tbody').on('click', 'td.dt-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var i = $(this).children();
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                    i.removeClass('fa fa-minus-square-o');
+                    i.addClass('fa fa-plus-square-o');
+                } else {
+                    // Open this row
+                    console.log(row.data());
+                    row.child(detailElement(row.data())).show();
+                    tr.addClass('shown');
+                    i.removeClass('fa fa-plus-square-o');
+                    i.addClass('fa fa-minus-square-o');
+                    console.log(row.data());
+                    // console.log(tr.closest('i'));
+                }
             });
         }
 
         $(document).ready(function () {
-            $('#table-data').DataTable({
+            table = DataTableGenerator('#table-data-waiting', prefix_url + '/admin/pengaduan/data', [
+                {
+                    className: 'dt-control',
+                    orderable: false,
+                    data: null, render: function () {
+                        return '<i class="fa fa-plus-square-o main-text expand-icon"></i>';
+                    }
+                },
+                {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
+                {data: 'date'},
+                {data: 'ticket_id'},
+                {data: 'name'},
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let legal = 'Individu';
+                        if (data['type'] === 1) {
+                            legal = 'Badan Hukum';
+                        }
+                        return legal;
+                    }
+                },
+            ], [], function (d) {
+            }, {
                 "scrollX": true,
-                "fnDrawCallback": function (setting) {
-                    eventDelete();
-                }
+                "fnDrawCallback": function (settings) {
+                    setExpand();
+                },
             });
-            eventDelete();
+            setExpand();
         });
     </script>
 @endsection
