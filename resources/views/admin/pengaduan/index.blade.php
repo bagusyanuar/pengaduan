@@ -21,20 +21,20 @@
         <div class="w-100">
             <ul class="nav nav-pills nav-justified mb-3" id="pills-tab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home"
-                       role="tab" aria-controls="pills-home" aria-selected="true">Menunggu</a>
+                    <a class="nav-link active" id="pills-waiting-tab" data-toggle="pill" href="#pills-waiting"
+                       role="tab" aria-controls="pills-waiting" aria-selected="true">Menunggu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile"
-                       role="tab" aria-controls="pills-profile" aria-selected="false">Proses</a>
+                    <a class="nav-link" id="pills-process-tab" data-toggle="pill" href="#pills-process"
+                       role="tab" aria-controls="pills-process" aria-selected="false">Proses</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile"
-                       role="tab" aria-controls="pills-profile" aria-selected="false">Terjawab</a>
+                    <a class="nav-link" id="pills-answered-tab" data-toggle="pill" href="#pills-answered"
+                       role="tab" aria-controls="pills-answered" aria-selected="false">Terjawab</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile"
-                       role="tab" aria-controls="pills-profile" aria-selected="false">Selesai</a>
+                    <a class="nav-link" id="pills-complete-tab" data-toggle="pill" href="#pills-complete"
+                       role="tab" aria-controls="pills-complete" aria-selected="false">Selesai</a>
                 </li>
             </ul>
         </div>
@@ -42,14 +42,10 @@
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <p class="mb-0">Data Saran / Pengaduan</p>
-                    <a href="{{ route('unit.add') }}" class="main-button f14">
-                        <i class="fa fa-plus mr-1"></i>
-                        <span>Tambah</span>
-                    </a>
                 </div>
             </div>
             <div class="card-body">
-                <table id="table-data-waiting" class="display w-100 table table-bordered">
+                <table id="table-data" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
                         <th width="5%" class="text-center f14 no-sort"></th>
@@ -65,6 +61,46 @@
                 </table>
             </div>
         </div>
+        {{--        tab content--}}
+        {{--        <div class="tab-content" id="pills-tabContent">--}}
+        {{--            <div class="tab-pane fade show active" id="pills-waiting" role="tabpanel"--}}
+        {{--                 aria-labelledby="pills-waiting-tab">--}}
+
+        {{--            </div>--}}
+        {{--            <div class="tab-pane fade show" id="pills-process" role="tabpanel"--}}
+        {{--                 aria-labelledby="pills-process-tab">--}}
+        {{--                <div class="card card-outline card-warning">--}}
+        {{--                    <div class="card-header">--}}
+        {{--                        <div class="d-flex justify-content-between align-items-center">--}}
+        {{--                            <p class="mb-0">Data Saran / Pengaduan</p>--}}
+        {{--                        </div>--}}
+        {{--                    </div>--}}
+        {{--                    <div class="card-body">--}}
+        {{--                        <table id="table-data-process" class="display w-100 table table-bordered">--}}
+        {{--                            <thead>--}}
+        {{--                            <tr>--}}
+        {{--                                <th width="5%" class="text-center f14 no-sort"></th>--}}
+        {{--                                <th width="5%" class="text-center f14">#</th>--}}
+        {{--                                <th class="f14" width="12%">Tanggal</th>--}}
+        {{--                                <th class="f14" width="25%">No. Ticket</th>--}}
+        {{--                                <th class="f14">Nama</th>--}}
+        {{--                                <th class="f14" width="15%">Legalitas</th>--}}
+        {{--                            </tr>--}}
+        {{--                            </thead>--}}
+        {{--                            <tbody>--}}
+        {{--                            </tbody>--}}
+        {{--                        </table>--}}
+        {{--                    </div>--}}
+        {{--                </div>--}}
+        {{--            </div>--}}
+        {{--            <div class="tab-pane fade show" id="pills-answered" role="tabpanel"--}}
+        {{--                 aria-labelledby="pills-answered-tab">--}}
+        {{--            </div>--}}
+        {{--            <div class="tab-pane fade show" id="pills-complete" role="tabpanel"--}}
+        {{--                 aria-labelledby="pills-complete-tab">--}}
+        {{--            </div>--}}
+        {{--        </div>--}}
+
     </section>
 @endsection
 
@@ -73,6 +109,12 @@
     <script type="text/javascript">
         var table;
         var prefix_url = '{{ env('PREFIX_URL') }}';
+        var query = 'waiting';
+
+        function reload() {
+            table.ajax.reload();
+            setExpand();
+        }
 
         function detailElement(d) {
             let type = 'Individu';
@@ -94,6 +136,27 @@
                     '<p class="mb-0">AD ART</p>' +
                     '</div>' +
                     '<div class="col-lg-9 col-md-8 col-sm-6">: <a href="' + prefix_url + tmp_ad_art + '" target="_blank">Preview</a></div>' +
+                    '</div>';
+            }
+
+            let action = '';
+            if (query === 'waiting') {
+                action = '<div class="row mb-2">' +
+                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                    '</div>' +
+                    '<div class="col-lg-9 col-md-8 col-sm-6">' +
+                    '<a href="#" class="main-button btn-process" data-id="' + d['id'] + '"><i class="fa fa-paper-plane mr-2"></i>Proses</a>' +
+                    '</div>' +
+                    '</div>';
+            }
+
+            let disposition = '';
+            if (query !== 'waiting') {
+                disposition = '<div class="row">' +
+                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                    '<p class="mb-0">Disposisi</p>' +
+                    '</div>' +
+                    '<div class="col-lg-9 col-md-8 col-sm-6">: -</div>' +
                     '</div>';
             }
 
@@ -126,20 +189,19 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
+                disposition +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p>Isi Saran / Pengaduan</p>' +
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['complain'] + '</div>' +
                 '</div>' +
-                '<div class="w-100 text-right">' +
-                '<a href="#" class="main-button"><i class="fa fa-paper-plane mr-2"></i>Proses</a>' +
-                '</div>'+
+                action +
                 '</div>';
         }
 
         function setExpand() {
-            $('#table-data-waiting tbody').on('click', 'td.dt-control', function () {
+            $('#table-data tbody').on('click', 'td.dt-control', function () {
                 var tr = $(this).closest('tr');
                 var row = table.row(tr);
                 var i = $(this).children();
@@ -159,12 +221,21 @@
                     i.addClass('fa fa-minus-square-o');
                     console.log(row.data());
                     // console.log(tr.closest('i'));
+
                 }
             });
+
+
         }
 
-        $(document).ready(function () {
-            table = DataTableGenerator('#table-data-waiting', prefix_url + '/admin/pengaduan/data', [
+        function sendProcess(id) {
+            AjaxPost(prefix_url + '/admin/pengaduan/' + id + '/process', function () {
+                window.location.reload();
+            })
+        }
+
+        function generateTable() {
+            table = DataTableGenerator('#table-data', prefix_url + '/admin/pengaduan/data', [
                 {
                     className: 'dt-control',
                     orderable: false,
@@ -186,13 +257,44 @@
                     }
                 },
             ], [], function (d) {
+                d.q = query;
             }, {
                 "scrollX": true,
                 "fnDrawCallback": function (settings) {
                     setExpand();
                 },
             });
+        }
+
+
+        $(document).ready(function () {
+            generateTable();
+            $(document).on('shown.bs.tab', function (e) {
+                let id = e.target.id;
+                query = 'waiting';
+                switch (id) {
+                    case 'pills-process-tab':
+                        query = 'process';
+                        break;
+                    case 'pills-answered-tab' :
+                        query = 'answered';
+                        break;
+                    case 'pills-complete-tab' :
+                        query = 'complete';
+                        break;
+                    default:
+                        break;
+                }
+                reload();
+                table.columns.adjust();
+            });
             setExpand();
+            $('#table-data-waiting tbody').on('click', '.btn-process', function (e) {
+                e.preventDefault();
+                let id = this.dataset.id;
+                sendProcess(id);
+                console.log(id);
+            });
         });
     </script>
 @endsection

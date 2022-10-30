@@ -57,6 +57,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
     Route::group(['prefix' => 'pengaduan'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\ComplainController::class, 'index'])->name('complain.index');
         Route::get('/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_data'])->name('complain.data');
+        Route::post('/{id}/process', [\App\Http\Controllers\Admin\ComplainController::class, 'send_process'])->name('complain.process');
     });
     Route::group(['prefix' => 'satker'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\SatuanKerjaController::class, 'index'])->name('unit.index');

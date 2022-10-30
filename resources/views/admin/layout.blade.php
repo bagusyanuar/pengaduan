@@ -127,6 +127,13 @@
                             <p>Pengaduan</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('complain.index') }}"
+                           class="nav-link {{ request()->is('admin/informasi*') ? 'active' : '' }}">
+                            <i class="fa fa-list nav-icon" aria-hidden="true"></i>
+                            <p>Informasi</p>
+                        </a>
+                    </li>
                 </nav>
             </ul>
         </div>
