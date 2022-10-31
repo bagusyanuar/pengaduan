@@ -23,7 +23,13 @@ class AuthController extends CustomController
                 'password' => $this->postField('password')
             ];
             if ($this->isAuth($credentials)) {
-                return redirect('/admin');
+                if (\auth()->user()->role === 'admin') {
+                    return redirect('/admin');
+                }
+
+                if (\auth()->user()->role === 'uki') {
+                    return redirect('/admin-uki');
+                }
             }
             return redirect()->back()->with('failed', 'Periksa Kembali Username dan Password Anda');
         }

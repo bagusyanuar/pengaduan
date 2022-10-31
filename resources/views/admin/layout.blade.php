@@ -60,80 +60,99 @@
             <ul class="nav nav-sidebar nav-pills flex-column">
                 <nav class="mt-2 nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                      data-accordion="false">
-                    <li class="nav-item">
-                        <a href="{{ route('dashboard') }}"
-                           class="nav-link {{ request()->is('admin') ? 'active' : ''}}">
-                            <i class="fa fa-tachometer nav-icon" aria-hidden="true"></i>
-                            <p>Dashboard</p>
-                        </a>
-                    </li>
-                    <li class="nav-item has-treeview {{ request()->is('admin/users*') ? 'menu-open' : ''}}">
-                        <a href="#" class="nav-link {{ request()->is('admin/users*') ? 'active' : ''}}">
-                            <i class="nav-icon fa fa-users"></i>
-                            <p>
-                                Users
-                                <i class="right fa fa-angle-down"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
+                    @if(auth()->user()->role == 'admin')
+                        <li class="nav-item">
+                            <a href="{{ route('dashboard') }}"
+                               class="nav-link {{ request()->is('admin') ? 'active' : ''}}">
+                                <i class="fa fa-tachometer nav-icon" aria-hidden="true"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+                        <li class="nav-item has-treeview {{ request()->is('admin/users*') ? 'menu-open' : ''}}">
+                            <a href="#" class="nav-link {{ request()->is('admin/users*') ? 'active' : ''}}">
+                                <i class="nav-icon fa fa-users"></i>
+                                <p>
+                                    Users
+                                    <i class="right fa fa-angle-down"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('users.index') }}"
+                                       class="nav-link {{ request()->is('admin/users') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>Admin</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('users.uki.index') }}"
+                                       class="nav-link {{ request()->is('admin/users/uki') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>UKI</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('users.satker.index') }}"
+                                       class="nav-link {{ request()->is('admin/users/satuan-kerja') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>Satuan Kerja</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('users.ppk.index') }}"
+                                       class="nav-link {{ request()->is('admin/users/ppk') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>PPK</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('unit.index') }}"
+                               class="nav-link {{ request()->is('admin/satker*') ? 'active' : ''}}">
+                                <i class="fa fa-bookmark nav-icon" aria-hidden="true"></i>
+                                <p>Satuan Kerja</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('ppk.index') }}"
+                               class="nav-link {{ request()->is('admin/ppk*') ? 'active' : '' }}">
+                                <i class="fa fa-tag nav-icon" aria-hidden="true"></i>
+                                <p>PPK</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('complain.index') }}"
+                               class="nav-link {{ request()->is('admin/pengaduan*') ? 'active' : '' }}">
+                                <i class="fa fa-exclamation nav-icon" aria-hidden="true"></i>
+                                <p>Pengaduan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('complain.index') }}"
+                               class="nav-link {{ request()->is('admin/informasi*') ? 'active' : '' }}">
+                                <i class="fa fa-list nav-icon" aria-hidden="true"></i>
+                                <p>Informasi</p>
+                            </a>
+                        </li>
+                    @endif
+
+                    @if(auth()->user()->role == 'uki')
                             <li class="nav-item">
-                                <a href="{{ route('users.index') }}"
-                                   class="nav-link {{ request()->is('admin/users') ? 'active' : ''}}">
-                                    <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
-                                    <p>Admin</p>
+                                <a href="{{ route('dashboard.uki') }}"
+                                   class="nav-link {{ request()->is('admin-uki') ? 'active' : ''}}">
+                                    <i class="fa fa-tachometer nav-icon" aria-hidden="true"></i>
+                                    <p>Dashboard</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('users.uki.index') }}"
-                                   class="nav-link {{ request()->is('admin/users/uki') ? 'active' : ''}}">
-                                    <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
-                                    <p>UKI</p>
+                                <a href="{{ route('complain.index.uki') }}"
+                                   class="nav-link {{ request()->is('admin-uki/pengaduan*') ? 'active' : '' }}">
+                                    <i class="fa fa-exclamation nav-icon" aria-hidden="true"></i>
+                                    <p>Pengaduan</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="{{ route('users.satker.index') }}"
-                                   class="nav-link {{ request()->is('admin/users/satuan-kerja') ? 'active' : ''}}">
-                                    <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
-                                    <p>Satuan Kerja</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('users.ppk.index') }}"
-                                   class="nav-link {{ request()->is('admin/users/ppk') ? 'active' : ''}}">
-                                    <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
-                                    <p>PPK</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('unit.index') }}"
-                           class="nav-link {{ request()->is('admin/satker*') ? 'active' : ''}}">
-                            <i class="fa fa-bookmark nav-icon" aria-hidden="true"></i>
-                            <p>Satuan Kerja</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('ppk.index') }}"
-                           class="nav-link {{ request()->is('admin/ppk*') ? 'active' : '' }}">
-                            <i class="fa fa-tag nav-icon" aria-hidden="true"></i>
-                            <p>PPK</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('complain.index') }}"
-                           class="nav-link {{ request()->is('admin/pengaduan*') ? 'active' : '' }}">
-                            <i class="fa fa-exclamation nav-icon" aria-hidden="true"></i>
-                            <p>Pengaduan</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('complain.index') }}"
-                           class="nav-link {{ request()->is('admin/informasi*') ? 'active' : '' }}">
-                            <i class="fa fa-list nav-icon" aria-hidden="true"></i>
-                            <p>Informasi</p>
-                        </a>
-                    </li>
+                    @endif
                 </nav>
             </ul>
         </div>

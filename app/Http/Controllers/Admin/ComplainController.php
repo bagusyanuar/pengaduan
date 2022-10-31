@@ -19,6 +19,11 @@ class ComplainController extends CustomController
         return view('admin.pengaduan.index');
     }
 
+    public function index_uki()
+    {
+        return view('uki.pengaduan.index');
+    }
+
     public function complain_data()
     {
         try {
@@ -42,6 +47,32 @@ class ComplainController extends CustomController
         }
     }
 
+    public function complain_data_uki()
+    {
+        try {
+            $status = 1;
+            if ($this->field('q') === 'answered') {
+                $status = 6;
+            }
+            $query = Complain::with('legal')
+                ->where('status', '=', $status);
+            if ($this->field('q') === 'answered') {
+                $query->orWhere('status', '=', 7);
+            }
+
+            if ($this->field('q') === 'process') {
+                $query->whereNotNull('satker_id');
+            }
+
+            if ($this->field('q') === 'waiting') {
+                $query->whereNull('satker_id');
+            }
+            $data = $query->get();
+            return $this->basicDataTables($data);
+        } catch (\Exception $e) {
+            return $this->basicDataTables([]);
+        }
+    }
 
     public function send_process($id)
     {

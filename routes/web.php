@@ -76,5 +76,14 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\Dashboard::class, 'complain_data']);
     });
 
+});
 
+Route::group(['prefix' => 'admin-uki', 'middleware' => 'auth:web'], function () {
+    Route::get('/', [\App\Http\Controllers\Admin\Dashboard::class, 'index_uki'])->name('dashboard.uki');
+
+    Route::group(['prefix' => 'pengaduan'], function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ComplainController::class, 'index_uki'])->name('complain.index.uki');
+        Route::get('/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_data_uki'])->name('complain.data.uki');
+        Route::post('/{id}/process', [\App\Http\Controllers\Admin\ComplainController::class, 'send_process'])->name('complain.process');
+    });
 });

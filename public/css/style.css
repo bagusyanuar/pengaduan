@@ -362,8 +362,8 @@ table.dataTable {
 }
 
 .dataTables_scrollBody {
-    overflow: visible !important;
-    -ms-overflow: visible !important;
+    /*overflow: visible !important;*/
+    /*-ms-overflow: visible !important;*/
 }
 
 .dt-control:hover {

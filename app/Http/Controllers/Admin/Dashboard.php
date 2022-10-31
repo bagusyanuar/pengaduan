@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helper\CustomController;
 use App\Models\Complain;
 use App\Models\ComplainAnswer;
+use App\Models\PPK;
 
 class Dashboard extends CustomController
 {
@@ -25,6 +26,11 @@ class Dashboard extends CustomController
             ->orderBy('date', 'ASC')
             ->get();
         return view('admin.dashboard')->with(['data' => $data, 'answers' => $answers]);
+    }
+
+    public function index_uki()
+    {
+        return view('uki.dashboard-uki');
     }
 
     public function complain_data()
