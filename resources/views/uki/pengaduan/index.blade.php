@@ -97,11 +97,13 @@
 
             let action = '';
             if (query === 'waiting') {
-                action = '<div class="row mb-2">' +
+                let ticket_id = d['ticket_id'].replaceAll('/', '-');
+                let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/info';
+                action = '<div class="row mb-2 mt-2">' +
                     '<div class="col-lg-3 col-md-4 col-sm-6">' +
                     '</div>' +
                     '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                    '<a href="#" class="main-button btn-process" data-id="' + d['id'] + '"><i class="fa fa-paper-plane mr-2"></i>Proses</a>' +
+                    '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-info-circle mr-2"></i>Detail</a>' +
                     '</div>' +
                     '</div>';
             }
@@ -150,7 +152,7 @@
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p>Isi Saran / Pengaduan</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['complain'] + '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><span>:</span><p class="text-justify mb-0 d-inline"> ' + d['complain'] + '</p></div>' +
                 '</div>' +
                 action +
                 '</div>';
@@ -245,12 +247,12 @@
                 table.columns.adjust();
             });
             setExpand();
-            $('#table-data-waiting tbody').on('click', '.btn-process', function (e) {
-                e.preventDefault();
-                let id = this.dataset.id;
-                sendProcess(id);
-                console.log(id);
-            });
+            // $('#table-data-waiting tbody').on('click', '.btn-process', function (e) {
+            //     e.preventDefault();
+            //     let id = this.dataset.id;
+            //     sendProcess(id);
+            //     console.log(id);
+            // });
         });
     </script>
 @endsection

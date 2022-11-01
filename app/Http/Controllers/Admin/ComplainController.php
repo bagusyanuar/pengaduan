@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helper\CustomController;
 use App\Models\Complain;
+use App\Models\PPK;
+use App\Models\SatuanKerja;
 
 class ComplainController extends CustomController
 {
@@ -72,6 +74,16 @@ class ComplainController extends CustomController
         } catch (\Exception $e) {
             return $this->basicDataTables([]);
         }
+    }
+
+    public function data_detail_by_ticket($ticket)
+    {
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Complain::with('legal')->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail();
+        $unit = SatuanKerja::all();
+        $ppk = PPK::with('unit')->get();
+        return view('uki.pengaduan.detail')->with(['data' => $data, 'unit' => $unit, 'ppk' => $ppk]);
     }
 
     public function send_process($id)
