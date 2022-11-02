@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helper\CustomController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends CustomController
 {
@@ -28,6 +29,9 @@ class AuthController extends CustomController
                 }
 
                 if (\auth()->user()->role === 'uki') {
+                    if (Session::get('redirect')) {
+                        return redirect(Session::get('redirect'));
+                    }
                     return redirect('/admin-uki');
                 }
             }
