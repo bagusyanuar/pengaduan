@@ -90,6 +90,14 @@ class ComplainController extends CustomController
         return view('uki.pengaduan.detail')->with(['data' => $data, 'unit' => $unit, 'ppk' => $ppk]);
     }
 
+    public function complain_answers_by_ticket($ticket)
+    {
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Complain::with(['legal', 'unit', 'ppk', 'answers'])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail();
+        return view('uki.pengaduan.jawaban')->with(['data' => $data]);
+    }
+
     public function send_disposition($id)
     {
         $data = Complain::with('legal')
@@ -110,9 +118,13 @@ class ComplainController extends CustomController
             $data->update($data_update);
 
         } else {
-            dd('tolak');
+            $data_update = [
+                'description' => $this->postField('description'),
+                'status' => 6
+            ];
+            $data->update($data_update);
         }
-        return redirect()->back();
+        return redirect()->route('complain.index.uki')->with('success', 'Berhasil Melakukan Konfirmasi Saran / Pengaduan...');;
     }
 
     public function send_process($id)

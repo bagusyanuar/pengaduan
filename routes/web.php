@@ -86,6 +86,7 @@ Route::group(['prefix' => 'admin-uki', 'middleware' => 'auth:web'], function () 
         Route::get('/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_data_uki'])->name('complain.data.uki');
 //        Route::post('/{id}/process', [\App\Http\Controllers\Admin\ComplainController::class, 'send_process'])->name('complain.process');
         Route::get('/{ticket}/info', [\App\Http\Controllers\Admin\ComplainController::class, 'data_detail_by_ticket'])->name('complain.data.by.ticket');
+        Route::get('/{ticket}/jawaban', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_by_ticket'])->name('complain.answers.by.ticket');
         Route::post('/{id}/disposition', [\App\Http\Controllers\Admin\ComplainController::class, 'send_disposition'])->name('complain.data.send.disposition');
     });
 });
