@@ -93,10 +93,16 @@ class ComplainController extends CustomController
     public function complain_answers_by_ticket($ticket)
     {
         $ticket_id = str_replace('-', '/', $ticket);
-        $data = Complain::with(['legal', 'unit', 'ppk', 'answers'])->where('ticket_id', '=', $ticket_id)
+        $data = Complain::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
+            return $q->orderBy('date_upload', 'DESC');
+        }])->where('ticket_id', '=', $ticket_id)
             ->firstOrFail();
-        return view('uki.pengaduan.jawaban')->with(['data' => $data]);
+
+        $waiting_answer = $data->answers->firstWhere('status', 0);
+//        dd($waiting_answer);
+        return view('uki.pengaduan.jawaban')->with(['data' => $data, 'waiting_answer' => $waiting_answer]);
     }
+
 
     public function send_disposition($id)
     {
