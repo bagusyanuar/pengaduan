@@ -38,19 +38,19 @@
                                             <label for="name">Nama</label>
                                             <input type="text" class="form-control" id="name"
                                                    aria-describedby="emailHelp" placeholder="Nama" name="name">
-                                           
+												  
                                         </div>
                                         <div class="form-group mb-1">
                                             <label for="address">Alamat</label>
                                             <textarea rows="3" class="form-control" id="address"
                                                       aria-describedby="addressHelp" placeholder="Alamat" name="address"></textarea>
-                                          
+                                           
                                         </div>
                                         <div class="form-group mb-1">
                                             <label for="job">Pekerjaan</label>
                                             <input type="text" class="form-control" id="job" name="job" aria-describedby="jobHelp"
                                                    placeholder="Pekerjaan">
-                                         
+                                          
                                         </div>
                                         <div class="form-group mb-1">
                                             <label for="phone">No. Whatsapp</label>
@@ -120,7 +120,7 @@
                                             <label for="address">Alamat</label>
                                             <textarea rows="3" class="form-control" id="address"
                                                       aria-describedby="addressHelp" placeholder="Alamat"></textarea>
-                                           
+                                          
                                         </div>
                                         <div class="form-group mb-1">
                                             <label for="job">Pekerjaan</label>

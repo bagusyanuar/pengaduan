@@ -16,6 +16,7 @@ Route::match(['post', 'get'], '/login', [\App\Http\Controllers\Admin\AuthControl
 Route::get('/logout', [\App\Http\Controllers\Admin\AuthController::class, 'logout'])->middleware('auth:web');
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index']);
 Route::match(['post', 'get'], '/pengaduan', [\App\Http\Controllers\ComplainController::class, 'index']);
+Route::match(['post', 'get'], '/informasi', [\App\Http\Controllers\InformationController::class, 'index']);
 
 //admin page
 Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
@@ -59,6 +60,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
         Route::get('/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_data'])->name('complain.data');
         Route::post('/{id}/process', [\App\Http\Controllers\Admin\ComplainController::class, 'send_process'])->name('complain.process');
     });
+	
+	Route::group(['prefix' => 'informasi'], function () {
+        Route::get('/', [\App\Http\Controllers\Admin\InformationController::class, 'index'])->name('information.index');
+    });
+	
     Route::group(['prefix' => 'satker'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\SatuanKerjaController::class, 'index'])->name('unit.index');
         Route::match(['post', 'get'], '/tambah', [\App\Http\Controllers\Admin\SatuanKerjaController::class, 'add'])->name('unit.add');

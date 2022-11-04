@@ -24,7 +24,7 @@
 </head>
 <body>
 	<main>
-		<section class="section section-header text-dark pb-md-8" id="home">
+		<section class="section section-header text-dark pb-md-2" id="home">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-10 text-center mb-5 mb-md-7">
@@ -33,7 +33,7 @@
                         </h1>
                         <p class="lead mb-4 mb-lg-5">Layanan Permohonan Informasi dan Pengaduan Online <br> Balai Besar Pelaksanaan Jalan Nasional Jawa Timur - Bali</p>
                         <div>
-                            <a href="#permohonan" class="btn btn-dark btn-download-app mb-xl-0 mr-2 mr-md-3">
+                            <a href="/informasi" class="btn btn-dark btn-download-app mb-xl-0 mr-2 mr-md-3">
                                 <span class="d-flex align-items-center">
                                     <span class="icon icon-brand mr-2 mr-md-3"><span class="fa fa-list"></span></span>
                                     <span class="d-inline-block text-left">
@@ -41,7 +41,7 @@
                                     </span> 
                                 </span>
                             </a>
-                            <a href="#pengaduan" class="btn btn-dark btn-download-app mb-xl-0 mr-2 mr-md-3">
+                            <a href="/pengaduan" class="btn btn-dark btn-download-app mb-xl-0 mr-2 mr-md-3">
                                 <span class="d-flex align-items-center">
                                     <span class="icon icon-brand mr-2 mr-md-3"><span class="fa fa-paper-plane"></span></span>
                                     <span class="d-inline-block text-left">
@@ -62,15 +62,15 @@
                 </div>
             </div>
         </section>
-		@yield('content')
+		{{-- @yield('content') --}}
 	</main>
-	<footer class="footer py-5 pt-lg-6">
+	{{-- <footer class="footer py-5 pt-lg-6">
 	 <div class="sticky-right">
         <a href="#home" class="icon icon-primary icon-md btn btn-icon-only btn-white border border-soft shadow-soft animate-up-3">
             <span class="fas fa-chevron-up"></span>
         </a>
     </div>
-	</footer>
+	</footer> --}}
 <script src="{{ asset ('/vendor/popper.js/dist/umd/popper.min.js') }}"></script>
 <script src="{{ asset ('/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset ('/vendor/headroom.js/dist/headroom.min.js') }}"></script>

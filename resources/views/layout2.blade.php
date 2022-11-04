@@ -18,9 +18,9 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light custom-nav shadow-sm">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="/">
         <div class="d-flex align-items-center">
-            <img src="{{ asset('assets/icons/logo.png') }}" height="75" class="mr-2">
+            <img src="{{ asset('img/logo2.png') }}" height="60" class="mr-2">
            
         </div>
     </a>
@@ -29,7 +29,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
 
-     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    {{-- <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item active">
                 <a class="nav-link" href="/">Beranda <span class="sr-only">(current)</span></a>
@@ -47,7 +47,7 @@
                 <a class="nav-link" href="#">Kontak</a>
             </li>
         </ul>
-    </div>
+    </div> --}}
 </nav>
 <div style="min-height: 400px">
 @yield('content')
@@ -74,7 +74,8 @@
         </div>
     </section>--}}
 </div>
-<section id="footer">
+
+{{-- <section id="footer">
     <div class="footer">
         <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-12">
@@ -98,7 +99,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> --}}
 <script src="https://code.jquery.com/jquery-3.6.1.min.js"
         integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"

@@ -8,7 +8,7 @@
 					<h2 class="mb-4">Permohonan Informasi</h2>
 					<p>Layanan permohonan informasi secara mudah, tepat, dan transparan.</p>
 					<p>Sampaikan permohonan informasi anda disini</p>
-					<a href="#" class="btn btn-dark mt-3 animate-up-2">
+					<a href="/pengaduan" class="btn btn-dark mt-3 animate-up-2">
 						Permohonan Informasi
 						<span class="icon icon-xs ml-2">
 							<i class="fas fa-external-link-alt"></i>
