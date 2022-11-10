@@ -77,7 +77,6 @@
             let assignment = '';
             let ad_art = '';
             if (d['type'] === 1) {
-                type = 'Badan Hukum / Organisasi';
                 let tmp_assignment = d['legal'] !== null ? d['legal']['assignment'] : '-';
                 let tmp_ad_art = d['legal'] !== null ? d['legal']['ad_art'] : '-';
                 assignment = '<div class="row mb-0">' +
@@ -96,14 +95,23 @@
             }
 
             let action = '';
+            let ticket_id = d['ticket_id'].replaceAll('/', '-');
             if (query === 'waiting') {
-                let ticket_id = d['ticket_id'].replaceAll('/', '-');
                 let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/info';
                 action = '<div class="row mb-2 mt-2">' +
                     '<div class="col-lg-3 col-md-4 col-sm-6">' +
                     '</div>' +
                     '<div class="col-lg-9 col-md-8 col-sm-6">' +
                     '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-info-circle mr-2"></i>Detail</a>' +
+                    '</div>' +
+                    '</div>';
+            } else if (query === 'process') {
+                let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
+                action = '<div class="row mb-2 mt-2">' +
+                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                    '</div>' +
+                    '<div class="col-lg-9 col-md-8 col-sm-6">' +
+                    '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-comments mr-2"></i>Jawaban</a>' +
                     '</div>' +
                     '</div>';
             }
@@ -247,12 +255,6 @@
                 table.columns.adjust();
             });
             setExpand();
-            // $('#table-data-waiting tbody').on('click', '.btn-process', function (e) {
-            //     e.preventDefault();
-            //     let id = this.dataset.id;
-            //     sendProcess(id);
-            //     console.log(id);
-            // });
         });
     </script>
 @endsection

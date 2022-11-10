@@ -31,6 +31,16 @@ class Complain extends Model
         return $this->hasOne(LegalComplain::class, 'complain_id');
     }
 
+    public function unit()
+    {
+        return $this->belongsTo(SatuanKerja::class, 'satker_id');
+    }
+
+    public function ppk()
+    {
+        return $this->belongsTo(PPK::class, 'ppk_id');
+    }
+
     public function answers()
     {
         return $this->hasMany(ComplainAnswer::class, 'complain_id');

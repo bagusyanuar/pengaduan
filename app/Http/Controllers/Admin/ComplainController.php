@@ -8,6 +8,8 @@ use App\Helper\CustomController;
 use App\Models\Complain;
 use App\Models\PPK;
 use App\Models\SatuanKerja;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
 
 class ComplainController extends CustomController
 {
@@ -78,12 +80,57 @@ class ComplainController extends CustomController
 
     public function data_detail_by_ticket($ticket)
     {
+        Session::put('redirect', URL::current());
         $ticket_id = str_replace('-', '/', $ticket);
         $data = Complain::with('legal')->where('ticket_id', '=', $ticket_id)
             ->firstOrFail();
         $unit = SatuanKerja::all();
         $ppk = PPK::with('unit')->get();
+        Session::forget('redirect');
         return view('uki.pengaduan.detail')->with(['data' => $data, 'unit' => $unit, 'ppk' => $ppk]);
+    }
+
+    public function complain_answers_by_ticket($ticket)
+    {
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Complain::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
+            return $q->orderBy('date_upload', 'DESC');
+        }])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail();
+
+        $waiting_answer = $data->answers->firstWhere('status', 0);
+//        dd($waiting_answer);
+        return view('uki.pengaduan.jawaban')->with(['data' => $data, 'waiting_answer' => $waiting_answer]);
+    }
+
+
+    public function send_disposition($id)
+    {
+        $data = Complain::with('legal')
+            ->findOrFail($id);
+        if ($this->postField('status') === '1') {
+            $data_update = [
+                'target' => $this->postField('target'),
+                'description' => 'Approved'
+            ];
+            if ($this->postField('target') === '1') {
+                $ppk = PPK::with('unit')->find($this->postField('ppk'));
+                $data_update['ppk_id'] = $ppk->id;
+                $data_update['satker_id'] = $ppk->unit->id;
+            } else {
+                $unit = SatuanKerja::find($this->postField('unit'));
+                $data_update['satker_id'] = $unit->id;
+            }
+            $data->update($data_update);
+
+        } else {
+            $data_update = [
+                'description' => $this->postField('description'),
+                'status' => 6
+            ];
+            $data->update($data_update);
+        }
+        return redirect()->route('complain.index.uki')->with('success', 'Berhasil Melakukan Konfirmasi Saran / Pengaduan...');;
     }
 
     public function send_process($id)

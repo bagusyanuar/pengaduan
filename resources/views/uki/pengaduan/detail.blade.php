@@ -35,7 +35,7 @@
                         <div class="w-100 mb-2">
                             <label for="ticket_id" class="form-label f14">No. Ticket</label>
                             <input type="text" class="form-control f14" id="ticket_id" placeholder="No. Ticket"
-                                   name="ticket_id" value="{{ $data->ticket_id }}" readonly>
+                                   name="ticket_id" value="{{ $data->ticket_id }}" readonly form="">
                         </div>
                         <div class="w-100 mb-2">
                             <label for="date" class="form-label f14">Tanggal Pengajuan</label>
@@ -96,13 +96,13 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form method="post">
+                        <form method="post" id="form-disposition" action="{{ route('complain.data.send.disposition', ['id' => $data->id]) }}">
                             @csrf
                             <div class="form-group w-100 mb-2">
                                 <label for="status" class="form-label f14">Status</label>
-                                <select class="form-control f14" id="status">
-                                    <option class="f14">Setuju</option>
-                                    <option class="f14">Tolak</option>
+                                <select class="form-control f14" id="status" name="status">
+                                    <option class="f14" value="1">Setuju</option>
+                                    <option class="f14" value="0">Tolak</option>
                                 </select>
                             </div>
                             <div class="d-block" id="accepted">
@@ -119,7 +119,7 @@
                                         <label class="form-check-label" for="target_ppk">PPK</label>
                                     </div>
                                 </div>
-                                <div class="form-group w-100 mb-2">
+                                <div class="form-group w-100 mb-2 d-block" id="panel-unit">
                                     <label for="unit" class="f14">Satuan Kerja</label>
                                     <select class="select2 f14" name="unit" id="unit" style="width: 100%;">
                                         @foreach($unit as $v)
@@ -128,7 +128,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="form-group w-100 mb-2">
+                                <div class="form-group w-100 mb-2 d-none" id="panel-ppk">
                                     <label for="ppk" class="f14">PPK</label>
                                     <select class="select2 f14" name="ppk" id="ppk" style="width: 100%;">
                                         @foreach($ppk as $v)
@@ -138,7 +138,20 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="d-none" id="denied"></div>
+                            <div class="d-none" id="denied">
+                                <div class="w-100 mb-2">
+                                    <label for="description" class="form-label f14">Deskripsi Penolakan</label>
+                                    <textarea rows="3" class="form-control f14" id="description"
+                                              placeholder="Deskripsi Penolakan"
+                                              name="description"></textarea>
+                                </div>
+                            </div>
+
+                            <hr>
+                            <div class="text-right">
+                                <button type="submit" class="main-button"><i class="fa fa-check mr-2"></i>Simpan
+                                </button>
+                            </div>
 
 
                         </form>
@@ -159,10 +172,51 @@
     <script src="{{ asset('/adminlte/plugins/select2/select2.full.js') }}"></script>
     <script src="{{ asset('/js/helper.js') }}"></script>
     <script type="text/javascript">
+
+        function togglePanelStatus() {
+            let cVal = $('#status').val();
+            if (cVal === '1') {
+                $('#accepted').removeClass('d-none');
+                $('#accepted').addClass('d-block');
+                $('#denied').removeClass('d-block');
+                $('#denied').addClass('d-none');
+            } else {
+                $('#accepted').removeClass('d-block');
+                $('#accepted').addClass('d-none');
+                $('#denied').removeClass('d-none');
+                $('#denied').addClass('d-block');
+            }
+        }
+
+        function togglePanelTarget() {
+            let rVal = $('input:radio[name=target]:checked').val();
+            console.log(rVal)
+            if (rVal === '1') {
+                $('#panel-ppk').removeClass('d-none');
+                $('#panel-ppk').addClass('d-block');
+                $('#panel-unit').removeClass('d-block');
+                $('#panel-unit').addClass('d-none');
+            } else {
+                $('#panel-ppk').removeClass('d-block');
+                $('#panel-ppk').addClass('d-none');
+                $('#panel-unit').removeClass('d-none');
+                $('#panel-unit').addClass('d-block');
+            }
+        }
+
         $(document).ready(function () {
             $('.select2').select2({
                 width: 'resolve'
             });
+            togglePanelStatus();
+            togglePanelTarget();
+            $('#status').on('change', function () {
+                togglePanelStatus();
+            });
+
+            $('input:radio[name=target]').on('change', function () {
+                togglePanelTarget();
+            })
         })
     </script>
 @endsection
