@@ -73,11 +73,17 @@
                                                 pelapor@gmail.com</small>
                                         </div>
                                         <div class="form-group mb-1">
-                                            <label for="complain">Saran / Pengaduan</label>
-                                            <textarea rows="3" class="form-control" id="complain" name="complain"
-                                                      aria-describedby="complainHelp"
-                                                      placeholder="Saran / Pengaduan"></textarea>
+                                            <label for="complain">Rincian Informasi</label>
+                                            <textarea rows="3" class="form-control" id="information" name="information"
+                                                      aria-describedby="informationHelp"
+                                                      placeholder="Rincian Informasi yang Dibutuhkan"></textarea>
                                            
+                                        </div>
+										<div class="form-group mb-1">
+                                            <label for="complain">Tujuan Penggunaan Informasi</label>
+                                            <textarea rows="3" class="form-control" id="purpose" name="purpose"
+                                                      aria-describedby="purposeHelp"
+                                                      placeholder="Tujuan Penggunaan Informasi (Mohon Diperinci)"></textarea>
                                         </div>
                                         <hr>
                                         <div class="text-right">
@@ -149,11 +155,17 @@
                                                 pelapor@gmail.com</small>
                                         </div>
                                         <div class="form-group mb-1">
-                                            <label for="complain">Saran / Pengaduan</label>
-                                            <textarea rows="3" class="form-control" id="complain"
-                                                      aria-describedby="complainHelp"
-                                                      placeholder="Saran / Pengaduan"></textarea>
+                                            <label for="complain">Rincian Informasi</label>
+                                            <textarea rows="3" class="form-control" id="information" name="information"
+                                                      aria-describedby="informationHelp"
+                                                      placeholder="Rincian Informasi yang Dibutuhkan"></textarea>
                                            
+                                        </div>
+										<div class="form-group mb-1">
+                                            <label for="complain">Tujuan Penggunaan Informasi</label>
+                                            <textarea rows="3" class="form-control" id="purpose" name="purpose"
+                                                      aria-describedby="purposeHelp"
+                                                      placeholder="Tujuan Penggunaan Informasi (Mohon Diperinci)"></textarea>
                                         </div>
                                         <hr>
                                         <div class="text-right">
