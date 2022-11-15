@@ -12,7 +12,7 @@
                 <li class="breadcrumb-item">
                     <a href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">Saran / Pengaduan Menunggu
+                <li class="breadcrumb-item active" aria-current="page">Saran / Pengaduan Selesai
                 </li>
             </ol>
         </div>
@@ -21,10 +21,35 @@
         <div class="card card-outline card-warning">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0">Data Saran / Pengaduan</p>
+                    <p class="mb-0">Data Saran / Pengaduan Selesai</p>
                 </div>
             </div>
             <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-3 col-lg-3 col-sm-12">
+                        <div class="form-group mb-2">
+                            <label for="start_date f14">Tanggal Awal</label>
+                            <div class="input-group">
+                                <input type="date" id="start_date" value="{{ date('Y-m-d') }}" class="form-control" aria-label="Recipient's username" aria-describedby="start_date_append">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="start_date_append"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-3 col-lg-3 col-sm-12">
+                        <div class="form-group">
+                            <label for="end_date f14">Tanggal Akhir</label>
+                            <div class="input-group">
+                                <input type="date" id="end_date" value="{{ date('Y-m-d') }}" class="form-control" aria-label="Recipient's username" aria-describedby="end_date_append">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="end_date_append"><i class="fa fa-calendar"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <table id="table-data" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
@@ -49,7 +74,7 @@
     <script type="text/javascript">
         var table;
         var prefix_url = '{{ env('PREFIX_URL') }}';
-        var query = 'waiting';
+        var query = 'complete';
 
         function reload() {
             table.ajax.reload();
@@ -57,11 +82,9 @@
         }
 
         function detailElement(d) {
-            let type = 'Individu';
             let assignment = '';
             let ad_art = '';
             if (d['type'] === 1) {
-                type = 'Badan Hukum / Organisasi';
                 let tmp_assignment = d['legal'] !== null ? d['legal']['assignment'] : '-';
                 let tmp_ad_art = d['legal'] !== null ? d['legal']['ad_art'] : '-';
                 assignment = '<div class="row mb-0">' +
@@ -79,26 +102,29 @@
                     '</div>';
             }
 
-            let action = '';
-            if (query === 'waiting') {
-                action = '<div class="row mb-2">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                    '<a href="#" class="main-button btn-process" data-id="' + d['id'] + '"><i class="fa fa-paper-plane mr-2"></i>Proses</a>' +
-                    '</div>' +
-                    '</div>';
+            let action = '<div class="row mb-2">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">' +
+                '<a href="#" class="main-button btn-process" data-id="' + d['id'] + '"><i class="fa fa-paper-plane mr-2"></i>Proses</a>' +
+                '</div>' +
+                '</div>';
+
+            let targetDisposition = '-';
+            if (d['unit'] !== null) {
+                targetDisposition = d['unit']['name'];
+            }
+            if (d['ppk'] !== null) {
+                targetDisposition = d['ppk']['name'];
             }
 
-            let disposition = '';
-            if (query !== 'waiting') {
-                disposition = '<div class="row">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '<p class="mb-0">Disposisi</p>' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">: -</div>' +
-                    '</div>';
-            }
+
+            let disposition = '<div class="row">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Disposisi</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + targetDisposition + '</div>' +
+                '</div>';
 
 
             return '<div>' +
@@ -130,13 +156,12 @@
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
                 disposition +
-                '<div class="row">' +
+                '<div class="row mb-2">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p>Isi Saran / Pengaduan</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['complain'] + '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
-                action +
                 '</div>';
         }
 
@@ -168,12 +193,6 @@
 
         }
 
-        function sendProcess(id) {
-            AjaxPost(prefix_url + '/admin/pengaduan/' + id + '/process', function () {
-                window.location.reload();
-            })
-        }
-
         function generateTable() {
             table = DataTableGenerator('#table-data', prefix_url + '/admin/pengaduan/data', [
                 {
@@ -197,7 +216,7 @@
                     }
                 },
             ], [], function (d) {
-                d.q = 'waiting';
+                d.q = query;
             }, {
                 "scrollX": true,
                 "fnDrawCallback": function (settings) {
@@ -210,23 +229,6 @@
         $(document).ready(function () {
             generateTable();
             setExpand();
-            $('#table-data tbody').on('click', '.btn-process', function (e) {
-                e.preventDefault();
-                let id = this.dataset.id;
-                Swal.fire({
-                    title: 'Konfirmasi!',
-                    text: 'Yakin ingin memproses data pengaduan?',
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya'
-                }).then((result) => {
-                    if (result.value) {
-                        sendProcess(id);
-                    }
-                });
-            });
         });
     </script>
 @endsection

@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Helper\CustomController;
+use App\Mail\NewComplain;
 use App\Models\Complain;
 use App\Models\PPK;
 use App\Models\SatuanKerja;
+use App\Models\UserUki;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 
@@ -23,6 +26,21 @@ class ComplainController extends CustomController
         return view('admin.pengaduan.index');
     }
 
+    public function on_process()
+    {
+        return view('admin.pengaduan.on-process');
+    }
+
+    public function answered()
+    {
+        return view('admin.pengaduan.answered');
+    }
+
+    public function finished()
+    {
+        return view('admin.pengaduan.finished');
+    }
+
     public function index_uki()
     {
         return view('uki.pengaduan.index');
@@ -31,15 +49,15 @@ class ComplainController extends CustomController
     public function complain_data()
     {
         try {
-            $status = 0;
+            $status = 1;
             if ($this->field('q') === 'answered') {
                 $status = 6;
-            } else if ($this->field('q') === 'process') {
-                $status = 1;
+            } else if ($this->field('q') === 'waiting') {
+                $status = 0;
             } else if ($this->field('q') === 'complete') {
                 $status = 9;
             }
-            $query = Complain::with('legal')
+            $query = Complain::with(['legal', 'unit', 'ppk'])
                 ->where('status', '=', $status);
             if ($this->field('q') === 'answered') {
                 $query->orWhere('status', '=', 7);
@@ -145,6 +163,11 @@ class ComplainController extends CustomController
             $complain->update([
                 'status' => 1
             ]);
+            $users_uki = UserUki::with('user')->get();
+            foreach ($users_uki as $user_uki) {
+                $target = $user_uki->user->email;
+                Mail::to($target)->send(new NewComplain($complain));
+            }
             return $this->jsonResponse('success', 200);
         } catch (\Exception $e) {
             return $this->jsonResponse('terjadi kesalahan ' . $e->getMessage(), 500);
