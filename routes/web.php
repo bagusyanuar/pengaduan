@@ -17,7 +17,15 @@ Route::get('/logout', [\App\Http\Controllers\Admin\AuthController::class, 'logou
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index']);
 Route::match(['post', 'get'], '/pengaduan', [\App\Http\Controllers\ComplainController::class, 'index']);
 Route::match(['post', 'get'], '/informasi', [\App\Http\Controllers\InformationController::class, 'index']);
+Route::get('/test-mail', function () {
+    $data = [
+        'title' => 'Test Title',
+        'description' => 'Description Test'
+    ];
 
+    \Illuminate\Support\Facades\Mail::to('damn.john88@gmail.com')->send(new \App\Mail\CheckMail($data));
+    dd('success');
+});
 //admin page
 Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
     Route::get('/', [\App\Http\Controllers\Admin\Dashboard::class, 'index'])->name('dashboard');
@@ -60,11 +68,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
         Route::get('/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_data'])->name('complain.data');
         Route::post('/{id}/process', [\App\Http\Controllers\Admin\ComplainController::class, 'send_process'])->name('complain.process');
     });
-	
-	Route::group(['prefix' => 'informasi'], function () {
+
+    Route::group(['prefix' => 'informasi'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\InformationController::class, 'index'])->name('information.index');
     });
-	
+
     Route::group(['prefix' => 'satker'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\SatuanKerjaController::class, 'index'])->name('unit.index');
         Route::match(['post', 'get'], '/tambah', [\App\Http\Controllers\Admin\SatuanKerjaController::class, 'add'])->name('unit.add');
