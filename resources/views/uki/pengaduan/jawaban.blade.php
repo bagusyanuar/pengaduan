@@ -66,13 +66,13 @@
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-answer" role="tabpanel"
                                  aria-labelledby="pills-answer-tab">
-                                @if($waiting_answer != null)
-                                    <object data="{{ asset('/assets/answers/abc.pdf') }}" width="100%" height="500" type="application/pdf" onerror="alert('pdf source not found!')">
+                                @if($data->answer != null)
+                                    <object data="{{ asset($data->answer->file) }}" width="100%" height="500"
+                                            type="application/pdf" onerror="alert('pdf source not found!')">
                                     </object>
-
-                                    {{--                                    <embed src="{{ asset('/assets/answers/abc.pdf') }}" type="application/pdf"   height="500" width="100%" class="responsive">--}}
                                     <form method="post">
                                         @csrf
+{{--                                        <input type="hidden" value="{{ $data->answer->id }}" name="id">--}}
                                         <div class="form-group w-100 mb-2">
                                             <label for="status" class="form-label f14">Status</label>
                                             <select class="form-control f14" id="status" name="status">
@@ -95,6 +95,10 @@
                                             </button>
                                         </div>
                                     </form>
+                                @else
+                                    <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
+                                        <p class="font-weight-bold">Belum Ada Lampiran Jawaban</p>
+                                    </div>
                                 @endif
                             </div>
                             <div class="tab-pane fade show" id="pills-history" role="tabpanel"

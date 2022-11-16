@@ -10,6 +10,9 @@ use App\Models\Complain;
 use App\Models\PPK;
 use App\Models\SatuanKerja;
 use App\Models\UserUki;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
@@ -41,11 +44,6 @@ class ComplainController extends CustomController
         return view('admin.pengaduan.finished');
     }
 
-    public function index_uki()
-    {
-        return view('uki.pengaduan.index');
-    }
-
     public function complain_data()
     {
         try {
@@ -69,6 +67,40 @@ class ComplainController extends CustomController
         }
     }
 
+    public function send_process($id)
+    {
+        try {
+            $complain = Complain::with('legal')->where('status', '=', 0)
+                ->where('id', '=', $id)
+                ->first();
+            if (!$complain) {
+                return $this->jsonResponse('Data Tidak Di Temukan...', 202);
+            }
+            $complain->update([
+                'status' => 1
+            ]);
+            $users_uki = UserUki::with('user')->get();
+            foreach ($users_uki as $user_uki) {
+                $target = $user_uki->user->email;
+                Mail::to($target)->send(new NewComplain($complain));
+            }
+            return $this->jsonResponse('success', 200);
+        } catch (\Exception $e) {
+            return $this->jsonResponse('terjadi kesalahan ' . $e->getMessage(), 500);
+        }
+    }
+
+    //uki part
+    public function index_uki()
+    {
+        return view('uki.pengaduan.index');
+    }
+
+    public function on_process_uki()
+    {
+        return view('uki.pengaduan.on-process');
+    }
+
     public function complain_data_uki()
     {
         try {
@@ -89,7 +121,7 @@ class ComplainController extends CustomController
             if ($this->field('q') === 'waiting') {
                 $query->whereNull('satker_id');
             }
-            $data = $query->get();
+            $data = $query->get()->append(['HasAnswer']);
             return $this->basicDataTables($data);
         } catch (\Exception $e) {
             return $this->basicDataTables([]);
@@ -100,29 +132,18 @@ class ComplainController extends CustomController
     {
         Session::put('redirect', URL::current());
         $ticket_id = str_replace('-', '/', $ticket);
-        $data = Complain::with('legal')->where('ticket_id', '=', $ticket_id)
+        $data = Complain::with(['legal', 'unit', 'ppk'])->where('ticket_id', '=', $ticket_id)
             ->firstOrFail();
+        if ($this->request->method() === 'POST') {
+            return $this->send_disposition($data->id);
+        }
         $unit = SatuanKerja::all();
         $ppk = PPK::with('unit')->get();
         Session::forget('redirect');
         return view('uki.pengaduan.detail')->with(['data' => $data, 'unit' => $unit, 'ppk' => $ppk]);
     }
 
-    public function complain_answers_by_ticket($ticket)
-    {
-        $ticket_id = str_replace('-', '/', $ticket);
-        $data = Complain::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
-            return $q->orderBy('date_upload', 'DESC');
-        }])->where('ticket_id', '=', $ticket_id)
-            ->firstOrFail();
-
-        $waiting_answer = $data->answers->firstWhere('status', 0);
-//        dd($waiting_answer);
-        return view('uki.pengaduan.jawaban')->with(['data' => $data, 'waiting_answer' => $waiting_answer]);
-    }
-
-
-    public function send_disposition($id)
+    private function send_disposition($id)
     {
         $data = Complain::with('legal')
             ->findOrFail($id);
@@ -148,37 +169,50 @@ class ComplainController extends CustomController
             ];
             $data->update($data_update);
         }
-        return redirect()->route('complain.index.uki')->with('success', 'Berhasil Melakukan Konfirmasi Saran / Pengaduan...');;
+        return redirect()->back()->with('success', 'Berhasil Melakukan Konfirmasi Saran / Pengaduan...');
     }
 
-    public function send_process($id)
+    public function complain_answers_by_ticket($ticket)
     {
-        try {
-            $complain = Complain::with('legal')->where('status', '=', 0)
-                ->where('id', '=', $id)
-                ->first();
-            if (!$complain) {
-                return $this->jsonResponse('Data Tidak Di Temukan...', 202);
-            }
-            $complain->update([
-                'status' => 1
-            ]);
-            $users_uki = UserUki::with('user')->get();
-            foreach ($users_uki as $user_uki) {
-                $target = $user_uki->user->email;
-                Mail::to($target)->send(new NewComplain($complain));
-            }
-            return $this->jsonResponse('success', 200);
-        } catch (\Exception $e) {
-            return $this->jsonResponse('terjadi kesalahan ' . $e->getMessage(), 500);
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Complain::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
+            return $q->orderBy('date_upload', 'DESC');
+        }, 'answer'])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail();
+
+        if ($this->request->method() === 'POST') {
+            return $this->response_answer($data);
         }
+        return view('uki.pengaduan.jawaban')->with(['data' => $data]);
     }
-//    public function set_to_finish()
-//    {
-//        try {
-//
-//        }catch (\Exception $e) {
-//
-//        }
-//    }
+
+    private function response_answer($complain)
+    {
+        DB::beginTransaction();
+        try {
+            $status = $this->postField('status');
+            $data = [
+                'date_answer' => Carbon::now()->format('Y-m-d'),
+                'status' => $status === '1' ? 9 : 6,
+                'author_answer' => Auth::id(),
+                'description' => 'Accepted'
+            ];
+            if ($status === '0') {
+                $data['description'] = $this->postField('description');
+            }
+            $complain->answer->update($data);
+            if ($status === '1') {
+                $complain->update([
+                    'status' => 7
+                ]);
+            }
+            DB::commit();
+            return redirect()->route('complain.process.uki')->with('success', 'Berhasil Melakukan Konfirmasi Jawaban Saran / Pengaduan...');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('failed', 'Terjadi Kesalahan Server...');
+        }
+
+    }
+
 }

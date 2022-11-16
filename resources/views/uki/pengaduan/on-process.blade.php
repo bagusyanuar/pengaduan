@@ -12,7 +12,7 @@
                 <li class="breadcrumb-item">
                     <a href="{{ route('dashboard.uki') }}">Dashboard</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">Saran / Pengaduan
+                <li class="breadcrumb-item active" aria-current="page">Saran / Pengaduan Sedang Di Proses
                 </li>
             </ol>
         </div>
@@ -21,7 +21,7 @@
         <div class="card card-outline card-warning">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0">Data Saran / Pengaduan</p>
+                    <p class="mb-0">Data Saran / Pengaduan Sedang Di Proses</p>
                 </div>
             </div>
             <div class="card-body">
@@ -34,6 +34,7 @@
                         <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
                         <th class="f14" width="15%">Legalitas</th>
+                        <th class="f14" width="10%">Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -49,7 +50,7 @@
     <script type="text/javascript">
         var table;
         var prefix_url = '{{ env('PREFIX_URL') }}';
-        var query = 'waiting';
+        var query = 'process';
 
         function reload() {
             table.ajax.reload();
@@ -76,28 +77,15 @@
                     '<div class="col-lg-9 col-md-8 col-sm-6">: <a href="' + prefix_url + tmp_ad_art + '" target="_blank">Preview</a></div>' +
                     '</div>';
             }
-
-            let action = '';
             let ticket_id = d['ticket_id'].replaceAll('/', '-');
-            if (query === 'waiting') {
-                let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/info';
-                action = '<div class="row mb-2 mt-2">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                    '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-info-circle mr-2"></i>Detail</a>' +
-                    '</div>' +
-                    '</div>';
-            } else if (query === 'process') {
-                let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
-                action = '<div class="row mb-2 mt-2">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                    '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-comments mr-2"></i>Jawaban</a>' +
-                    '</div>' +
-                    '</div>';
-            }
+            let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
+            let action = '<div class="row mb-2 mt-2">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">' +
+                '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-comments mr-2"></i>Lihat Jawaban</a>' +
+                '</div>' +
+                '</div>';
 
             let disposition = '';
             if (query !== 'waiting') {
@@ -198,11 +186,22 @@
                 {data: 'name'},
                 {
                     data: null, render: function (data, type, row, meta) {
+                        console.log(data);
                         let legal = 'Individu';
                         if (data['type'] === 1) {
                             legal = 'Badan Hukum';
                         }
                         return legal;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let status = data['HasAnswer'];
+                        let el = '<div class="pills-warning text-center">Menunggu Jawaban</div>';
+                        if (status) {
+                            el = '<div class="pills-success text-center">Di Jawab</div>';
+                        }
+                        return el;
                     }
                 },
             ], [], function (d) {

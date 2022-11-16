@@ -177,12 +177,44 @@
                                     <p>Dashboard</p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="{{ route('complain.index.uki') }}"
-                                   class="nav-link {{ request()->is('admin-uki/pengaduan*') ? 'active' : '' }}">
-                                    <i class="fa fa-exclamation nav-icon" aria-hidden="true"></i>
-                                    <p>Pengaduan</p>
+                            <li class="nav-item has-treeview {{ request()->is('admin-uki/pengaduan*') ? 'menu-open' : ''}}">
+                                <a href="#" class="nav-link {{ request()->is('admin-uki/pengaduan*') ? 'active' : ''}}">
+                                    <i class="nav-icon fa fa-exclamation"></i>
+                                    <p>
+                                        Pengaduan
+                                        <i class="right fa fa-angle-down"></i>
+                                    </p>
                                 </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{{ route('complain.index.uki') }}"
+                                           class="nav-link {{ request()->is('admin-uki/pengaduan') ? 'active' : ''}}">
+                                            <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                            <p>Menunggu</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('complain.process.uki') }}"
+                                           class="nav-link {{ request()->is('admin-uki/pengaduan/proses') ? 'active' : ''}}">
+                                            <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                            <p>Sedang Di Proses</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('complain.answered') }}"
+                                           class="nav-link {{ request()->is('admin/pengaduan/jawab') ? 'active' : ''}}">
+                                            <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                            <p>Terjawab</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('complain.finished') }}"
+                                           class="nav-link {{ request()->is('admin/pengaduan/selesai') ? 'active' : ''}}">
+                                            <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                            <p>Selesai</p>
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
                     @endif
                 </nav>

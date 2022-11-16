@@ -45,4 +45,15 @@ class Complain extends Model
     {
         return $this->hasMany(ComplainAnswer::class, 'complain_id');
     }
+
+    public function getHasAnswerAttribute()
+    {
+        return $this->hasOne(ComplainAnswer::class, 'complain_id')
+            ->where('status', '=', 0)->first() !== null ? true : false;
+    }
+
+    public function answer()
+    {
+        return $this->hasOne(ComplainAnswer::class, 'complain_id')->where('status', '=', 0);
+    }
 }

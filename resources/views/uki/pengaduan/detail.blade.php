@@ -96,65 +96,85 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form method="post" id="form-disposition" action="{{ route('complain.data.send.disposition', ['id' => $data->id]) }}">
-                            @csrf
-                            <div class="form-group w-100 mb-2">
-                                <label for="status" class="form-label f14">Status</label>
-                                <select class="form-control f14" id="status" name="status">
-                                    <option class="f14" value="1">Setuju</option>
-                                    <option class="f14" value="0">Tolak</option>
-                                </select>
-                            </div>
-                            <div class="d-block" id="accepted">
+                        @if($data->satker_id == null)
+                            {{--                            <form method="post" id="form-disposition"--}}
+                            {{--                                  action="{{ route('complain.data.send.disposition', ['id' => $data->id]) }}">--}}
+                            <form method="post" id="form-disposition">
+                                @csrf
                                 <div class="form-group w-100 mb-2">
-                                    <label for="target_satker" class="form-label f14 d-block">Disposisi</label>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="target" id="target_satker"
-                                               value="0" checked>
-                                        <label class="form-check-label" for="target_satker">Satuan Kerja</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="target" id="target_ppk"
-                                               value="1">
-                                        <label class="form-check-label" for="target_ppk">PPK</label>
-                                    </div>
-                                </div>
-                                <div class="form-group w-100 mb-2 d-block" id="panel-unit">
-                                    <label for="unit" class="f14">Satuan Kerja</label>
-                                    <select class="select2 f14" name="unit" id="unit" style="width: 100%;">
-                                        @foreach($unit as $v)
-                                            <option value="{{ $v->id }}"
-                                                    class="f14">{{ $v->name }}</option>
-                                        @endforeach
+                                    <label for="status" class="form-label f14">Status</label>
+                                    <select class="form-control f14" id="status" name="status">
+                                        <option class="f14" value="1">Setuju</option>
+                                        <option class="f14" value="0">Tolak</option>
                                     </select>
                                 </div>
-                                <div class="form-group w-100 mb-2 d-none" id="panel-ppk">
-                                    <label for="ppk" class="f14">PPK</label>
-                                    <select class="select2 f14" name="ppk" id="ppk" style="width: 100%;">
-                                        @foreach($ppk as $v)
-                                            <option value="{{ $v->id }}"
-                                                    class="f14">{{ $v->name }}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="d-block" id="accepted">
+                                    <div class="form-group w-100 mb-2">
+                                        <label for="target_satker" class="form-label f14 d-block">Disposisi</label>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="target"
+                                                   id="target_satker"
+                                                   value="0" checked>
+                                            <label class="form-check-label" for="target_satker">Satuan Kerja</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="target" id="target_ppk"
+                                                   value="1">
+                                            <label class="form-check-label" for="target_ppk">PPK</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group w-100 mb-2 d-block" id="panel-unit">
+                                        <label for="unit" class="f14">Satuan Kerja</label>
+                                        <select class="select2 f14" name="unit" id="unit" style="width: 100%;">
+                                            @foreach($unit as $v)
+                                                <option value="{{ $v->id }}"
+                                                        class="f14">{{ $v->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group w-100 mb-2 d-none" id="panel-ppk">
+                                        <label for="ppk" class="f14">PPK</label>
+                                        <select class="select2 f14" name="ppk" id="ppk" style="width: 100%;">
+                                            @foreach($ppk as $v)
+                                                <option value="{{ $v->id }}"
+                                                        class="f14">{{ $v->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="d-none" id="denied">
-                                <div class="w-100 mb-2">
-                                    <label for="description" class="form-label f14">Deskripsi Penolakan</label>
-                                    <textarea rows="3" class="form-control f14" id="description"
-                                              placeholder="Deskripsi Penolakan"
-                                              name="description"></textarea>
+                                <div class="d-none" id="denied">
+                                    <div class="w-100 mb-2">
+                                        <label for="description" class="form-label f14">Deskripsi Penolakan</label>
+                                        <textarea rows="3" class="form-control f14" id="description"
+                                                  placeholder="Deskripsi Penolakan"
+                                                  name="description"></textarea>
+                                    </div>
                                 </div>
-                            </div>
 
+                                <hr>
+                                <div class="text-right">
+                                    <button type="submit" class="main-button"><i class="fa fa-check mr-2"></i>Simpan
+                                    </button>
+                                </div>
+                            </form>
+                        @else
+                            <div class="text-center">
+                                <p class="font-weight-bold">
+                                    Data Saran / Pengaduan Sudah Di Teruskan Kepada
+                                    <br>
+                                    @if($data->target == 1)
+                                        <span class="font-weight-bold">{{ $data->ppk->name }}</span>
+                                    @else
+                                        <span class="font-weight-bold">{{ $data->unit->name }}</span>
+                                    @endif
+                                </p>
+                            </div>
                             <hr>
                             <div class="text-right">
-                                <button type="submit" class="main-button"><i class="fa fa-check mr-2"></i>Simpan
-                                </button>
+                                <a href="{{ route('complain.answers.uki.by.ticket', ['ticket' => str_replace('/', '-', $data->ticket_id)]) }}"
+                                   class="main-button"><i class="fa fa-comments mr-2"></i>Lihat Jawaban</a>
                             </div>
-
-
-                        </form>
+                        @endif
                     </div>
                 </div>
             </div>

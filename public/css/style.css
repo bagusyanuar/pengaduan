@@ -302,6 +302,14 @@ body {
     border-radius: 5px;
 }
 
+.pills-warning {
+    background-color: var(--warningColor);
+    padding: 5px 10px;
+    font-size: 12px;
+    color: whitesmoke;
+    border-radius: 5px;
+}
+
 /*admin lte*/
 .navbar-link-item {
     text-decoration: none;
