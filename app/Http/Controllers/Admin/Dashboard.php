@@ -8,6 +8,7 @@ use App\Helper\CustomController;
 use App\Models\Complain;
 use App\Models\ComplainAnswer;
 use App\Models\PPK;
+use Illuminate\View\View;
 
 class Dashboard extends CustomController
 {
@@ -31,6 +32,11 @@ class Dashboard extends CustomController
     public function index_uki()
     {
         return view('uki.dashboard-uki');
+    }
+
+    public function index_satker()
+    {
+        return \view('satker.dashboard');
     }
 
     public function complain_data()

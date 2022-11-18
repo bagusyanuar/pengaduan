@@ -14,7 +14,7 @@ class AddSatkerNPpkComplain extends Migration
     public function up()
     {
         Schema::table('complains', function (Blueprint $table) {
-            $table->smallInteger('target')->after('status')->default(0)->comment('0:satker, 1:ppk');
+            $table->smallInteger('target')->after('status')->nullable()->comment('0:satker, 1:ppk');
             $table->bigInteger('satker_id')->unsigned()->nullable()->after('target');
             $table->bigInteger('ppk_id')->unsigned()->nullable()->after('satker_id');
             $table->foreign('satker_id')->references('id')->on('satker');
@@ -34,6 +34,7 @@ class AddSatkerNPpkComplain extends Migration
             $table->dropForeign('complains_ppk_id_foreign');
             $table->dropColumn('satker_id');
             $table->dropColumn('ppk_id');
+            $table->dropColumn('target');
         });
     }
 }

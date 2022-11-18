@@ -34,6 +34,13 @@ class AuthController extends CustomController
                     }
                     return redirect('/admin-uki');
                 }
+
+                if (\auth()->user()->role === 'satker') {
+                    if (Session::get('redirect')) {
+                        return redirect(Session::get('redirect'));
+                    }
+                    return redirect()->route('dashboard.satker');
+                }
             }
             return redirect()->back()->with('failed', 'Periksa Kembali Username dan Password Anda');
         }
@@ -43,6 +50,6 @@ class AuthController extends CustomController
     public function logout()
     {
         Auth::logout();
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

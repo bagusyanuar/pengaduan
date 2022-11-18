@@ -9,6 +9,7 @@ use App\Mail\NewComplain;
 use App\Models\Complain;
 use App\Models\PPK;
 use App\Models\SatuanKerja;
+use App\Models\UserSatuanKerja;
 use App\Models\UserUki;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -215,4 +216,44 @@ class ComplainController extends CustomController
 
     }
 
+
+    //satker part
+    public function index_satker()
+    {
+        return view('satker.pengaduan.index');
+    }
+
+    public function complain_data_satker()
+    {
+
+        try {
+            $user_satker = UserSatuanKerja::where('user_id', '=', Auth::id())->first();
+            if(!$user_satker) {
+                return $this->basicDataTables([]);
+            }
+            $status = 1;
+//            if ($this->field('q') === 'answered') {
+//                $status = 6;
+//            }
+            $query = Complain::with('legal')
+                ->where('status', '=', $status)
+                ->where('target', '=', 0);
+//            if ($this->field('q') === 'answered') {
+//                $query->orWhere('status', '=', 7);
+//            }
+//
+//            if ($this->field('q') === 'process') {
+//                $query->whereNotNull('satker_id');
+//            }
+
+            if ($this->field('q') === 'waiting') {
+                $query->where('satker_id', '=', $user_satker->satker_id)
+                    ->whereNull('ppk_id');
+            }
+            $data = $query->get()->append(['HasAnswer']);
+            return $this->basicDataTables($data);
+        } catch (\Exception $e) {
+            return $this->basicDataTables([]);
+        }
+    }
 }
