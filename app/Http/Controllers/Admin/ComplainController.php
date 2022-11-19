@@ -112,7 +112,7 @@ class ComplainController extends CustomController
             if ($this->field('q') === 'answered') {
                 $status = 6;
             }
-            $query = Complain::with('legal')
+            $query = Complain::with(['legal', 'unit', 'ppk'])
                 ->where('status', '=', $status);
             if ($this->field('q') === 'answered') {
                 $query->orWhere('status', '=', 7);

@@ -14,14 +14,17 @@
           rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="{{ asset('/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('/css/sweetalert2.css') }}" rel="stylesheet">
+    <script src="{{ asset('/js/sweetalert2.min.js')}}"></script>
     <title>Pengaduan</title>
+    @yield('css')
 </head>
 <body>
 <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light custom-nav shadow-sm">
     <a class="navbar-brand" href="/">
         <div class="d-flex align-items-center">
             <img src="{{ asset('img/logo2.png') }}" height="60" class="mr-2">
-           
+
         </div>
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -68,7 +71,7 @@
                             <a href="#" class="main-button-outline">Permintaan Informasi</a>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -109,4 +112,5 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 </body>
+@yield('js')
 </html>

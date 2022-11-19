@@ -200,20 +200,6 @@
                                         <p>Sedang Di Proses</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('complain.answered') }}"
-                                       class="nav-link {{ request()->is('admin/pengaduan/jawab') ? 'active' : ''}}">
-                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
-                                        <p>Terjawab</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('complain.finished') }}"
-                                       class="nav-link {{ request()->is('admin/pengaduan/selesai') ? 'active' : ''}}">
-                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
-                                        <p>Selesai</p>
-                                    </a>
-                                </li>
                             </ul>
                         </li>
                     @endif

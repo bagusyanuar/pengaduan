@@ -64,6 +64,12 @@ return [
             'url' => env('AWS_URL'),
             'endpoint' => env('AWS_ENDPOINT'),
         ],
+        'legal' => [
+            'driver' => 'local',
+            'root' => public_path() . '/assets/legals',
+            'url' => env('APP_URL') . '/public',
+            'visibility' => 'public',
+        ],
         'answers' => [
             'driver' => 'local',
             'root' => public_path() . '/assets/answers',

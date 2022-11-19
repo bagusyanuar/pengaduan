@@ -87,16 +87,20 @@
                 '</div>' +
                 '</div>';
 
-            let disposition = '';
-            if (query !== 'waiting') {
-                disposition = '<div class="row">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '<p class="mb-0">Disposisi</p>' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">: -</div>' +
-                    '</div>';
+            let target_disposition = '-';
+            if (d['target'] !== null) {
+                if (d['target'] === 1) {
+                    target_disposition = d['ppk']['name'];
+                } else {
+                    target_disposition = d['unit']['name'];
+                }
             }
-
+            let disposition = '<div class="row">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Disposisi</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + target_disposition + '</div>' +
+                '</div>';
 
             return '<div>' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
