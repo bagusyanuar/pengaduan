@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helper\CustomController;
 use App\Mail\NewComplain;
 use App\Models\Complain;
+use App\Models\ComplainAnswer;
 use App\Models\PPK;
 use App\Models\SatuanKerja;
 use App\Models\UserSatuanKerja;
@@ -14,8 +15,10 @@ use App\Models\UserUki;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 
 class ComplainController extends CustomController
@@ -228,7 +231,7 @@ class ComplainController extends CustomController
 
         try {
             $user_satker = UserSatuanKerja::where('user_id', '=', Auth::id())->first();
-            if(!$user_satker) {
+            if (!$user_satker) {
                 return $this->basicDataTables([]);
             }
             $status = 1;
@@ -250,10 +253,49 @@ class ComplainController extends CustomController
                 $query->where('satker_id', '=', $user_satker->satker_id)
                     ->whereNull('ppk_id');
             }
-            $data = $query->get()->append(['HasAnswer']);
+            $data = $query->get()->append(['HasAnswer', 'HasApprovedAnswer']);
             return $this->basicDataTables($data);
         } catch (\Exception $e) {
             return $this->basicDataTables([]);
+        }
+    }
+
+    public function data_detail_by_ticket_satker($ticket)
+    {
+        Session::put('redirect', URL::current());
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Complain::with(['legal', 'unit', 'ppk'])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail()->append(['HasAnswer', 'HasApprovedAnswer']);
+        if ($this->request->method() === 'POST') {
+            return $this->send_answer($data->id);
+        }
+        Session::forget('redirect');
+        return view('satker.pengaduan.detail')->with(['data' => $data]);
+    }
+
+    private function send_answer($id)
+    {
+        try {
+            $data_request = [
+                'complain_id' => $id,
+                'date_upload' => Carbon::now()->format('Y-m-d'),
+                'status' => 0,
+                'description' => '-',
+                'author_upload' => Auth::id()
+            ];
+            if ($this->request->hasFile('answer')) {
+                $file = $this->request->file('answer');
+                $name = $this->uuidGenerator() . '.' . $file->getClientOriginalExtension();
+                $file_name = '/assets/answers/' . $name;
+                Storage::disk('answers')->put($name, File::get($file));
+                $data_request['file'] = $file_name;
+            } else {
+                return redirect()->back()->with('failed', 'File Jawaban Belum Terlampir...');
+            }
+            ComplainAnswer::create($data_request);
+            return redirect()->back()->with('success', 'Berhasil Melakukan Konfirmasi Saran / Pengaduan...');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('failed', 'terjadi kesalahan server');
         }
     }
 }

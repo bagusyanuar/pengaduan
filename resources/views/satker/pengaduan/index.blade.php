@@ -33,7 +33,8 @@
                         <th class="f14" width="12%">Tanggal</th>
                         <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
-                        <th class="f14" width="15%">Legalitas</th>
+                        <th class="f14" width="10%">Legalitas</th>
+                        <th class="f14" width="15%">Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -77,38 +78,16 @@
                     '</div>';
             }
 
-            let action = '';
+
             let ticket_id = d['ticket_id'].replaceAll('/', '-');
-            if (query === 'waiting') {
-                let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/info';
-                action = '<div class="row mb-2 mt-2">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                    '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-info-circle mr-2"></i>Detail</a>' +
-                    '</div>' +
-                    '</div>';
-            } else if (query === 'process') {
-                let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
-                action = '<div class="row mb-2 mt-2">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                    '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-comments mr-2"></i>Jawaban</a>' +
-                    '</div>' +
-                    '</div>';
-            }
-
-            let disposition = '';
-            if (query !== 'waiting') {
-                disposition = '<div class="row">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '<p class="mb-0">Disposisi</p>' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">: -</div>' +
-                    '</div>';
-            }
-
+            let url = prefix_url + '/admin-satker/pengaduan/' + ticket_id + '/info';
+            let action = '<div class="row mb-2 mt-2">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">' +
+                '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-info-circle mr-2"></i>Detail</a>' +
+                '</div>' +
+                '</div>';
 
             return '<div>' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
@@ -130,7 +109,7 @@
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">Alamat</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['address'] + '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['address'] + '</div></div>' +
                 '</div>' +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -138,12 +117,11 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
-                disposition +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p>Isi Saran / Pengaduan</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6"><span>:</span><p class="text-justify mb-0 d-inline"> ' + d['complain'] + '</p></div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify mb-0">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
                 action +
                 '</div>';
@@ -204,6 +182,19 @@
                             legal = 'Badan Hukum';
                         }
                         return legal;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let hasAnswer = data['HasAnswer'];
+                        let hasApprovedAnswer = data['HasApprovedAnswer'];
+                        let status = '<div class="pills-warning text-center">Menunggu Jawaban</div>';
+                        if (hasAnswer && !hasApprovedAnswer) {
+                            status = '<div class="pills-info text-center">Menunggu Persetujuan</div>';
+                        } else if (hasApprovedAnswer) {
+                            status = '<div class="pills-success text-center">Disetujui</div>';
+                        }
+                        return status;
                     }
                 },
             ], [], function (d) {

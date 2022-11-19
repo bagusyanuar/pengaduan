@@ -239,30 +239,9 @@
                                     <a href="{{ route('complain.index.satker') }}"
                                        class="nav-link {{ request()->is('admin-satker/pengaduan') ? 'active' : ''}}">
                                         <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
-                                        <p>Menunggu</p>
+                                        <p>Data</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('complain.process.satker') }}"
-                                       class="nav-link {{ request()->is('admin-uki/pengaduan/proses') ? 'active' : ''}}">
-                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
-                                        <p>Sedang Di Proses</p>
-                                    </a>
-                                </li>
-{{--                                <li class="nav-item">--}}
-{{--                                    <a href="{{ route('complain.answered') }}"--}}
-{{--                                       class="nav-link {{ request()->is('admin/pengaduan/jawab') ? 'active' : ''}}">--}}
-{{--                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>--}}
-{{--                                        <p>Terjawab</p>--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
-{{--                                <li class="nav-item">--}}
-{{--                                    <a href="{{ route('complain.finished') }}"--}}
-{{--                                       class="nav-link {{ request()->is('admin/pengaduan/selesai') ? 'active' : ''}}">--}}
-{{--                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>--}}
-{{--                                        <p>Selesai</p>--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
                             </ul>
                         </li>
                     @endif

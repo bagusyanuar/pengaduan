@@ -116,7 +116,7 @@ Route::group(['prefix' => 'admin-satker', 'middleware' => 'auth:web'], function 
         Route::get('/', [\App\Http\Controllers\Admin\ComplainController::class, 'index_satker'])->name('complain.index.satker');
         Route::get('/proses', [\App\Http\Controllers\Admin\ComplainController::class, 'on_process_uki'])->name('complain.process.satker');
         Route::get('/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_data_satker'])->name('complain.data.satker');
-        Route::match(['post', 'get'],'/{ticket}/info', [\App\Http\Controllers\Admin\ComplainController::class, 'data_detail_by_ticket'])->name('complain.data.uki.by.ticket');
+        Route::match(['post', 'get'],'/{ticket}/info', [\App\Http\Controllers\Admin\ComplainController::class, 'data_detail_by_ticket_satker'])->name('complain.data.satker.by.ticket');
         Route::match(['post', 'get'],'/{ticket}/jawaban', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_by_ticket'])->name('complain.answers.uki.by.ticket');
 //        Route::post('/{id}/disposition', [\App\Http\Controllers\Admin\ComplainController::class, 'send_disposition'])->name('complain.data.send.disposition');
     });

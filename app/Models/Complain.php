@@ -56,4 +56,10 @@ class Complain extends Model
     {
         return $this->hasOne(ComplainAnswer::class, 'complain_id')->where('status', '=', 0);
     }
+
+    public function getHasApprovedAnswerAttribute()
+    {
+        return $this->hasOne(ComplainAnswer::class, 'complain_id')
+            ->where('status', '=', 9)->first() !== null ? true : false;
+    }
 }
