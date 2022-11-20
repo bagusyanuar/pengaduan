@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helper\CustomController;
 use App\Models\Complain;
 use App\Models\ComplainAnswer;
+use App\Models\Information;
 use App\Models\PPK;
 use Illuminate\View\View;
 
@@ -19,14 +20,26 @@ class Dashboard extends CustomController
 
     public function index()
     {
-        $data = Complain::with('legal')->orderBy('created_at', 'DESC')->limit(10)->get();
-        $answers = Complain::with('answers')
-            ->whereHas('answers', function ($q) {
-                return $q->where('status', '=', 9);
-            })
+        $data = Complain::with('answers')
+            ->where('status', '=', 7)
+//            ->whereHas('answers', function ($q) {
+//                return $q->where('status', '=', 9);
+//            })
             ->orderBy('date', 'ASC')
             ->get();
-        return view('admin.dashboard')->with(['data' => $data, 'answers' => $answers]);
+        $new_complain = Complain::where('status', '=', 0)->count();
+        $new_information = Information::where('status', '=', 0)->count();
+        return view('admin.dashboard')->with(['data' => $data, 'new_complain' => $new_complain, 'new_information' => $new_information]);
+    }
+
+    public function complain_data()
+    {
+        try {
+            $data = Complain::with('legal')->orderBy('id', 'DESC')->limit(5)->get();
+            return $this->basicDataTables($data);
+        } catch (\Exception $e) {
+            return $this->basicDataTables([]);
+        }
     }
 
     public function index_uki()
@@ -39,13 +52,5 @@ class Dashboard extends CustomController
         return \view('satker.dashboard');
     }
 
-    public function complain_data()
-    {
-        try {
-            $data = Complain::with('legal')->orderBy('id', 'DESC')->limit(10)->get();
-            return $this->basicDataTables($data);
-        } catch (\Exception $e) {
-            return $this->basicDataTables([]);
-        }
-    }
+
 }

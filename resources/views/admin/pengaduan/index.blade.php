@@ -31,9 +31,10 @@
                         <th width="5%" class="text-center f14 no-sort"></th>
                         <th width="5%" class="text-center f14">#</th>
                         <th class="f14" width="12%">Tanggal</th>
-                        <th class="f14" width="25%">No. Ticket</th>
+                        <th class="f14" width="20%">No. Ticket</th>
                         <th class="f14">Nama</th>
-                        <th class="f14" width="15%">Legalitas</th>
+                        <th class="f14 text-center" width="13%">Legalitas</th>
+                        <th class="f14" width="12%"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -136,7 +137,7 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['complain'] + '</div>' +
                 '</div>' +
-                action +
+                // action +
                 '</div>';
         }
 
@@ -184,7 +185,12 @@
                     }
                 },
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
-                {data: 'date'},
+                {
+                    data: 'date', name: 'date', render: function (data, type, row, meta) {
+                        let date = new Date(data);
+                        return date.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+                    }
+                },
                 {data: 'ticket_id'},
                 {data: 'name'},
                 {
@@ -196,21 +202,33 @@
                         return legal;
                     }
                 },
-            ], [], function (d) {
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        return '<a href="#" class="main-button-outline f14 btn-process" data-id="' + data['id'] + '"><i class="fa fa-paper-plane mr-2"></i>Proses</a>';
+                    }
+                },
+            ], [
+                {
+                    targets: '_all',
+                    className: 'f14'
+                },
+                {
+                    targets: [5],
+                    className: 'text-center'
+                }
+            ], function (d) {
                 d.q = 'waiting';
             }, {
                 "scrollX": true,
                 "fnDrawCallback": function (settings) {
                     setExpand();
+                    eventProcess();
                 },
             });
         }
 
-
-        $(document).ready(function () {
-            generateTable();
-            setExpand();
-            $('#table-data tbody').on('click', '.btn-process', function (e) {
+        function eventProcess() {
+            $('.btn-process').on('click',  function (e) {
                 e.preventDefault();
                 let id = this.dataset.id;
                 Swal.fire({
@@ -227,6 +245,29 @@
                     }
                 });
             });
+        }
+
+        $(document).ready(function () {
+            generateTable();
+            setExpand();
+            eventProcess();
+            // $('#table-data tbody').on('click', '.btn-process', function (e) {
+            //     e.preventDefault();
+            //     let id = this.dataset.id;
+            //     Swal.fire({
+            //         title: 'Konfirmasi!',
+            //         text: 'Yakin ingin memproses data pengaduan?',
+            //         icon: 'info',
+            //         showCancelButton: true,
+            //         confirmButtonColor: '#3085d6',
+            //         cancelButtonColor: '#d33',
+            //         confirmButtonText: 'Ya'
+            //     }).then((result) => {
+            //         if (result.value) {
+            //             sendProcess(id);
+            //         }
+            //     });
+            // });
         });
     </script>
 @endsection

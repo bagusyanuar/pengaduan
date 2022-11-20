@@ -10,6 +10,7 @@ use App\Models\LegalComplain;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -67,8 +68,8 @@ class ComplainController extends CustomController
                 'status' => 0,
                 'description' => '-'
             ];
-            Complain::create($data);
-            return redirect()->back()->with('success', 'Berhasil Mengirimkan Saran / Pengaduan...');
+            $complain = Complain::create($data);
+            return redirect()->route('complain.success')->with('success', 'Berhasil Mengirimkan Saran / Pengaduan...')->with('ticket', $complain->ticket_id);
         } catch (\Exception $e) {
             return redirect()->back()->with('failed', 'Terjadi kesalahan server...');
         }
@@ -84,6 +85,8 @@ class ComplainController extends CustomController
                 'legal_phone' => 'required',
                 'legal_address' => 'required',
                 'legal_complain' => 'required',
+                'legal_assignment' => 'required|mimes:pdf',
+                'legal_ad_art' => 'required|mimes:pdf',
             ], [
                 'legal_name.required' => 'Kolom nama wajib di isi',
                 'legal_email.required' => 'Kolom email wajib di isi',
@@ -91,6 +94,10 @@ class ComplainController extends CustomController
                 'legal_phone.required' => 'Kolom No. Whatsapp wajib di isi',
                 'legal_address.required' => 'Kolom alamat wajib di isi',
                 'legal_complain.required' => 'Kolom saran / pengaduan wajib di isi',
+                'legal_assignment.required' => 'Surat kuasa wajib di lampirkan',
+                'legal_ad_art.required' => 'AD ADRT wajib di lampirkan',
+                'legal_assignment.mimes' => 'File surat kuasa harus berupa file pdf',
+                'legal_ad_art.mimes' => 'File AD ADRT harus berupa file pdf',
             ]);
             if ($validator->fails()) {
                 return redirect()->back()->withInput(request()->input())->withErrors($validator->errors())->with('legal', '');
@@ -153,5 +160,13 @@ class ComplainController extends CustomController
             $formatted_number = sprintf('%03d', ($suffix_code + 1));
         }
         return $formatted_number . '/PPID/BM/PUPR/SP/' . $now;
+    }
+
+    public function success()
+    {
+//        if (!Session::has('ticket')) {
+//            return redirect()->route('home');
+//        }
+        return view('complain-succes');
     }
 }

@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
           rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
+    <link type="text/css" href="{{ asset('/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/sweetalert2.css') }}" rel="stylesheet">
     <script src="{{ asset('/js/sweetalert2.min.js')}}"></script>

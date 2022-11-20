@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Information extends Model
 {
     use HasFactory;
-	
+
 	protected $table = 'information';
     protected $fillable = [
         'ticket_id',
         'date',
-		'card_id'
+		'card_id',
         'name',
         'address',
         'job',

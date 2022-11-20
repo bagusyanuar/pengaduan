@@ -68,6 +68,7 @@
                                 <p>Dashboard</p>
                             </a>
                         </li>
+
                         <li class="nav-item has-treeview {{ request()->is('admin/users*') ? 'menu-open' : ''}}">
                             <a href="#" class="nav-link {{ request()->is('admin/users*') ? 'active' : ''}}">
                                 <i class="nav-icon fa fa-users"></i>
@@ -107,6 +108,7 @@
                                 </li>
                             </ul>
                         </li>
+
                         <li class="nav-item">
                             <a href="{{ route('unit.index') }}"
                                class="nav-link {{ request()->is('admin/satker*') ? 'active' : ''}}">
@@ -114,6 +116,7 @@
                                 <p>Satuan Kerja</p>
                             </a>
                         </li>
+
                         <li class="nav-item">
                             <a href="{{ route('ppk.index') }}"
                                class="nav-link {{ request()->is('admin/ppk*') ? 'active' : '' }}">

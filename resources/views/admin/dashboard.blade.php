@@ -11,19 +11,19 @@
         <div class="col-lg-3 col-md-6 col-sm-12">
             <div class="small-box bg-danger">
                 <div class="inner">
-                    <h3>20</h3>
+                    <h3>{{ $new_complain }}</h3>
                     <p>Pengaduan Baru</p>
                 </div>
                 <div class="icon">
                     <i class="fa fa-exclamation"></i>
                 </div>
-                <a href="#" class="small-box-footer">Lihat lebih <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{{ route('complain.index') }}" class="small-box-footer">Lihat lebih <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-12">
             <div class="small-box bg-info">
                 <div class="inner">
-                    <h3>15</h3>
+                    <h3>{{ $new_information }}</h3>
                     <p>Permohonan Informasi Baru</p>
                 </div>
                 <div class="icon">
@@ -38,7 +38,7 @@
             <div class="card card-outline card-warning mt-3">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <p class="mb-0">Data Pengaduan</p>
+                        <p class="mb-0 font-weight-bold">Data Pengaduan</p>
                     </div>
                 </div>
                 <div class="card-body">
@@ -64,25 +64,26 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <p class="mb-0">Pengaduan Di Jawab</p>
+                        <a href="{{ route('complain.answered') }}" class="main-button-outline f12">Lihat Lebih <i class="fa fa-arrow-circle-right ml-2"></i></a>
                     </div>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th scope="col" width="10%">#</th>
-                            <th scope="col" width="75%">No. Tiket</th>
-                            <th scope="col" width="15%" class="text-center">Aksi</th>
+                            <th scope="col" width="10%" class="f14">#</th>
+                            <th scope="col" width="75%" class="f14">No. Tiket</th>
+                            <th scope="col" width="15%" class="text-center f14">Aksi</th>
                         </tr>
                         </thead>
                         <tbody>
-                        @forelse($answers as $answer)
+                        @forelse($data as $v)
                             <tr>
-                                <th scope="row">{{ $loop->index + 1 }}</th>
-                                <td>{{ $answer->ticket_id }}</td>
-                                <td class="text-center">
-                                    <a href="#" data-ticket="{{ $answer->ticket_id }}"
-                                       data-contact="{{ $answer->phone }}" class="wa-send"><i
+                                <th scope="row" class="f14">{{ $loop->index + 1 }}</th>
+                                <td class="f14 font-weight-bold">{{ $v->ticket_id }}</td>
+                                <td class="text-center f14">
+                                    <a href="#" data-ticket="{{ $v->ticket_id }}"
+                                       data-contact="{{ $v->phone }}" class="wa-send"><i
                                             class="fa fa-whatsapp"></i></a>
                                 </td>
                             </tr>
@@ -128,18 +129,18 @@
 
 
             return '<div>' +
-                '<p class="font-weight-bold">Informasi Saran / Pengaduan</p>' +
+                '<p class="font-weight-bold f14">Informasi Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p class="mb-0">Jenis Pengaduan</p>' +
+                '<p class="mb-0 f14">Jenis Pengaduan</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + type + '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6 f14">: ' + type + '</div>' +
                 '</div>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p class="mb-0">No. Whatsapp</p>' +
+                '<p class="mb-0 f14">No. Whatsapp</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['phone'] + '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6 f14">: ' + d['phone'] + '</div>' +
                 '</div>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -211,16 +212,19 @@
                 // {data: 'phone'},
                 {
                     data: null, render: function (data, type, row, meta) {
-                        let status = 'menunggu';
+                        let status = '<div class="pills-grey text-center">Menunggu</div>';
                         switch (data['status']) {
                             case 1:
-                                status = 'Proses';
+                                status = '<div class="pills-warning text-center">Proses</div>';
                                 break;
                             case 6:
-                                status = 'Di Tolak';
+                                status = '<div class="pills-danger text-center">Di Tolak</div>';
+                                break;
+                            case 7:
+                                status = '<div class="pills-info text-center">Terjawab</div>';
                                 break;
                             case 9:
-                                status = 'Selesai';
+                                status = '<div class="pills-success text-center">Selesai</div>';
                                 break;
                             default:
                                 break;
@@ -228,13 +232,18 @@
                         return status;
                     }
                 },
-            ], [], function (d) {
+            ], [
+                {
+                    targets: '_all',
+                    className: 'f14'
+                }
+            ], function (d) {
             }, {
                 "scrollX": true,
                 "fnDrawCallback": function (settings) {
                     setExpand();
                 },
-                dom: 'ft',
+                dom: 't',
             });
             setExpand();
 
@@ -243,7 +252,7 @@
                 AjaxPost
                 let phone = this.dataset.contact;
                 let ticket = this.dataset.ticket;
-                let text = 'https://api.whatsapp.com/send/?phone=' + phone + '&text=Cek Jawaban Ticket '+ticket+' klik link https://stackoverflow.com/';
+                let text = 'https://api.whatsapp.com/send/?phone=' + phone + '&text=Cek Jawaban Ticket ' + ticket + ' klik link https://stackoverflow.com/';
                 var win = window.open(text, '_blank');
                 if (win) {
                     win.focus();

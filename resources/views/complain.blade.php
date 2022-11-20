@@ -216,39 +216,57 @@
                                         <div class="form-group mb-1">
                                             <label for="legal_assignment" class="form-label">Surat Tugas / Surat Kuasa <span style="color: red">*</span></label>
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input" id="legal_assignment"
+                                                <input type="file" class="custom-file-input {{ $errors->has('legal_assignment') ? 'is-invalid' : '' }}" id="legal_assignment"
                                                        name="legal_assignment" accept="application/pdf">
                                                 <label class="custom-file-label f14" for="legal_assignment">Pilih File Surat
                                                     Tugas / Surat Kuasa</label>
+                                                @if ($errors->has('legal_assignment'))
+                                                    <p class="invalid-feedback mb-0" style="font-size: 0.8em">
+                                                        {{ $errors->first('legal_assignment') }}
+                                                    </p>
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="form-group mb-1">
-                                            <label for="legal_ad_art" class="form-label">AD ART</label>
+                                            <label for="legal_ad_art" class="form-label">AD ART <span style="color: red">*</span></label>
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input" id="legal_ad_art" name="legal_ad_art" accept="application/pdf">
+                                                <input type="file" class="custom-file-input {{ $errors->has('legal_ad_art') ? 'is-invalid' : '' }}" id="legal_ad_art" name="legal_ad_art" accept="application/pdf">
                                                 <label class="custom-file-label f14" for="legal_ad_art">Pilih File AD
                                                     ART</label>
+                                                @if ($errors->has('legal_ad_art'))
+                                                    <p class="invalid-feedback mb-0" style="font-size: 0.8em">
+                                                        {{ $errors->first('legal_ad_art') }}
+                                                    </p>
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="form-group mb-1">
-                                            <label for="legal_address">Alamat</label>
-                                            <textarea rows="3" class="form-control" id="legal_address" name="legal_address"
-                                                      aria-describedby="addressHelp" placeholder="Alamat"></textarea>
-
+                                            <label for="legal_address">Alamat <span style="color: red">*</span></label>
+                                            <textarea rows="3" class="form-control {{ $errors->has('legal_address') ? 'is-invalid' : '' }}" id="legal_address" name="legal_address"
+                                                      aria-describedby="addressHelp" placeholder="Alamat">{{ old('address') }}</textarea>
+                                            @if ($errors->has('legal_address'))
+                                                <p class="invalid-feedback mb-0" style="font-size: 0.8em">
+                                                    {{ $errors->first('legal_address') }}
+                                                </p>
+                                            @endif
                                         </div>
                                         <div class="form-group mb-1">
                                             <label for="legal_job">Pekerjaan</label>
                                             <input type="text" class="form-control" id="legal_job" aria-describedby="jobHelp"
-                                                   placeholder="Pekerjaan" name="legal_job">
+                                                   placeholder="Pekerjaan" name="legal_job" value="{{ old('legal_job') }}">
 
                                         </div>
 
                                         <div class="form-group mb-1">
-                                            <label for="legal_complain">Saran / Pengaduan</label>
-                                            <textarea rows="3" class="form-control" id="complain" name="legal_complain"
+                                            <label for="legal_complain">Saran / Pengaduan <span style="color: red">*</span></label>
+                                            <textarea rows="3" class="form-control {{ $errors->has('legal_complain') ? 'is-invalid' : '' }}" id="complain" name="legal_complain"
                                                       aria-describedby="complainHelp"
-                                                      placeholder="Saran / Pengaduan"></textarea>
-
+                                                      placeholder="Saran / Pengaduan">{{ old('legal_complain') }}</textarea>
+                                            @if ($errors->has('legal_complain'))
+                                                <p class="invalid-feedback mb-0" style="font-size: 0.8em">
+                                                    {{ $errors->first('legal_complain') }}
+                                                </p>
+                                            @endif
                                         </div>
                                         <hr>
                                         <div class="text-right">
