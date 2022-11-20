@@ -9,6 +9,7 @@ $(function () {
 function ErrorAlert(title, msg) {
     Swal.fire(title, msg, 'error');
 }
+
 function SuccessAlert(title, msg) {
     Swal.fire(title, msg, 'success');
 }
@@ -32,6 +33,7 @@ function AlertConfirm(title = 'Apakah Anda Yakin?', text = 'Apa anda yakin melan
 async function AjaxPost(url, param = {}, onSuccess = function () {
 }) {
     try {
+        blockLoading(true);
         let response = await $.post(url, param);
         if (response['status'] === 200) {
             onSuccess();
@@ -39,6 +41,8 @@ async function AjaxPost(url, param = {}, onSuccess = function () {
     } catch (e) {
         console.log(e);
         ErrorAlert('Error', e.responseJSON.message.toString());
+    } finally {
+        blockLoading(false);
     }
 }
 
@@ -54,9 +58,9 @@ function createLoader(text = 'sedang mengunduh data...', height = 600) {
 
 function blockLoading(state) {
     if (state) {
-        $('#overlay-loading').css('display', 'block')
+        $('#backdrop-loading').css('display', 'block')
     } else {
-        $('#overlay-loading').css('display', 'none')
+        $('#backdrop-loading').css('display', 'none')
     }
 
 }
@@ -68,7 +72,8 @@ function calculate_days(tgl1, tgl2) {
     return diff_in_time / (1000 * 3600 * 24);
 }
 
-function DataTableGenerator(element, url = '/', col = [], colDef = [], data = function () {}, extConfig = {}) {
+function DataTableGenerator(element, url = '/', col = [], colDef = [], data = function () {
+}, extConfig = {}) {
     let baseConfig = {
         scrollX: true,
         processing: true,
@@ -84,3 +89,4 @@ function DataTableGenerator(element, url = '/', col = [], colDef = [], data = fu
     let config = {...baseConfig, ...extConfig};
     return $(element).DataTable(config);
 }
+

@@ -16,7 +16,7 @@ Route::match(['post', 'get'], '/login', [\App\Http\Controllers\Admin\AuthControl
 Route::get('/logout', [\App\Http\Controllers\Admin\AuthController::class, 'logout'])->middleware('auth:web');
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::match(['post', 'get'], '/pengaduan', [\App\Http\Controllers\ComplainController::class, 'index']);
-Route::get( '/pengaduan/berhasil', [\App\Http\Controllers\ComplainController::class, 'success'])->name('complain.success');
+Route::get('/pengaduan/berhasil', [\App\Http\Controllers\ComplainController::class, 'success'])->name('complain.success');
 Route::match(['post', 'get'], '/informasi', [\App\Http\Controllers\InformationController::class, 'index']);
 Route::get('/test-mail', function () {
     $data = [
@@ -96,15 +96,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
 
 
 //uki part
-Route::group(['prefix' => 'admin-uki', 'middleware' => 'auth:web'], function () {
+Route::group(['prefix' => 'admin-uki', 'middleware' => ['auth', 'uki']], function () {
     Route::get('/', [\App\Http\Controllers\Admin\Dashboard::class, 'index_uki'])->name('dashboard.uki');
 
     Route::group(['prefix' => 'pengaduan'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\ComplainController::class, 'index_uki'])->name('complain.index.uki');
         Route::get('/proses', [\App\Http\Controllers\Admin\ComplainController::class, 'on_process_uki'])->name('complain.process.uki');
         Route::get('/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_data_uki'])->name('complain.data.uki');
-        Route::match(['post', 'get'],'/{ticket}/info', [\App\Http\Controllers\Admin\ComplainController::class, 'data_detail_by_ticket'])->name('complain.data.uki.by.ticket');
-        Route::match(['post', 'get'],'/{ticket}/jawaban', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_by_ticket'])->name('complain.answers.uki.by.ticket');
+        Route::match(['post', 'get'], '/{ticket}/info', [\App\Http\Controllers\Admin\ComplainController::class, 'data_detail_by_ticket'])->name('complain.data.uki.by.ticket');
+        Route::match(['post', 'get'], '/{ticket}/jawaban', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_by_ticket'])->name('complain.answers.uki.by.ticket');
 //        Route::post('/{id}/disposition', [\App\Http\Controllers\Admin\ComplainController::class, 'send_disposition'])->name('complain.data.send.disposition');
     });
 });
@@ -117,8 +117,8 @@ Route::group(['prefix' => 'admin-satker', 'middleware' => 'auth:web'], function 
         Route::get('/', [\App\Http\Controllers\Admin\ComplainController::class, 'index_satker'])->name('complain.index.satker');
         Route::get('/proses', [\App\Http\Controllers\Admin\ComplainController::class, 'on_process_uki'])->name('complain.process.satker');
         Route::get('/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_data_satker'])->name('complain.data.satker');
-        Route::match(['post', 'get'],'/{ticket}/info', [\App\Http\Controllers\Admin\ComplainController::class, 'data_detail_by_ticket_satker'])->name('complain.data.satker.by.ticket');
-        Route::match(['post', 'get'],'/{ticket}/jawaban', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_by_ticket'])->name('complain.answers.uki.by.ticket');
+        Route::match(['post', 'get'], '/{ticket}/info', [\App\Http\Controllers\Admin\ComplainController::class, 'data_detail_by_ticket_satker'])->name('complain.data.satker.by.ticket');
+        Route::match(['post', 'get'], '/{ticket}/jawaban', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_by_ticket'])->name('complain.answers.uki.by.ticket');
 //        Route::post('/{id}/disposition', [\App\Http\Controllers\Admin\ComplainController::class, 'send_disposition'])->name('complain.data.send.disposition');
     });
 });

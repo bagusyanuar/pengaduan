@@ -57,11 +57,9 @@
         }
 
         function detailElement(d) {
-            let type = 'Individu';
             let assignment = '';
             let ad_art = '';
             if (d['type'] === 1) {
-                type = 'Badan Hukum / Organisasi';
                 let tmp_assignment = d['legal'] !== null ? d['legal']['assignment'] : '-';
                 let tmp_ad_art = d['legal'] !== null ? d['legal']['ad_art'] : '-';
                 assignment = '<div class="row mb-0">' +
@@ -104,7 +102,7 @@
                 '</div>';
 
 
-            return '<div>' +
+            return '<div class="f14">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -180,7 +178,12 @@
                     }
                 },
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
-                {data: 'date'},
+                {
+                    data: 'date', name: 'date', render: function (data, type, row, meta) {
+                        let date = new Date(data);
+                        return date.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+                    }
+                },
                 {data: 'ticket_id'},
                 {data: 'name'},
                 {
@@ -192,7 +195,16 @@
                         return legal;
                     }
                 },
-            ], [], function (d) {
+            ], [
+                {
+                    targets: '_all',
+                    className: 'f14'
+                },
+                {
+                    targets: [0, 5],
+                    className: 'text-center'
+                }
+            ], function (d) {
                 d.q = query;
             }, {
                 "scrollX": true,

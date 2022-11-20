@@ -1,11 +1,60 @@
 @extends('admin.layout')
 
+@section('css')
+    <style>
+        .swal2-container {
+            display: grid;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+            grid-template-areas: "top-start  top       top-end   " "center-start center    center-end" "bottom-start bottom-center bottom-end";
+            grid-template-rows: minmax(-webkit-min-content, auto) minmax(-webkit-min-content, auto) minmax(-webkit-min-content, auto);
+            grid-template-rows: minmax(min-content, auto) minmax(min-content, auto) minmax(min-content, auto);
+            height: 100%;
+            padding: 0.625em;
+            overflow-x: hidden;
+            transition: background-color 0.1s;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .swal2-shown {
+            overflow: unset !important;
+            padding-right: 0px !important;
+        }
+
+        #backdrop-loading {
+            pointer-events: all;
+            display: none;
+            z-index: 99999;
+            border: none;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            top: 0px;
+            left: 0px;
+            cursor: wait;
+            position: fixed;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+    </style>
+@endsection
+
 @section('content')
     @if (\Illuminate\Support\Facades\Session::has('success'))
         <script>
             Swal.fire("Berhasil!", '{{\Illuminate\Support\Facades\Session::get('success')}}', "success")
         </script>
     @endif
+    <div class="backdrop-loading" id="backdrop-loading">
+        <div style="height: 100%; width: 100%" class="d-flex align-items-center justify-content-center">
+            <p style="color: white">Sedang mengirim data saran / pengaduan ke admin UKI...</p>
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <ol class="breadcrumb breadcrumb-transparent mb-0">
@@ -34,7 +83,6 @@
                         <th class="f14" width="20%">No. Ticket</th>
                         <th class="f14">Nama</th>
                         <th class="f14 text-center" width="13%">Legalitas</th>
-                        <th class="f14" width="12%"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -58,11 +106,9 @@
         }
 
         function detailElement(d) {
-            let type = 'Individu';
             let assignment = '';
             let ad_art = '';
             if (d['type'] === 1) {
-                type = 'Badan Hukum / Organisasi';
                 let tmp_assignment = d['legal'] !== null ? d['legal']['assignment'] : '-';
                 let tmp_ad_art = d['legal'] !== null ? d['legal']['ad_art'] : '-';
                 assignment = '<div class="row mb-0">' +
@@ -80,29 +126,26 @@
                     '</div>';
             }
 
-            let action = '';
-            if (query === 'waiting') {
-                action = '<div class="row mb-2">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                    '<a href="#" class="main-button btn-process" data-id="' + d['id'] + '"><i class="fa fa-paper-plane mr-2"></i>Proses</a>' +
-                    '</div>' +
-                    '</div>';
-            }
+            let action = '<div class="row mb-2 mt-2">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">' +
+                '<a href="#" class="main-button btn-process" data-id="' + d['id'] + '"><i class="fa fa-paper-plane mr-2"></i>Kirim saran / pengaduan ke UKI</a>' +
+                '</div>' +
+                '</div>';
 
-            let disposition = '';
-            if (query !== 'waiting') {
-                disposition = '<div class="row">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '<p class="mb-0">Disposisi</p>' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">: -</div>' +
-                    '</div>';
-            }
+            // let disposition = '';
+            // if (query !== 'waiting') {
+            //     disposition = '<div class="row">' +
+            //         '<div class="col-lg-3 col-md-4 col-sm-6">' +
+            //         '<p class="mb-0">Disposisi</p>' +
+            //         '</div>' +
+            //         '<div class="col-lg-9 col-md-8 col-sm-6">: -</div>' +
+            //         '</div>';
+            // }
 
 
-            return '<div>' +
+            return '<div class="f14">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -130,14 +173,14 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
-                disposition +
+                // disposition +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p>Isi Saran / Pengaduan</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['complain'] + '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
-                // action +
+                action +
                 '</div>';
         }
 
@@ -171,7 +214,14 @@
 
         function sendProcess(id) {
             AjaxPost(prefix_url + '/admin/pengaduan/' + id + '/process', function () {
-                window.location.reload();
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Berhasil mengirimkan data ke admin UKI...',
+                    icon: 'success',
+                }).then((result) => {
+                    window.location.reload();
+                });
+
             })
         }
 
@@ -202,11 +252,6 @@
                         return legal;
                     }
                 },
-                {
-                    data: null, render: function (data, type, row, meta) {
-                        return '<a href="#" class="main-button-outline f14 btn-process" data-id="' + data['id'] + '"><i class="fa fa-paper-plane mr-2"></i>Proses</a>';
-                    }
-                },
             ], [
                 {
                     targets: '_all',
@@ -220,15 +265,15 @@
                 d.q = 'waiting';
             }, {
                 "scrollX": true,
+                responsive: true,
                 "fnDrawCallback": function (settings) {
                     setExpand();
-                    eventProcess();
                 },
             });
         }
 
         function eventProcess() {
-            $('.btn-process').on('click',  function (e) {
+            $('#table-data tbody').on('click', '.btn-process', function (e) {
                 e.preventDefault();
                 let id = this.dataset.id;
                 Swal.fire({
@@ -251,23 +296,6 @@
             generateTable();
             setExpand();
             eventProcess();
-            // $('#table-data tbody').on('click', '.btn-process', function (e) {
-            //     e.preventDefault();
-            //     let id = this.dataset.id;
-            //     Swal.fire({
-            //         title: 'Konfirmasi!',
-            //         text: 'Yakin ingin memproses data pengaduan?',
-            //         icon: 'info',
-            //         showCancelButton: true,
-            //         confirmButtonColor: '#3085d6',
-            //         cancelButtonColor: '#d33',
-            //         confirmButtonText: 'Ya'
-            //     }).then((result) => {
-            //         if (result.value) {
-            //             sendProcess(id);
-            //         }
-            //     });
-            // });
         });
     </script>
 @endsection

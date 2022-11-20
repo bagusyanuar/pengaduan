@@ -132,6 +132,26 @@ body {
     text-decoration: none;
 }
 
+.main-button-outline-sm {
+    padding: .2em .5em;
+    border: 1px solid var(--primaryColor);
+    border-radius: 5px;
+    background-color: transparent;
+    color: var(--primaryColor);
+    font-size: 12px;
+}
+
+.main-button-outline-sm:hover {
+    background-color: var(--primaryShade);
+    border: 1px solid var(--primaryShade);
+    cursor: pointer;
+    color: white;
+    -webkit-transition: all .3s ease-in;
+    -ms-transition: all .3s ease-in;
+    transition: all .3s ease-in;
+    text-decoration: none;
+}
+
 .main-button-sm {
     padding: .2em .7em;
     border: 1px solid var(--primaryColor);
