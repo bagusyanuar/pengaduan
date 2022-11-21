@@ -5,11 +5,16 @@ namespace App\Http\Controllers;
 
 
 use App\Helper\CustomController;
+use App\Mail\ComplainToAdmin;
+use App\Mail\NewComplain;
 use App\Models\Complain;
 use App\Models\LegalComplain;
+use App\Models\User;
+use App\Models\UserUki;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -69,9 +74,14 @@ class ComplainController extends CustomController
                 'description' => '-'
             ];
             $complain = Complain::create($data);
+            $admins = User::where('role', '=', 'admin')->get();
+            foreach ($admins as $admin) {
+                $target = $admin->email;
+                Mail::to($target)->send(new ComplainToAdmin($complain));
+            }
             return redirect()->route('complain.success')->with('success', 'Berhasil Mengirimkan Saran / Pengaduan...')->with('ticket', $complain->ticket_id);
         } catch (\Exception $e) {
-            return redirect()->back()->with('failed', 'Terjadi kesalahan server...');
+            return redirect()->back()->withInput(request()->input())->with('failed', 'Terjadi kesalahan server...');
         }
     }
 
@@ -142,11 +152,16 @@ class ComplainController extends CustomController
                 return redirect()->back()->with('failed', 'File Surat Kuasa Belum Terlampir...');
             }
             LegalComplain::create($data_legal);
+            $admins = User::where('role', '=', 'admin')->get();
+            foreach ($admins as $admin) {
+                $target = $admin->email;
+                Mail::to($target)->send(new ComplainToAdmin($complain));
+            }
             DB::commit();
-            return redirect()->back()->with('success', 'Berhasil Mengirimkan Saran / Pengaduan...')->with('legal', '');
+            return redirect()->route('complain.success')->with('success', 'Berhasil Mengirimkan Saran / Pengaduan...')->with('ticket', $complain->ticket_id);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('failed', 'Terjadi kesalahan server...' . $e->getMessage())->with('legal', '');
+            return redirect()->back()->with('failed', 'Terjadi kesalahan server...')->with('legal', '');
         }
     }
 
@@ -164,9 +179,9 @@ class ComplainController extends CustomController
 
     public function success()
     {
-//        if (!Session::has('ticket')) {
-//            return redirect()->route('home');
-//        }
+        if (!Session::has('ticket')) {
+            return redirect()->route('home');
+        }
         return view('complain-succes');
     }
 }

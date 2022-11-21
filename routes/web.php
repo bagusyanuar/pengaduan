@@ -18,6 +18,8 @@ Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('h
 Route::match(['post', 'get'], '/pengaduan', [\App\Http\Controllers\ComplainController::class, 'index']);
 Route::get('/pengaduan/berhasil', [\App\Http\Controllers\ComplainController::class, 'success'])->name('complain.success');
 Route::match(['post', 'get'], '/informasi', [\App\Http\Controllers\InformationController::class, 'index']);
+Route::get('/informasi/berhasil', [\App\Http\Controllers\InformationController::class, 'success'])->name('information.success');
+
 Route::get('/test-mail', function () {
     $data = [
         'title' => 'Test Title',
@@ -73,6 +75,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
 
     Route::group(['prefix' => 'informasi'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\InformationController::class, 'index'])->name('information.index');
+        Route::get('/data', [\App\Http\Controllers\Admin\InformationController::class, 'information_data'])->name('information.data');
     });
 
     Route::group(['prefix' => 'satker'], function () {

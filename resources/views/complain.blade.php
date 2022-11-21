@@ -127,7 +127,6 @@
                                             <input type="text" class="form-control" id="job" name="job"
                                                    aria-describedby="jobHelp"
                                                    placeholder="Pekerjaan">
-
                                         </div>
 
                                         <div class="form-group mb-1">

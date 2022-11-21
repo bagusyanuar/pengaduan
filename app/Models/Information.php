@@ -20,10 +20,14 @@ class Information extends Model
         'phone',
         'email',
         'information',
+        'information_source',
         'purpose',
         'source',
         'type',
         'status',
+        'target',
+        'satker_id',
+        'ppk_id_id',
         'description',
     ];
 
@@ -35,5 +39,15 @@ class Information extends Model
     public function answers()
     {
         return $this->hasMany(InformationAnswer::class, 'information_id');
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(SatuanKerja::class, 'satker_id');
+    }
+
+    public function ppk()
+    {
+        return $this->belongsTo(PPK::class, 'ppk_id');
     }
 }

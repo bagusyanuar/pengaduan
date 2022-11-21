@@ -163,12 +163,45 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a href="{{ route('complain.index') }}"
-                               class="nav-link {{ request()->is('admin/informasi*') ? 'active' : '' }}">
-                                <i class="fa fa-list nav-icon" aria-hidden="true"></i>
-                                <p>Informasi</p>
+
+                        <li class="nav-item has-treeview {{ request()->is('admin/informasi*') ? 'menu-open' : ''}}">
+                            <a href="#" class="nav-link {{ request()->is('admin/informasi*') ? 'active' : ''}}">
+                                <i class="nav-icon fa fa-list"></i>
+                                <p>
+                                    Informasi
+                                    <i class="right fa fa-angle-down"></i>
+                                </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('information.index') }}"
+                                       class="nav-link {{ request()->is('admin/informasi') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>Menunggu</p>
+                                    </a>
+                                </li>
+{{--                                <li class="nav-item">--}}
+{{--                                    <a href="{{ route('complain.process') }}"--}}
+{{--                                       class="nav-link {{ request()->is('admin/pengaduan/proses') ? 'active' : ''}}">--}}
+{{--                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>--}}
+{{--                                        <p>Sedang Di Proses</p>--}}
+{{--                                    </a>--}}
+{{--                                </li>--}}
+{{--                                <li class="nav-item">--}}
+{{--                                    <a href="{{ route('complain.answered') }}"--}}
+{{--                                       class="nav-link {{ request()->is('admin/pengaduan/jawab') ? 'active' : ''}}">--}}
+{{--                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>--}}
+{{--                                        <p>Terjawab</p>--}}
+{{--                                    </a>--}}
+{{--                                </li>--}}
+{{--                                <li class="nav-item">--}}
+{{--                                    <a href="{{ route('complain.finished') }}"--}}
+{{--                                       class="nav-link {{ request()->is('admin/pengaduan/selesai') ? 'active' : ''}}">--}}
+{{--                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>--}}
+{{--                                        <p>Selesai</p>--}}
+{{--                                    </a>--}}
+{{--                                </li>--}}
+                            </ul>
                         </li>
                     @endif
 
