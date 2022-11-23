@@ -33,8 +33,8 @@
                         <th class="f14" width="12%">Tanggal</th>
                         <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
-                        <th class="f14" width="15%">Legalitas</th>
-                        <th class="f14" width="10%">Status</th>
+                        <th class="f14" width="12%">Legalitas</th>
+                        <th class="f14" width="8%">Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -102,7 +102,7 @@
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + target_disposition + '</div>' +
                 '</div>';
 
-            return '<div>' +
+            return '<div class="f14">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -135,9 +135,9 @@
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p>Isi Saran / Pengaduan</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6"><span>:</span><p class="text-justify mb-0 d-inline"> ' + d['complain'] + '</p></div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
-                action +
+                // action +
                 '</div>';
         }
 
@@ -201,14 +201,25 @@
                 {
                     data: null, render: function (data, type, row, meta) {
                         let status = data['HasAnswer'];
-                        let el = '<div class="pills-warning text-center">Menunggu Jawaban</div>';
+                        let ticket_id = data['ticket_id'].replaceAll('/', '-');
+                        let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
+                        let el = '<a href="' + url + '"><i class="fa fa-comments" style="font-size: 18px; color: #EB1D36"></i></a>';
                         if (status) {
-                            el = '<div class="pills-success text-center">Di Jawab</div>';
+                            el = '<a href="' + url + '"><i class="fa fa-comments" style="font-size: 18px; color: #54B435"></i></a>';
                         }
                         return el;
                     }
                 },
-            ], [], function (d) {
+            ], [
+                {
+                    targets: '_all',
+                    className: 'f14'
+                },
+                {
+                    targets: [0, 1, 2, 5, 6],
+                    className: 'text-center'
+                }
+            ], function (d) {
                 d.q = query;
             }, {
                 "scrollX": true,

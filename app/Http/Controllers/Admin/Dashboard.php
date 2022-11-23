@@ -49,7 +49,12 @@ class Dashboard extends CustomController
 
     public function index_satker()
     {
-        return \view('satker.dashboard');
+        return view('satker.dashboard');
+    }
+
+    public function index_ppk()
+    {
+        return view('ppk.dashboard');
     }
 
 

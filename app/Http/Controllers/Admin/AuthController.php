@@ -41,6 +41,13 @@ class AuthController extends CustomController
                     }
                     return redirect()->route('dashboard.satker');
                 }
+
+                if (\auth()->user()->role === 'ppk') {
+                    if (Session::get('redirect')) {
+                        return redirect(Session::get('redirect'));
+                    }
+                    return redirect()->route('dashboard.ppk');
+                }
             }
             return redirect()->back()->with('failed', 'Periksa Kembali Username dan Password Anda');
         }

@@ -180,27 +180,27 @@
                                         <p>Menunggu</p>
                                     </a>
                                 </li>
-{{--                                <li class="nav-item">--}}
-{{--                                    <a href="{{ route('complain.process') }}"--}}
-{{--                                       class="nav-link {{ request()->is('admin/pengaduan/proses') ? 'active' : ''}}">--}}
-{{--                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>--}}
-{{--                                        <p>Sedang Di Proses</p>--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
-{{--                                <li class="nav-item">--}}
-{{--                                    <a href="{{ route('complain.answered') }}"--}}
-{{--                                       class="nav-link {{ request()->is('admin/pengaduan/jawab') ? 'active' : ''}}">--}}
-{{--                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>--}}
-{{--                                        <p>Terjawab</p>--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
-{{--                                <li class="nav-item">--}}
-{{--                                    <a href="{{ route('complain.finished') }}"--}}
-{{--                                       class="nav-link {{ request()->is('admin/pengaduan/selesai') ? 'active' : ''}}">--}}
-{{--                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>--}}
-{{--                                        <p>Selesai</p>--}}
-{{--                                    </a>--}}
-{{--                                </li>--}}
+                                {{--                                <li class="nav-item">--}}
+                                {{--                                    <a href="{{ route('complain.process') }}"--}}
+                                {{--                                       class="nav-link {{ request()->is('admin/pengaduan/proses') ? 'active' : ''}}">--}}
+                                {{--                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>--}}
+                                {{--                                        <p>Sedang Di Proses</p>--}}
+                                {{--                                    </a>--}}
+                                {{--                                </li>--}}
+                                {{--                                <li class="nav-item">--}}
+                                {{--                                    <a href="{{ route('complain.answered') }}"--}}
+                                {{--                                       class="nav-link {{ request()->is('admin/pengaduan/jawab') ? 'active' : ''}}">--}}
+                                {{--                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>--}}
+                                {{--                                        <p>Terjawab</p>--}}
+                                {{--                                    </a>--}}
+                                {{--                                </li>--}}
+                                {{--                                <li class="nav-item">--}}
+                                {{--                                    <a href="{{ route('complain.finished') }}"--}}
+                                {{--                                       class="nav-link {{ request()->is('admin/pengaduan/selesai') ? 'active' : ''}}">--}}
+                                {{--                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>--}}
+                                {{--                                        <p>Selesai</p>--}}
+                                {{--                                    </a>--}}
+                                {{--                                </li>--}}
                             </ul>
                         </li>
                     @endif
@@ -260,6 +260,34 @@
                                 <li class="nav-item">
                                     <a href="{{ route('complain.index.satker') }}"
                                        class="nav-link {{ request()->is('admin-satker/pengaduan') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>Data</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+
+                    @if(auth()->user()->role == 'ppk')
+                        <li class="nav-item">
+                            <a href="{{ route('dashboard.ppk') }}"
+                               class="nav-link {{ request()->is('admin-ppk') ? 'active' : ''}}">
+                                <i class="fa fa-tachometer nav-icon" aria-hidden="true"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
+                        <li class="nav-item has-treeview {{ request()->is('admin-ppk/pengaduan*') ? 'menu-open' : ''}}">
+                            <a href="#" class="nav-link {{ request()->is('admin-ppk/pengaduan*') ? 'active' : ''}}">
+                                <i class="nav-icon fa fa-exclamation"></i>
+                                <p>
+                                    Pengaduan
+                                    <i class="right fa fa-angle-down"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('complain.index.ppk') }}"
+                                       class="nav-link {{ request()->is('admin-ppk/pengaduan') ? 'active' : ''}}">
                                         <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
                                         <p>Data</p>
                                     </a>

@@ -51,6 +51,11 @@ class Complain extends Model
         return $this->hasMany(ComplainAnswer::class, 'complain_id');
     }
 
+    public function last_answer()
+    {
+        return $this->hasOne(ComplainAnswer::class, 'complain_id')->orderBy('id', 'DESC');
+    }
+
     public function getHasAnswerAttribute()
     {
         return $this->hasOne(ComplainAnswer::class, 'complain_id')

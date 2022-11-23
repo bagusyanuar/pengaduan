@@ -210,7 +210,7 @@
                     data: null, render: function (data, type, row, meta) {
                         let ticket_id = data['ticket_id'].replaceAll('/', '-');
                         let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/info';
-                        return '<a href="' + url + '" class="btn-detail" data-id="' + data['id'] + '"><i class="fa fa-info-circle" style="font-size: 16px;"></i></a>'
+                        return '<a href="' + url + '" class="btn-detail" data-id="' + data['id'] + '"><i class="fa fa-mail-forward main-text" style="font-size: 16px;"></i></a>'
                     }
                 },
             ], [

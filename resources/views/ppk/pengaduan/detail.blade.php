@@ -6,6 +6,7 @@
             Swal.fire("Berhasil!", '{{\Illuminate\Support\Facades\Session::get('success')}}', "success")
         </script>
     @endif
+
     @if (\Illuminate\Support\Facades\Session::has('failed'))
         <script>
             Swal.fire("Gagal!", '{{\Illuminate\Support\Facades\Session::get('failed')}}', "error")
@@ -15,10 +16,10 @@
         <div class="d-flex align-items-center justify-content-between mb-3">
             <ol class="breadcrumb breadcrumb-transparent mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('dashboard.uki') }}">Dashboard</a>
+                    <a href="{{ route('dashboard.ppk') }}">Dashboard</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('complain.index.uki') }}">Saran / Pengaduan</a>
+                    <a href="{{ route('complain.index.ppk') }}">Saran / Pengaduan</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $data->ticket_id }}
                 </li>
@@ -97,97 +98,36 @@
                 <div class="card card-outline card-success">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0">Persetujuan</p>
+                            <p class="mb-0">Jawaban</p>
                         </div>
                     </div>
                     <div class="card-body">
-                        @if($data->target == null)
-                            {{--                            <form method="post" id="form-disposition"--}}
-                            {{--                                  action="{{ route('complain.data.send.disposition', ['id' => $data->id]) }}">--}}
-                            <form method="post" id="form-disposition">
+                        @if($data->HasAnswer && !$data->HasApprovedAnswer)
+                            <div class="d-flex justify-content-center align-items-center" style="height: 150px">
+                                <p class="font-weight-bold">Menunggu Persetujuan Dari Admin UKI</p>
+                            </div>
+                        @elseif($data->HasApprovedAnswer)
+                            <div class="d-flex justify-content-center align-items-center" style="height: 150px">
+                                <p class="font-weight-bold">Jawaban Disetujui</p>
+                            </div>
+                        @else
+                            <form method="post" id="form-answer" enctype="multipart/form-data">
                                 @csrf
-                                <div class="form-group w-100 mb-2">
-                                    <label for="status" class="form-label f14">Status</label>
-                                    <select class="form-control f14" id="status" name="status">
-                                        <option class="f14" value="1">Setuju</option>
-                                        <option class="f14" value="0">Tolak</option>
-                                    </select>
-                                </div>
-                                <div class="d-block" id="accepted">
-                                    <div class="form-group w-100 mb-2">
-                                        <label for="target_satker" class="form-label f14 d-block">Disposisi</label>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="target"
-                                                   id="target_satker"
-                                                   value="0" checked>
-                                            <label class="form-check-label" for="target_satker">Satuan Kerja</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="target" id="target_ppk"
-                                                   value="1">
-                                            <label class="form-check-label" for="target_ppk">PPK</label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group w-100 mb-2 d-block" id="panel-unit">
-                                        <label for="unit" class="f14">Satuan Kerja</label>
-                                        <select class="select2 f14" name="unit" id="unit" style="width: 100%;">
-                                            @foreach($unit as $v)
-                                                <option value="{{ $v->id }}"
-                                                        class="f14">{{ $v->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group w-100 mb-2 d-none" id="panel-ppk">
-                                        <label for="ppk" class="f14">PPK</label>
-                                        <select class="select2 f14" name="ppk" id="ppk" style="width: 100%;">
-                                            @foreach($ppk as $v)
-                                                <option value="{{ $v->id }}"
-                                                        class="f14">{{ $v->name }}</option>
-                                            @endforeach
-                                        </select>
+                                <div class="form-group mb-1">
+                                    <label for="answer" class="form-label">Lampiran Jawaban</label>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="answer" name="answer"
+                                               accept="application/pdf">
+                                        <label class="custom-file-label f14" for="ad_art">Pilih File Lampiran
+                                            Jawaban</label>
                                     </div>
                                 </div>
-                                <div class="d-none" id="denied">
-                                    <div class="w-100 mb-2">
-                                        <label for="description" class="form-label f14">Deskripsi Penolakan</label>
-                                        <textarea rows="3" class="form-control f14" id="description"
-                                                  placeholder="Deskripsi Penolakan"
-                                                  name="description"></textarea>
-                                    </div>
-                                </div>
-
                                 <hr>
                                 <div class="text-right">
-                                    <button type="submit" class="main-button" id="btn-submit"><i
-                                            class="fa fa-check mr-2"></i>Simpan
+                                    <button type="submit" class="main-button"><i class="fa fa-check mr-2"></i>Simpan
                                     </button>
                                 </div>
                             </form>
-                        @else
-                            @if($data->status == 6)
-                                <div class="text-center">
-                                    <p class="font-weight-bold">
-                                        Data saran / pengaduan tidak diterima dikarenakan {{ $data->description }}
-                                    </p>
-                                </div>
-                            @else
-                                <div class="text-center">
-                                    <p class="font-weight-bold">
-                                        Data Saran / Pengaduan Sudah Di Teruskan Kepada
-                                        <br>
-                                        @if($data->target === 1)
-                                            <span class="font-weight-bold">{{ $data->ppk->name }}</span>
-                                        @elseif($data->target === 0)
-                                            <span class="font-weight-bold">{{ $data->unit->name }}</span>
-                                        @endif
-                                    </p>
-                                </div>
-                                <hr>
-                                <div class="text-right">
-                                    <a href="{{ route('complain.answers.uki.by.ticket', ['ticket' => str_replace('/', '-', $data->ticket_id)]) }}"
-                                       class="main-button"><i class="fa fa-comments mr-2"></i>Lihat Jawaban</a>
-                                </div>
-                            @endif
                         @endif
                     </div>
                 </div>
@@ -239,6 +179,10 @@
         }
 
         $(document).ready(function () {
+            $('.custom-file-input').on('change', function () {
+                let fileName = $(this).val().split('\\').pop();
+                $(this).next('.custom-file-label').addClass("selected").html(fileName);
+            });
             $('.select2').select2({
                 width: 'resolve'
             });
@@ -250,26 +194,6 @@
 
             $('input:radio[name=target]').on('change', function () {
                 togglePanelTarget();
-            })
-            $('#btn-submit').on('click', function (e) {
-                e.preventDefault();
-                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
-                Swal.fire({
-                    title: 'Konfirmasi!',
-                    text: 'Yakin ingin memproses data pengaduan?',
-                    iconHtml: '<img src="' + iconUrl + '" height="100">',
-                    customClass: {
-                        icon: 'no-border'
-                    },
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya'
-                }).then((result) => {
-                    if (result.value) {
-                        $('#form-disposition').submit();
-                    }
-                });
             })
         })
     </script>

@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Helper\CustomController;
+use App\Mail\ComplainDisposition;
 use App\Mail\NewComplain;
 use App\Mail\ReplyComplain;
 use App\Models\Complain;
 use App\Models\ComplainAnswer;
 use App\Models\PPK;
 use App\Models\SatuanKerja;
+use App\Models\UserPPK;
 use App\Models\UserSatuanKerja;
 use App\Models\UserUki;
 use Carbon\Carbon;
@@ -122,15 +124,15 @@ class ComplainController extends CustomController
             $query = Complain::with(['legal', 'unit', 'ppk'])
                 ->where('status', '=', $status);
             if ($this->field('q') === 'answered') {
-                $query->orWhere('status', '=', 7);
+                $query->orWhere('status', '=', 9);
             }
 
             if ($this->field('q') === 'process') {
-                $query->whereNotNull('satker_id');
+                $query->whereNotNull('target');
             }
 
             if ($this->field('q') === 'waiting') {
-                $query->whereNull('satker_id');
+                $query->whereNull('target');
             }
             $data = $query->get()->append(['HasAnswer']);
             return $this->basicDataTables($data);
@@ -163,16 +165,37 @@ class ComplainController extends CustomController
                 'target' => $this->postField('target'),
                 'description' => 'Approved'
             ];
+            $mails_to = [];
             if ($this->postField('target') === '1') {
+                //send to ppk
                 $ppk = PPK::with('unit')->find($this->postField('ppk'));
                 $data_update['ppk_id'] = $ppk->id;
                 $data_update['satker_id'] = $ppk->unit->id;
+
+                $users_ppk = UserPPK::with(['user'])->where('ppk_id', '=', $ppk->id)->get();
+                $users_satker = UserSatuanKerja::with(['user'])->where('satker_id', '=', $ppk->unit->id)->get();
+                foreach ($users_ppk as $user_ppk) {
+                    array_push($mails_to, ['email' => $user_ppk->user->email, 'target' => 'ppk']);
+                }
+
+                foreach ($users_satker as $user_satker) {
+                    array_push($mails_to, ['email' => $user_satker->user->email, 'target' => 'satker']);
+                }
             } else {
+                //send to satker
                 $unit = SatuanKerja::find($this->postField('unit'));
                 $data_update['satker_id'] = $unit->id;
+
+                $users_satker = UserSatuanKerja::with(['user'])->where('satker_id', '=', $unit->id)->get();
+
+                foreach ($users_satker as $user_satker) {
+                    array_push($mails_to, ['email' => $user_satker->user->email, 'target' => 'satker']);
+                }
             }
             $data->update($data_update);
-
+            foreach ($mails_to as $target) {
+                Mail::to($target['email'])->send(new ComplainDisposition($data, $target['target']));
+            }
         } else {
             $data_update = [
                 'description' => $this->postField('description'),
@@ -324,5 +347,58 @@ class ComplainController extends CustomController
         } catch (\Exception $e) {
             return $this->jsonResponse('terjadi kesalahan ', 500);
         }
+    }
+
+
+    //ppk part
+    public function index_ppk()
+    {
+        return view('ppk.pengaduan.index');
+    }
+
+    public function complain_data_ppk()
+    {
+
+        try {
+            $user_ppk = UserPPK::where('user_id', '=', Auth::id())->first();
+            if (!$user_ppk) {
+                return $this->basicDataTables([]);
+            }
+            $status = 1;
+//            if ($this->field('q') === 'answered') {
+//                $status = 6;
+//            }
+            $query = Complain::with(['legal', 'last_answer'])
+                ->where('status', '=', $status)
+                ->where('target', '=', 1);
+//            if ($this->field('q') === 'answered') {
+//                $query->orWhere('status', '=', 7);
+//            }
+//
+//            if ($this->field('q') === 'process') {
+//                $query->whereNotNull('satker_id');
+//            }
+
+            if ($this->field('q') === 'waiting') {
+                $query->where('ppk_id', '=', $user_ppk->ppk_id);
+            }
+            $data = $query->get()->append(['HasAnswer', 'HasApprovedAnswer']);
+            return $this->basicDataTables($data);
+        } catch (\Exception $e) {
+            return $this->basicDataTables([]);
+        }
+    }
+
+    public function data_detail_by_ticket_ppk($ticket)
+    {
+        Session::put('redirect', URL::current());
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Complain::with(['legal', 'unit', 'ppk'])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail()->append(['HasAnswer', 'HasApprovedAnswer']);
+        if ($this->request->method() === 'POST') {
+            return $this->send_answer($data->id);
+        }
+        Session::forget('redirect');
+        return view('ppk.pengaduan.detail')->with(['data' => $data]);
     }
 }
