@@ -33,7 +33,8 @@
                         <th class="f14" width="12%">Tanggal</th>
                         <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
-                        <th class="f14" width="15%">Legalitas</th>
+                        <th class="f14" width="13%">Legalitas</th>
+                        <th class="f14" width="10%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -110,7 +111,7 @@
             }
 
 
-            return '<div>' +
+            return '<div class="f14">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -143,9 +144,9 @@
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p>Isi Saran / Pengaduan</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6"><span>:</span><p class="text-justify mb-0 d-inline"> ' + d['complain'] + '</p></div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
-                action +
+                // action +
                 '</div>';
         }
 
@@ -205,7 +206,23 @@
                         return legal;
                     }
                 },
-            ], [], function (d) {
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let ticket_id = data['ticket_id'].replaceAll('/', '-');
+                        let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/info';
+                        return '<a href="' + url + '" class="btn-detail" data-id="' + data['id'] + '"><i class="fa fa-info-circle" style="font-size: 16px;"></i></a>'
+                    }
+                },
+            ], [
+                {
+                    targets: '_all',
+                    className: 'f14'
+                },
+                {
+                    targets: [0, 1, 2, 5, 6],
+                    className: 'text-center'
+                }
+            ], function (d) {
                 d.q = query;
             }, {
                 "scrollX": true,

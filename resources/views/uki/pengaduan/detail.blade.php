@@ -6,6 +6,11 @@
             Swal.fire("Berhasil!", '{{\Illuminate\Support\Facades\Session::get('success')}}', "success")
         </script>
     @endif
+    @if (\Illuminate\Support\Facades\Session::has('failed'))
+        <script>
+            Swal.fire("Gagal!", '{{\Illuminate\Support\Facades\Session::get('failed')}}', "error")
+        </script>
+    @endif
     <div class="container-fluid">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <ol class="breadcrumb breadcrumb-transparent mb-0">
@@ -96,7 +101,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        @if($data->satker_id == null)
+                        @if($data->target != null)
                             {{--                            <form method="post" id="form-disposition"--}}
                             {{--                                  action="{{ route('complain.data.send.disposition', ['id' => $data->id]) }}">--}}
                             <form method="post" id="form-disposition">
@@ -153,27 +158,36 @@
 
                                 <hr>
                                 <div class="text-right">
-                                    <button type="submit" class="main-button"><i class="fa fa-check mr-2"></i>Simpan
+                                    <button type="submit" class="main-button" id="btn-submit"><i
+                                            class="fa fa-check mr-2"></i>Simpan
                                     </button>
                                 </div>
                             </form>
                         @else
-                            <div class="text-center">
-                                <p class="font-weight-bold">
-                                    Data Saran / Pengaduan Sudah Di Teruskan Kepada
-                                    <br>
-                                    @if($data->target == 1)
-                                        <span class="font-weight-bold">{{ $data->ppk->name }}</span>
-                                    @else
-                                        <span class="font-weight-bold">{{ $data->unit->name }}</span>
-                                    @endif
-                                </p>
-                            </div>
-                            <hr>
-                            <div class="text-right">
-                                <a href="{{ route('complain.answers.uki.by.ticket', ['ticket' => str_replace('/', '-', $data->ticket_id)]) }}"
-                                   class="main-button"><i class="fa fa-comments mr-2"></i>Lihat Jawaban</a>
-                            </div>
+                            @if($data->status == 6)
+                                <div class="text-center">
+                                    <p class="font-weight-bold">
+                                        Data saran / pengaduan tidak diterima dikarenakan {{ $data->description }}
+                                    </p>
+                                </div>
+                            @else
+                                <div class="text-center">
+                                    <p class="font-weight-bold">
+                                        Data Saran / Pengaduan Sudah Di Teruskan Kepada
+                                        <br>
+                                        @if($data->target == 1)
+                                            <span class="font-weight-bold">{{ $data->ppk->name }}</span>
+                                        @elseif($data->target == 0)
+                                            <span class="font-weight-bold">{{ $data->unit->name }}</span>
+                                        @endif
+                                    </p>
+                                </div>
+                                <hr>
+                                <div class="text-right">
+                                    <a href="{{ route('complain.answers.uki.by.ticket', ['ticket' => str_replace('/', '-', $data->ticket_id)]) }}"
+                                       class="main-button"><i class="fa fa-comments mr-2"></i>Lihat Jawaban</a>
+                                </div>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -236,6 +250,26 @@
 
             $('input:radio[name=target]').on('change', function () {
                 togglePanelTarget();
+            })
+            $('#btn-submit').on('click', function (e) {
+                e.preventDefault();
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
+                Swal.fire({
+                    title: 'Konfirmasi!',
+                    text: 'Yakin ingin memproses data pengaduan?',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya'
+                }).then((result) => {
+                    if (result.value) {
+                        $('#form-disposition').submit();
+                    }
+                });
             })
         })
     </script>

@@ -52,7 +52,11 @@
     @endif
     <div class="backdrop-loading" id="backdrop-loading">
         <div style="height: 100%; width: 100%" class="d-flex align-items-center justify-content-center">
-            <p style="color: white">Sedang mengirim data saran / pengaduan ke admin UKI...</p>
+            <div class="text-center">
+                <img src="{{ asset('/assets/icons/loading.png') }}" height="200" class="mb-2">
+                <p style="color: white">Sedang mengirim data saran / pengaduan ke admin UKI...</p>
+            </div>
+
         </div>
     </div>
     <div class="container-fluid">
@@ -83,6 +87,7 @@
                         <th class="f14" width="20%">No. Ticket</th>
                         <th class="f14">Nama</th>
                         <th class="f14 text-center" width="13%">Legalitas</th>
+                        <th class="f14 text-center" width="10%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -134,17 +139,6 @@
                 '</div>' +
                 '</div>';
 
-            // let disposition = '';
-            // if (query !== 'waiting') {
-            //     disposition = '<div class="row">' +
-            //         '<div class="col-lg-3 col-md-4 col-sm-6">' +
-            //         '<p class="mb-0">Disposisi</p>' +
-            //         '</div>' +
-            //         '<div class="col-lg-9 col-md-8 col-sm-6">: -</div>' +
-            //         '</div>';
-            // }
-
-
             return '<div class="f14">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
@@ -180,7 +174,7 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
-                action +
+                // action +
                 '</div>';
         }
 
@@ -221,7 +215,6 @@
                 }).then((result) => {
                     window.location.reload();
                 });
-
             })
         }
 
@@ -252,13 +245,18 @@
                         return legal;
                     }
                 },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        return '<a href="#" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-envelope"></i></a>'
+                    }
+                },
             ], [
                 {
                     targets: '_all',
                     className: 'f14'
                 },
                 {
-                    targets: [5],
+                    targets: [0, 1, 2, 5, 6],
                     className: 'text-center'
                 }
             ], function (d) {
@@ -268,18 +266,23 @@
                 responsive: true,
                 "fnDrawCallback": function (settings) {
                     setExpand();
+                    eventProcess();
                 },
             });
         }
 
         function eventProcess() {
-            $('#table-data tbody').on('click', '.btn-process', function (e) {
+            $('.btn-send').on('click', function (e) {
                 e.preventDefault();
                 let id = this.dataset.id;
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
                 Swal.fire({
                     title: 'Konfirmasi!',
                     text: 'Yakin ingin memproses data pengaduan?',
-                    icon: 'info',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
@@ -291,6 +294,7 @@
                 });
             });
         }
+
 
         $(document).ready(function () {
             generateTable();

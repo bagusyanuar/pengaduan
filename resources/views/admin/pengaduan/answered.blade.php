@@ -1,11 +1,69 @@
 @extends('admin.layout')
 
+@section('css')
+    <style>
+        .swal2-container {
+            display: grid;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            box-sizing: border-box;
+            grid-template-areas: "top-start  top       top-end   " "center-start center    center-end" "bottom-start bottom-center bottom-end";
+            grid-template-rows: minmax(-webkit-min-content, auto) minmax(-webkit-min-content, auto) minmax(-webkit-min-content, auto);
+            grid-template-rows: minmax(min-content, auto) minmax(min-content, auto) minmax(min-content, auto);
+            height: 100%;
+            padding: 0.625em;
+            overflow-x: hidden;
+            transition: background-color 0.1s;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .swal2-shown {
+            overflow: unset !important;
+            padding-right: 0px !important;
+        }
+
+        #backdrop-loading {
+            pointer-events: all;
+            display: none;
+            z-index: 99999;
+            border: none;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            top: 0px;
+            left: 0px;
+            cursor: wait;
+            position: fixed;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+    </style>
+@endsection
+
 @section('content')
     @if (\Illuminate\Support\Facades\Session::has('success'))
         <script>
             Swal.fire("Berhasil!", '{{\Illuminate\Support\Facades\Session::get('success')}}', "success")
         </script>
     @endif
+    @if (\Illuminate\Support\Facades\Session::has('failed'))
+        <script>
+            Swal.fire("Gagal!", '{{\Illuminate\Support\Facades\Session::get('failed')}}', "error")
+        </script>
+    @endif
+    <div class="backdrop-loading" id="backdrop-loading">
+        <div style="height: 100%; width: 100%" class="d-flex align-items-center justify-content-center">
+            <div class="text-center">
+                <img src="{{ asset('/assets/icons/loading.png') }}" height="200" class="mb-2">
+                <p style="color: white">Sedang mengirim data saran / pengaduan ke admin UKI...</p>
+            </div>
+
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <ol class="breadcrumb breadcrumb-transparent mb-0">
@@ -28,13 +86,14 @@
                 <table id="table-data" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
-                        <th width="5%" class="text-center f14 no-sort"></th>
+                        <th width="5%" class="text-center f14"></th>
                         <th width="5%" class="text-center f14">#</th>
                         <th class="f14" width="12%">Tanggal</th>
                         <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
-                        <th class="f14" width="15%">Legalitas</th>
-                        <th class="f14 text-center" width="10%">Status</th>
+                        <th class="f14" width="13%">Legalitas</th>
+                        <th class="f14 text-center" width="8%">Status</th>
+                        <th class="f14 text-center" width="8%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -87,10 +146,11 @@
                 '</div>';
 
             let targetDisposition = '-';
-            if (d['unit'] !== null) {
+
+            if (d['unit'] !== null && d['target'] === 0) {
                 targetDisposition = d['unit']['name'];
             }
-            if (d['ppk'] !== null) {
+            if (d['ppk'] !== null && d['target'] === 1) {
                 targetDisposition = d['ppk']['name'];
             }
 
@@ -112,7 +172,7 @@
                     '</div>';
             }
 
-            return '<div>' +
+            return '<div class="f14">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -148,7 +208,7 @@
                 '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
                 description +
-                action +
+                // action +
                 '</div>';
         }
 
@@ -208,10 +268,12 @@
                         let el = '-';
                         switch (status) {
                             case 6:
-                                el = '<div class="pills-danger text-center">Di Tolak</div>';
+                                // el = '<div class="pills-danger text-center">Di Tolak</div>';
+                                el = '<i class="fa fa-window-close" style="color: #EB1D36; font-size: 16px;"></i>';
                                 break;
                             case 7:
-                                el = '<div class="pills-success text-center">Di Setujui</div>';
+                                // el = '<div class="pills-success text-center">Di Setujui</div>';
+                                el = '<i class="fa fa-check-square" style="color: #54B435; font-size: 16px;"></i>';
                                 break;
                             default:
                                 break
@@ -219,20 +281,76 @@
                         return el;
                     }
                 },
-            ], [], function (d) {
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        return '<a href="#" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-envelope" style="font-size: 16px;"></i></a>'
+                    }
+                },
+            ], [
+                {
+                    targets: '_all',
+                    className: 'f14'
+                },
+                {
+                    targets: [0, 1, 2, 5, 6, 7],
+                    className: 'text-center'
+                },
+                {
+                    targets: [0, 6, 7],
+                    orderable: false,
+                }
+            ], function (d) {
                 d.q = query;
             }, {
                 "scrollX": true,
                 "fnDrawCallback": function (settings) {
                     setExpand();
+                    eventSend();
                 },
             });
         }
 
+        function sendReply(id) {
+            AjaxPost(prefix_url + '/admin/pengaduan/' + id + '/reply', function () {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Berhasil mengirimkan balasan ke pelapor...',
+                    icon: 'success',
+                }).then((result) => {
+                    window.location.reload();
+                });
+            })
+        }
+
+        function eventSend() {
+            $('.btn-send').on('click', function (e) {
+                e.preventDefault();
+                let id = this.dataset.id;
+                console.log(id);
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
+                Swal.fire({
+                    title: 'Konfirmasi!',
+                    text: 'Ingin mengirimkan pesan ke pelapor?',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya'
+                }).then((result) => {
+                    if (result.value) {
+                        sendReply(id);
+                    }
+                });
+            });
+        }
 
         $(document).ready(function () {
             generateTable();
             setExpand();
+            eventSend();
         });
     </script>
 @endsection

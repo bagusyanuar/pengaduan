@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helper\CustomController;
 use App\Mail\NewComplain;
+use App\Mail\ReplyComplain;
 use App\Models\Complain;
 use App\Models\ComplainAnswer;
 use App\Models\PPK;
@@ -52,18 +53,24 @@ class ComplainController extends CustomController
     {
         try {
             $status = 1;
-            if ($this->field('q') === 'answered') {
+            $completed = false;
+            if ($this->field('q') === 'complete') {
+                $completed = true;
+            }
+            if ($this->field('q') === 'answered' || $this->field('q') === 'complete') {
                 $status = 6;
             } else if ($this->field('q') === 'waiting') {
                 $status = 0;
-            } else if ($this->field('q') === 'complete') {
-                $status = 9;
             }
             $query = Complain::with(['legal', 'unit', 'ppk'])
-                ->where('status', '=', $status);
-            if ($this->field('q') === 'answered') {
-                $query->orWhere('status', '=', 7);
+                ->where('status', '=', $status)
+                ->where('is_finish', '=', $completed);
+
+            if ($this->field('q') === 'answered' || $this->field('q') === 'complete') {
+                $query->orWhere('status', '=', 9);
             }
+
+
             $data = $query->get();
             return $this->basicDataTables($data);
         } catch (\Exception $e) {
@@ -296,6 +303,26 @@ class ComplainController extends CustomController
             return redirect()->back()->with('success', 'Berhasil Melakukan Konfirmasi Saran / Pengaduan...');
         } catch (\Exception $e) {
             return redirect()->back()->with('failed', 'terjadi kesalahan server');
+        }
+    }
+
+    public function reply_complain($id)
+    {
+        try {
+            $complain = Complain::with('legal')
+                ->where('id', '=', $id)
+                ->first();
+            if (!$complain) {
+                return $this->jsonResponse('Data Tidak Di Temukan...', 500);
+            }
+            $complain->update([
+                'status' => 9
+            ]);
+            $target = $complain->email;
+            Mail::to($target)->send(new ReplyComplain($complain));
+            return $this->jsonResponse('success', 200);
+        } catch (\Exception $e) {
+            return $this->jsonResponse('terjadi kesalahan ', 500);
         }
     }
 }

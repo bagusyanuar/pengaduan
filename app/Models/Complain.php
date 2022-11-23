@@ -20,10 +20,15 @@ class Complain extends Model
         'complain',
         'type',
         'status',
+        'is_finish',
         'target',
         'satker_id',
         'ppk_id',
         'description',
+    ];
+
+    protected $casts = [
+        'is_finish' => 'boolean'
     ];
 
     public function legal()

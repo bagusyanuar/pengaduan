@@ -479,3 +479,11 @@ table.dataTable {
     color: white !important;
     background-color: var(--primaryColor) !important;
 }
+
+
+/*swal*/
+
+.swal2-shown {
+    overflow: unset !important;
+    padding-right: 0px !important;
+}
