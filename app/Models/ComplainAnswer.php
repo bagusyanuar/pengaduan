@@ -24,4 +24,14 @@ class ComplainAnswer extends Model
     {
         return $this->belongsTo(Complain::class, 'complain_id');
     }
+
+    public function author_upload()
+    {
+        return $this->belongsTo(User::class, 'author_upload');
+    }
+
+    public function author_answer()
+    {
+        return $this->belongsTo(User::class, 'author_answer');
+    }
 }

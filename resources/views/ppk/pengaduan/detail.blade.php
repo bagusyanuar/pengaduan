@@ -28,7 +28,7 @@
     </div>
     <section>
         <div class="row">
-            <div class="col-sm-12 col-md-7 col-lg-7">
+            <div class="col-sm-12 col-md-5 col-lg-5">
                 <div class="card card-outline card-warning">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
@@ -71,7 +71,7 @@
                         </div>
                         <div class="w-100 mb-2">
                             <label for="complain" class="form-label f14">Saran / Pengaduan</label>
-                            <textarea rows="4" class="form-control f14" id="complain" placeholder="Saran / Pengaduan"
+                            <textarea rows="6" class="form-control f14" id="complain" placeholder="Saran / Pengaduan"
                                       name="complain" readonly>{{ $data->complain }}</textarea>
                         </div>
                         <div class="w-100 mb-2">
@@ -94,8 +94,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-5 col-lg-5">
-                <div class="card card-outline card-success">
+            <div class="col-sm-12 col-md-7 col-lg-7">
+                <div class="card card-outline card-success mb-2">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <p class="mb-0">Jawaban</p>
@@ -131,6 +131,28 @@
                         @endif
                     </div>
                 </div>
+                <div class="card card-outline card-info">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="mb-0">Riwayat Jawaban</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="display w-100 table table-bordered" id="table-data">
+                            <thead>
+                            <tr>
+                                <th width="5%" class="text-center f14 no-sort"></th>
+                                <th width="5%" class="text-center f14">#</th>
+                                <th class="f14" width="17%">Tanggal</th>
+                                <th class="f14">Respon UKI</th>
+                                <th class="f14" width="8%">Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -146,6 +168,8 @@
     <script src="{{ asset('/adminlte/plugins/select2/select2.full.js') }}"></script>
     <script src="{{ asset('/js/helper.js') }}"></script>
     <script type="text/javascript">
+        let table;
+        var prefix_url = '{{ env('PREFIX_URL') }}';
 
         function togglePanelStatus() {
             let cVal = $('#status').val();
@@ -178,6 +202,122 @@
             }
         }
 
+        function detailElement(d) {
+            let asset_file = prefix_url + d['file'];
+            let author_answer = '-';
+            let response_date = '-';
+            if (d['status'] !== 0) {
+                author_answer = d['author_answer']['username'];
+                response_date = d['date_answer'];
+            }
+            return '<div class="f14">' +
+                '<p class="font-weight-bold">Detail Respon Jawaban UKI</p>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Tanggal Respon</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + response_date + '</div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Di Jawab Oleh</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + author_answer + '</div>' +
+                '</div>' +
+                '<div class="row">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">File Lampiran</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: <a href="' + asset_file + '" target="_blank">Lampiran</a></div></div>' +
+                '</div>' +
+                '</div>';
+        }
+
+        function setExpand() {
+            $('#table-data tbody').on('click', 'td.dt-control', function () {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var i = $(this).children();
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                    i.removeClass('fa fa-minus-square-o');
+                    i.addClass('fa fa-plus-square-o');
+                } else {
+                    // Open this row
+                    console.log(row.data());
+                    row.child(detailElement(row.data())).show();
+                    tr.addClass('shown');
+                    i.removeClass('fa fa-plus-square-o');
+                    i.addClass('fa fa-minus-square-o');
+                }
+            });
+        }
+
+        function generateTable() {
+            let ticket_id = '{{ $data->ticket_id }}'.replaceAll('/', '-');
+            let url = prefix_url + '/admin-ppk/pengaduan/' + ticket_id + '/jawaban/riwayat';
+            table = DataTableGenerator('#table-data', prefix_url + url, [
+                {
+                    className: 'dt-control',
+                    orderable: false,
+                    data: null, render: function () {
+                        return '<i class="fa fa-plus-square-o main-text expand-icon"></i>';
+                    }
+                },
+                {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
+                {
+                    data: 'date_upload', name: 'date_upload', render: function (data) {
+                        let date = new Date(data);
+                        return date.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+                    }
+                },
+                {data: 'description'},
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let status = data['status'];
+                        let el = '<i class="fa fa-minus" style="font-size: 16px; color: gray"></i>';
+                        switch (status) {
+                            case 0:
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #f55400"></i>';
+                                break;
+                            case 6:
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #EB1D36"></i>';
+                                break;
+                            case 9:
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #54B435"></i>';
+                                break;
+                            default:
+                                break
+                        }
+                        return el;
+                    }
+                },
+            ], [
+                {
+                    targets: '_all',
+                    className: 'f12'
+                },
+                {
+                    targets: [0, 1, 4],
+                    className: 'text-center'
+                },
+                {
+                    targets: [0, 4],
+                    orderable: false
+                }
+            ], function (d) {
+
+            }, {
+                "scrollX": true,
+                "fnDrawCallback": function (settings) {
+                    // setExpand();
+                },
+            });
+        }
+
         $(document).ready(function () {
             $('.custom-file-input').on('change', function () {
                 let fileName = $(this).val().split('\\').pop();
@@ -195,6 +335,8 @@
             $('input:radio[name=target]').on('change', function () {
                 togglePanelTarget();
             })
+            generateTable();
+            setExpand();
         })
     </script>
 @endsection

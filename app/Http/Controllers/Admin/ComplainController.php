@@ -237,7 +237,7 @@ class ComplainController extends CustomController
             $complain->answer->update($data);
             if ($status === '1') {
                 $complain->update([
-                    'status' => 7
+                    'status' => 9
                 ]);
             }
             DB::commit();
@@ -393,12 +393,29 @@ class ComplainController extends CustomController
     {
         Session::put('redirect', URL::current());
         $ticket_id = str_replace('-', '/', $ticket);
-        $data = Complain::with(['legal', 'unit', 'ppk'])->where('ticket_id', '=', $ticket_id)
+        $data = Complain::with(['legal', 'unit', 'ppk', 'answers'])->where('ticket_id', '=', $ticket_id)
             ->firstOrFail()->append(['HasAnswer', 'HasApprovedAnswer']);
         if ($this->request->method() === 'POST') {
             return $this->send_answer($data->id);
         }
         Session::forget('redirect');
         return view('ppk.pengaduan.detail')->with(['data' => $data]);
+    }
+
+    public function complain_answers_data($ticket)
+    {
+        try {
+            $ticket_id = str_replace('-', '/', $ticket);
+            $data = ComplainAnswer::with(['complain', 'author_upload', 'author_answer'])
+                ->whereHas('complain', function ($q) use ($ticket_id) {
+                    return $q->where('ticket_id', '=', $ticket_id);
+                })
+                ->orderBy('date_upload', 'DESC')
+                ->orderBy('id', 'DESC')
+                ->get();
+            return $this->basicDataTables($data);
+        } catch (\Exception $e) {
+            return $this->basicDataTables([]);
+        }
     }
 }

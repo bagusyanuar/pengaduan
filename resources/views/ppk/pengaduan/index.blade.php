@@ -147,13 +147,8 @@
                     tr.addClass('shown');
                     i.removeClass('fa fa-plus-square-o');
                     i.addClass('fa fa-minus-square-o');
-                    console.log(row.data());
-                    // console.log(tr.closest('i'));
-
                 }
             });
-
-
         }
 
         function sendProcess(id) {
@@ -188,15 +183,15 @@
                 {
                     data: null, render: function (data, type, row, meta) {
                         let lastAnswer = data['last_answer'];
-                        let el = '<i class="fa fa-minus" style="font-size: 16px; color: #EB1D36"></i>';
+                        let el = '<i class="fa fa-minus" style="font-size: 16px; color: gray"></i>';
                         if (lastAnswer !== null) {
                             let status = lastAnswer['status'];
                             if (status === 6) {
-                                el = '<i class="fa fa-comments" style="font-size: 16px; color: #EB1D36"></i>';
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #EB1D36"></i>';
                             }
 
                             if (status === 0) {
-                                el = '<i class="fa fa-comments" style="font-size: 16px; color: #f55400"></i>';
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #f55400"></i>';
                             }
 
                         }
@@ -207,7 +202,7 @@
                     data: null, render: function (data, type, row, meta) {
                         let ticket_id = data['ticket_id'].replaceAll('/', '-');
                         let url = prefix_url + '/admin-ppk/pengaduan/' + ticket_id + '/info';
-                        return '<a href="' + url + '" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-info-circle" style="font-size: 16px;"></i></a>'
+                        return '<a href="' + url + '" class="btn-send" data-id="' + data['id'] + '">Detail</a>'
                     }
                 },
             ], [

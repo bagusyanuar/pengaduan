@@ -35,6 +35,7 @@
                         <th class="f14">Nama</th>
                         <th class="f14" width="12%">Legalitas</th>
                         <th class="f14" width="8%">Status</th>
+                        <th class="f14" width="12%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -45,6 +46,21 @@
     </section>
 @endsection
 
+@section('css')
+    <style>
+        .btn-detail-outline {
+            border: 1px solid #0078AA;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .btn-answer-outline {
+            border: 1px solid #EF5B0C;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+    @endsection
 @section('js')
     <script src="{{ asset('/js/helper.js') }}"></script>
     <script type="text/javascript">
@@ -203,11 +219,20 @@
                         let status = data['HasAnswer'];
                         let ticket_id = data['ticket_id'].replaceAll('/', '-');
                         let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
-                        let el = '<a href="' + url + '"><i class="fa fa-comments" style="font-size: 18px; color: #EB1D36"></i></a>';
+                        let el = '<i class="fa fa-check-circle" style="font-size: 18px; color: #EB1D36"></i>';
                         if (status) {
-                            el = '<a href="' + url + '"><i class="fa fa-comments" style="font-size: 18px; color: #54B435"></i></a>';
+                            el = '<i class="fa fa-check-circle" style="font-size: 18px; color: #54B435"></i>';
                         }
                         return el;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let ticket_id = data['ticket_id'].replaceAll('/', '-');
+                        let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/info';
+                        let urlAnswer = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
+                        return '<a href="' + url + '" class="btn-detail-outline mr-2 mb-1 d-inline-block" data-id="' + data['id'] + '"><i class="fa fa-info" style="font-size: 18px; color: #0078AA"></i></a>' +
+                            '<a href="' + urlAnswer + '" class="btn-answer-outline d-inline-block" data-id="' + data['id'] + '"><i class="fa fa-comments" style="font-size: 18px; color: #EF5B0C"></i></a>';
                     }
                 },
             ], [
@@ -216,8 +241,12 @@
                     className: 'f14'
                 },
                 {
-                    targets: [0, 1, 2, 5, 6],
+                    targets: [0, 1, 2, 5, 6, 7],
                     className: 'text-center'
+                },
+                {
+                    targets: [6, 7],
+                    orderable: false
                 }
             ], function (d) {
                 d.q = query;
