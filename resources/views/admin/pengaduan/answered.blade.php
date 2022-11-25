@@ -271,7 +271,7 @@
                                 // el = '<div class="pills-danger text-center">Di Tolak</div>';
                                 el = '<i class="fa fa-window-close" style="color: #EB1D36; font-size: 16px;"></i>';
                                 break;
-                            case 7:
+                            case 9:
                                 // el = '<div class="pills-success text-center">Di Setujui</div>';
                                 el = '<i class="fa fa-check-square" style="color: #54B435; font-size: 16px;"></i>';
                                 break;
@@ -326,7 +326,6 @@
             $('.btn-send').on('click', function (e) {
                 e.preventDefault();
                 let id = this.dataset.id;
-                console.log(id);
                 let iconUrl = '{{ asset('/assets/icons/question.png') }}';
                 Swal.fire({
                     title: 'Konfirmasi!',

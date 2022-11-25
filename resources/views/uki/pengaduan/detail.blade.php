@@ -27,7 +27,7 @@
     </div>
     <section>
         <div class="row">
-            <div class="col-sm-12 col-md-7 col-lg-7">
+            <div class="col-sm-12 col-md-6 col-lg-6">
                 <div class="card card-outline card-warning">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
@@ -93,7 +93,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-5 col-lg-5">
+            <div class="col-sm-12 col-md-6 col-lg-6">
                 <div class="card card-outline card-success">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        @if($data->target == null)
+                        @if($data->target === null)
                             {{--                            <form method="post" id="form-disposition"--}}
                             {{--                                  action="{{ route('complain.data.send.disposition', ['id' => $data->id]) }}">--}}
                             <form method="post" id="form-disposition">
@@ -256,7 +256,7 @@
                 let iconUrl = '{{ asset('/assets/icons/question.png') }}';
                 Swal.fire({
                     title: 'Konfirmasi!',
-                    text: 'Yakin ingin memproses data pengaduan?',
+                    text: 'Ingin memproses data pengaduan?',
                     iconHtml: '<img src="' + iconUrl + '" height="100">',
                     customClass: {
                         icon: 'no-border'

@@ -54,24 +54,19 @@ class ComplainController extends CustomController
     public function complain_data()
     {
         try {
-            $status = 1;
             $completed = false;
+            $status = [1];
             if ($this->field('q') === 'complete') {
                 $completed = true;
             }
-            if ($this->field('q') === 'answered' || $this->field('q') === 'complete') {
-                $status = 6;
+            if ($this->field('q') === 'answered') {
+                $status = [6, 9];
             } else if ($this->field('q') === 'waiting') {
-                $status = 0;
+                $status = [0];
             }
             $query = Complain::with(['legal', 'unit', 'ppk'])
-                ->where('status', '=', $status)
+                ->whereIn('status', $status)
                 ->where('is_finish', '=', $completed);
-
-            if ($this->field('q') === 'answered' || $this->field('q') === 'complete') {
-                $query->orWhere('status', '=', 9);
-            }
-
 
             $data = $query->get();
             return $this->basicDataTables($data);
@@ -117,15 +112,12 @@ class ComplainController extends CustomController
     public function complain_data_uki()
     {
         try {
-            $status = 1;
+            $status = [1];
             if ($this->field('q') === 'answered') {
-                $status = 6;
+                $status = [6, 9];
             }
             $query = Complain::with(['legal', 'unit', 'ppk'])
-                ->where('status', '=', $status);
-            if ($this->field('q') === 'answered') {
-                $query->orWhere('status', '=', 9);
-            }
+                ->whereIn('status', $status);
 
             if ($this->field('q') === 'process') {
                 $query->whereNotNull('target');
@@ -265,23 +257,11 @@ class ComplainController extends CustomController
                 return $this->basicDataTables([]);
             }
             $status = 1;
-//            if ($this->field('q') === 'answered') {
-//                $status = 6;
-//            }
-            $query = Complain::with('legal')
+            $query = Complain::with(['legal', 'last_answer'])
                 ->where('status', '=', $status)
                 ->where('target', '=', 0);
-//            if ($this->field('q') === 'answered') {
-//                $query->orWhere('status', '=', 7);
-//            }
-//
-//            if ($this->field('q') === 'process') {
-//                $query->whereNotNull('satker_id');
-//            }
-
             if ($this->field('q') === 'waiting') {
-                $query->where('satker_id', '=', $user_satker->satker_id)
-                    ->whereNull('ppk_id');
+                $query->where('satker_id', '=', $user_satker->satker_id);
             }
             $data = $query->get()->append(['HasAnswer', 'HasApprovedAnswer']);
             return $this->basicDataTables($data);
@@ -294,7 +274,7 @@ class ComplainController extends CustomController
     {
         Session::put('redirect', URL::current());
         $ticket_id = str_replace('-', '/', $ticket);
-        $data = Complain::with(['legal', 'unit', 'ppk'])->where('ticket_id', '=', $ticket_id)
+        $data = Complain::with(['legal', 'unit', 'ppk', 'answers'])->where('ticket_id', '=', $ticket_id)
             ->firstOrFail()->append(['HasAnswer', 'HasApprovedAnswer']);
         if ($this->request->method() === 'POST') {
             return $this->send_answer($data->id);
@@ -332,6 +312,7 @@ class ComplainController extends CustomController
     public function reply_complain($id)
     {
         try {
+            DB::beginTransaction();
             $complain = Complain::with('legal')
                 ->where('id', '=', $id)
                 ->first();
@@ -339,12 +320,14 @@ class ComplainController extends CustomController
                 return $this->jsonResponse('Data Tidak Di Temukan...', 500);
             }
             $complain->update([
-                'status' => 9
+                'is_finish' => 1
             ]);
             $target = $complain->email;
             Mail::to($target)->send(new ReplyComplain($complain));
+            DB::commit();
             return $this->jsonResponse('success', 200);
         } catch (\Exception $e) {
+            DB::rollBack();
             return $this->jsonResponse('terjadi kesalahan ', 500);
         }
     }
@@ -365,20 +348,9 @@ class ComplainController extends CustomController
                 return $this->basicDataTables([]);
             }
             $status = 1;
-//            if ($this->field('q') === 'answered') {
-//                $status = 6;
-//            }
             $query = Complain::with(['legal', 'last_answer'])
                 ->where('status', '=', $status)
                 ->where('target', '=', 1);
-//            if ($this->field('q') === 'answered') {
-//                $query->orWhere('status', '=', 7);
-//            }
-//
-//            if ($this->field('q') === 'process') {
-//                $query->whereNotNull('satker_id');
-//            }
-
             if ($this->field('q') === 'waiting') {
                 $query->where('ppk_id', '=', $user_ppk->ppk_id);
             }

@@ -124,7 +124,7 @@
                                 </div>
                                 <hr>
                                 <div class="text-right">
-                                    <button type="submit" class="main-button"><i class="fa fa-check mr-2"></i>Simpan
+                                    <button type="submit" class="main-button" id="btn-answer"><i class="fa fa-check mr-2"></i>Simpan
                                     </button>
                                 </div>
                             </form>
@@ -337,6 +337,27 @@
             })
             generateTable();
             setExpand();
+
+            $('#btn-answer').on('click', function (e) {
+                e.preventDefault();
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
+                Swal.fire({
+                    title: 'Konfirmasi!',
+                    text: 'Ingin mengirimkan lampiran jawaban ke UKI?',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya'
+                }).then((result) => {
+                    if (result.value) {
+                        $('#form-answer').submit();
+                    }
+                });
+            });
         })
     </script>
 @endsection

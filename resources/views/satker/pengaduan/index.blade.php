@@ -31,10 +31,11 @@
                         <th width="5%" class="text-center f14 no-sort"></th>
                         <th width="5%" class="text-center f14">#</th>
                         <th class="f14" width="12%">Tanggal</th>
-                        <th class="f14" width="25%">No. Ticket</th>
+                        <th class="f14" width="20%">No. Ticket</th>
                         <th class="f14">Nama</th>
                         <th class="f14" width="10%">Legalitas</th>
-                        <th class="f14" width="15%">Status</th>
+                        <th class="f14" width="8%">Status</th>
+                        <th class="f14" width="8%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -89,7 +90,7 @@
                 '</div>' +
                 '</div>';
 
-            return '<div>' +
+            return '<div class="f14">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -123,7 +124,7 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify mb-0">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
-                action +
+                // action +
                 '</div>';
         }
 
@@ -186,18 +187,43 @@
                 },
                 {
                     data: null, render: function (data, type, row, meta) {
-                        let hasAnswer = data['HasAnswer'];
-                        let hasApprovedAnswer = data['HasApprovedAnswer'];
-                        let status = '<div class="pills-warning text-center">Menunggu Jawaban</div>';
-                        if (hasAnswer && !hasApprovedAnswer) {
-                            status = '<div class="pills-info text-center">Menunggu Persetujuan</div>';
-                        } else if (hasApprovedAnswer) {
-                            status = '<div class="pills-success text-center">Disetujui</div>';
+                        let lastAnswer = data['last_answer'];
+                        let el = '<i class="fa fa-minus" style="font-size: 16px; color: gray"></i>';
+                        if (lastAnswer !== null) {
+                            let status = lastAnswer['status'];
+                            if (status === 6) {
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #EB1D36"></i>';
+                            }
+
+                            if (status === 0) {
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #f55400"></i>';
+                            }
+
                         }
-                        return status;
+                        return el;
                     }
                 },
-            ], [], function (d) {
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let ticket_id = data['ticket_id'].replaceAll('/', '-');
+                        let url = prefix_url + '/admin-satker/pengaduan/' + ticket_id + '/info';
+                        return '<a href="' + url + '" class="btn-send" data-id="' + data['id'] + '">Detail</a>'
+                    }
+                },
+            ], [
+                {
+                    targets: '_all',
+                    className: 'f14'
+                },
+                {
+                    targets: [0, 1, 2, 5, 6, 7],
+                    className: 'text-center'
+                },
+                {
+                    targets: [6, 7],
+                    orderable: false
+                }
+            ], function (d) {
                 d.q = query;
             }, {
                 "scrollX": true,

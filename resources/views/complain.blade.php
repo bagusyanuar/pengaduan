@@ -56,7 +56,7 @@
                             aria-labelledby="pills-home-tab">
                             <div class="card">
                                 <div class="card-body">
-                                    <form method="post">
+                                    <form method="post" id="form-complain">
                                         @csrf
                                         <input type="hidden" name="type" value="0">
                                         <div class="form-group mb-1">
@@ -145,7 +145,7 @@
                                         </div>
                                         <hr>
                                         <div class="text-right">
-                                            <button type="submit" class="main-button">
+                                            <button type="submit" class="main-button" id="btn-submit-complain">
                                                 Kirim
                                             </button>
                                         </div>
@@ -159,7 +159,7 @@
                             aria-labelledby="pills-profile-tab">
                             <div class="card">
                                 <div class="card-body">
-                                    <form method="post" enctype="multipart/form-data">
+                                    <form method="post" enctype="multipart/form-data" id="form-legal-complain">
                                         @csrf
                                         <input type="hidden" name="type" value="1">
                                         <div class="form-group mb-1">
@@ -213,11 +213,15 @@
                                                 89542****</small>
                                         </div>
                                         <div class="form-group mb-1">
-                                            <label for="legal_assignment" class="form-label">Surat Tugas / Surat Kuasa <span style="color: red">*</span></label>
+                                            <label for="legal_assignment" class="form-label">Surat Tugas / Surat Kuasa
+                                                <span style="color: red">*</span></label>
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input {{ $errors->has('legal_assignment') ? 'is-invalid' : '' }}" id="legal_assignment"
+                                                <input type="file"
+                                                       class="custom-file-input {{ $errors->has('legal_assignment') ? 'is-invalid' : '' }}"
+                                                       id="legal_assignment"
                                                        name="legal_assignment" accept="application/pdf">
-                                                <label class="custom-file-label f14" for="legal_assignment">Pilih File Surat
+                                                <label class="custom-file-label f14" for="legal_assignment">Pilih File
+                                                    Surat
                                                     Tugas / Surat Kuasa</label>
                                                 @if ($errors->has('legal_assignment'))
                                                     <p class="invalid-feedback mb-0" style="font-size: 0.8em">
@@ -227,9 +231,12 @@
                                             </div>
                                         </div>
                                         <div class="form-group mb-1">
-                                            <label for="legal_ad_art" class="form-label">AD ART <span style="color: red">*</span></label>
+                                            <label for="legal_ad_art" class="form-label">AD ART <span
+                                                    style="color: red">*</span></label>
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input {{ $errors->has('legal_ad_art') ? 'is-invalid' : '' }}" id="legal_ad_art" name="legal_ad_art" accept="application/pdf">
+                                                <input type="file"
+                                                       class="custom-file-input {{ $errors->has('legal_ad_art') ? 'is-invalid' : '' }}"
+                                                       id="legal_ad_art" name="legal_ad_art" accept="application/pdf">
                                                 <label class="custom-file-label f14" for="legal_ad_art">Pilih File AD
                                                     ART</label>
                                                 @if ($errors->has('legal_ad_art'))
@@ -241,8 +248,11 @@
                                         </div>
                                         <div class="form-group mb-1">
                                             <label for="legal_address">Alamat <span style="color: red">*</span></label>
-                                            <textarea rows="3" class="form-control {{ $errors->has('legal_address') ? 'is-invalid' : '' }}" id="legal_address" name="legal_address"
-                                                      aria-describedby="addressHelp" placeholder="Alamat">{{ old('address') }}</textarea>
+                                            <textarea rows="3"
+                                                      class="form-control {{ $errors->has('legal_address') ? 'is-invalid' : '' }}"
+                                                      id="legal_address" name="legal_address"
+                                                      aria-describedby="addressHelp"
+                                                      placeholder="Alamat">{{ old('address') }}</textarea>
                                             @if ($errors->has('legal_address'))
                                                 <p class="invalid-feedback mb-0" style="font-size: 0.8em">
                                                     {{ $errors->first('legal_address') }}
@@ -251,14 +261,19 @@
                                         </div>
                                         <div class="form-group mb-1">
                                             <label for="legal_job">Pekerjaan</label>
-                                            <input type="text" class="form-control" id="legal_job" aria-describedby="jobHelp"
-                                                   placeholder="Pekerjaan" name="legal_job" value="{{ old('legal_job') }}">
+                                            <input type="text" class="form-control" id="legal_job"
+                                                   aria-describedby="jobHelp"
+                                                   placeholder="Pekerjaan" name="legal_job"
+                                                   value="{{ old('legal_job') }}">
 
                                         </div>
 
                                         <div class="form-group mb-1">
-                                            <label for="legal_complain">Saran / Pengaduan <span style="color: red">*</span></label>
-                                            <textarea rows="3" class="form-control {{ $errors->has('legal_complain') ? 'is-invalid' : '' }}" id="complain" name="legal_complain"
+                                            <label for="legal_complain">Saran / Pengaduan <span
+                                                    style="color: red">*</span></label>
+                                            <textarea rows="3"
+                                                      class="form-control {{ $errors->has('legal_complain') ? 'is-invalid' : '' }}"
+                                                      id="complain" name="legal_complain"
                                                       aria-describedby="complainHelp"
                                                       placeholder="Saran / Pengaduan">{{ old('legal_complain') }}</textarea>
                                             @if ($errors->has('legal_complain'))
@@ -269,7 +284,7 @@
                                         </div>
                                         <hr>
                                         <div class="text-right">
-                                            <button type="submit" class="main-button">
+                                            <button type="submit" class="main-button" id="btn-submit-legal-complain">
                                                 Kirim
                                             </button>
                                         </div>
@@ -294,6 +309,47 @@
                 let fileName = $(this).val().split('\\').pop();
                 $(this).next('.custom-file-label').addClass("selected").html(fileName);
             })
+
+            $('#btn-submit-complain').on('click', function (e) {
+                e.preventDefault();
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
+                Swal.fire({
+                    title: 'Konfirmasi!',
+                    text: 'Ingin mengirimkan saran / pengaduan?',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya'
+                }).then((result) => {
+                    if (result.value) {
+                        $('#form-complain').submit();
+                    }
+                });
+            });
+            $('#btn-submit-legal-complain').on('click', function (e) {
+                e.preventDefault();
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
+                Swal.fire({
+                    title: 'Konfirmasi!',
+                    text: 'Ingin mengirimkan saran / pengaduan?',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya'
+                }).then((result) => {
+                    if (result.value) {
+                        $('#form-legal-complain').submit();
+                    }
+                });
+            });
         })
     </script>
 @endsection

@@ -84,10 +84,10 @@
                         <th width="5%" class="text-center f14 no-sort"></th>
                         <th width="5%" class="text-center f14">#</th>
                         <th class="f14" width="12%">Tanggal</th>
-                        <th class="f14" width="20%">No. Ticket</th>
+                        <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
                         <th class="f14 text-center" width="13%">Legalitas</th>
-                        <th class="f14 text-center" width="10%">Aksi</th>
+                        <th class="f14 text-center" width="8%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -256,8 +256,12 @@
                     className: 'f14'
                 },
                 {
-                    targets: [0, 1, 2, 5, 6],
+                    targets: [0, 1, 2, 3, 5, 6],
                     className: 'text-center'
+                },
+                {
+                    targets: [0, 6],
+                    orderable: false
                 }
             ], function (d) {
                 d.q = 'waiting';
@@ -278,7 +282,7 @@
                 let iconUrl = '{{ asset('/assets/icons/question.png') }}';
                 Swal.fire({
                     title: 'Konfirmasi!',
-                    text: 'Yakin ingin memproses data pengaduan?',
+                    text: 'Ingin memproses data pengaduan?',
                     iconHtml: '<img src="' + iconUrl + '" height="100">',
                     customClass: {
                         icon: 'no-border'

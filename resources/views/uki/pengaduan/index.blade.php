@@ -34,7 +34,7 @@
                         <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
                         <th class="f14" width="13%">Legalitas</th>
-                        <th class="f14" width="10%">Aksi</th>
+                        <th class="f14" width="8%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -210,7 +210,7 @@
                     data: null, render: function (data, type, row, meta) {
                         let ticket_id = data['ticket_id'].replaceAll('/', '-');
                         let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/info';
-                        return '<a href="' + url + '" class="btn-detail" data-id="' + data['id'] + '"><i class="fa fa-mail-forward main-text" style="font-size: 16px;"></i></a>'
+                        return '<a href="' + url + '" class="btn-detail" data-id="' + data['id'] + '">Detail</a>'
                     }
                 },
             ], [
@@ -221,6 +221,10 @@
                 {
                     targets: [0, 1, 2, 5, 6],
                     className: 'text-center'
+                },
+                {
+                    targets: [0, 6],
+                    orderable: false
                 }
             ], function (d) {
                 d.q = query;
