@@ -50,14 +50,24 @@
     <style>
         .btn-detail-outline {
             border: 1px solid #0078AA;
-            padding: 5px 10px;
+            padding-top: 2px;
             border-radius: 5px;
+            width: 30px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-answer-outline {
             border: 1px solid #EF5B0C;
-            padding: 5px 10px;
+            padding-top: 2px;
             border-radius: 5px;
+            width: 30px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
     @endsection
@@ -221,7 +231,7 @@
                         let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
                         let el = '<i class="fa fa-check-circle" style="font-size: 18px; color: #EB1D36"></i>';
                         if (status) {
-                            el = '<i class="fa fa-check-circle" style="font-size: 18px; color: #54B435"></i>';
+                            el = '<i class="fa fa-check-circle" style="font-size: 18px; color: #f55400"></i>';
                         }
                         return el;
                     }
@@ -231,8 +241,8 @@
                         let ticket_id = data['ticket_id'].replaceAll('/', '-');
                         let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/info';
                         let urlAnswer = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
-                        return '<a href="' + url + '" class="btn-detail-outline mr-2 mb-1 d-inline-block" data-id="' + data['id'] + '"><i class="fa fa-info" style="font-size: 18px; color: #0078AA"></i></a>' +
-                            '<a href="' + urlAnswer + '" class="btn-answer-outline d-inline-block" data-id="' + data['id'] + '"><i class="fa fa-comments" style="font-size: 18px; color: #EF5B0C"></i></a>';
+                        return '<a href="' + url + '" class="btn-detail-outline mr-1 mb-1 d-inline-block" data-id="' + data['id'] + '" data-toggle="tooltip" data-placement="bottom" title="Detail Saran / Pengaduan"><i class="fa fa-info" style="font-size: 12px; color: #0078AA"></i></a>' +
+                            '<a href="' + urlAnswer + '" class="btn-answer-outline d-inline-block" data-id="' + data['id'] + '" data-toggle="tooltip" data-placement="bottom" title="Jawaban Saran / Pengaduan"><i class="fa fa-comments" style="font-size: 12px; color: #EF5B0C"></i></a>';
                     }
                 },
             ], [

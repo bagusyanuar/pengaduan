@@ -28,11 +28,11 @@
                 <div class="row mb-2">
                     <div class="col-md-3 col-lg-3 col-sm-12">
                         <div class="form-group mb-2">
-                            <label for="start_date f14">Tanggal Awal</label>
+                            <label for="start_date" style="font-size: 12px;">Tanggal Awal</label>
                             <div class="input-group">
-                                <input type="date" id="start_date" value="{{ date('Y-m-d') }}" class="form-control" aria-label="Recipient's username" aria-describedby="start_date_append">
+                                <input type="date" id="start_date" value="{{ date('Y-m-d') }}" class="form-control f12" aria-label="Recipient's username" aria-describedby="start_date_append">
                                 <div class="input-group-append">
-                                    <span class="input-group-text" id="start_date_append"><i class="fa fa-calendar"></i></span>
+                                    <span class="input-group-text" id="start_date_append"><i class="fa fa-calendar f12"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -40,11 +40,11 @@
                     </div>
                     <div class="col-md-3 col-lg-3 col-sm-12">
                         <div class="form-group">
-                            <label for="end_date f14">Tanggal Akhir</label>
+                            <label for="end_date f12" style="font-size: 12px;">Tanggal Akhir</label>
                             <div class="input-group">
-                                <input type="date" id="end_date" value="{{ date('Y-m-d') }}" class="form-control" aria-label="Recipient's username" aria-describedby="end_date_append">
+                                <input type="date" id="end_date" value="{{ date('Y-m-d') }}" class="form-control f12" aria-label="Recipient's username" aria-describedby="end_date_append">
                                 <div class="input-group-append">
-                                    <span class="input-group-text" id="end_date_append"><i class="fa fa-calendar"></i></span>
+                                    <span class="input-group-text" id="end_date_append"><i class="fa fa-calendar f12"></i></span>
                                 </div>
                             </div>
                         </div>

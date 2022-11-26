@@ -54,6 +54,9 @@ class ComplainController extends CustomController
     public function complain_data()
     {
         try {
+            $limit = $this->field('limit');
+
+
             $completed = false;
             $status = [1];
             if ($this->field('q') === 'complete') {
@@ -68,6 +71,9 @@ class ComplainController extends CustomController
                 ->whereIn('status', $status)
                 ->where('is_finish', '=', $completed);
 
+            if ($limit !== null) {
+                $query->take((int)$limit);
+            }
             $data = $query->get();
             return $this->basicDataTables($data);
         } catch (\Exception $e) {
@@ -203,13 +209,28 @@ class ComplainController extends CustomController
         $ticket_id = str_replace('-', '/', $ticket);
         $data = Complain::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
             return $q->orderBy('date_upload', 'DESC');
-        }, 'answer'])->where('ticket_id', '=', $ticket_id)
+        }, 'answer', 'answers.upload_by', 'answers.answer_by'])->where('ticket_id', '=', $ticket_id)
             ->firstOrFail();
-
         if ($this->request->method() === 'POST') {
             return $this->response_answer($data);
         }
         return view('uki.pengaduan.jawaban')->with(['data' => $data]);
+    }
+
+    public function complain_answers_by_ticket_data($ticket)
+    {
+        try {
+            $ticket_id = str_replace('-', '/', $ticket);
+            $data = ComplainAnswer::with(['complain', 'upload_by', 'answer_by'])->whereHas('complain', function ($q) use ($ticket_id) {
+                return $q->where('ticket_id', '=', $ticket_id);
+            })
+                ->orderBy('date_upload', 'DESC')
+                ->get();
+            return $this->basicDataTables($data);
+        } catch (\Exception $e) {
+            return $this->basicDataTables([]);
+        }
+
     }
 
     private function response_answer($complain)
@@ -221,7 +242,7 @@ class ComplainController extends CustomController
                 'date_answer' => Carbon::now()->format('Y-m-d'),
                 'status' => $status === '1' ? 9 : 6,
                 'author_answer' => Auth::id(),
-                'description' => 'Accepted'
+                'description' => 'Jawaban saran / pengaduan di terima'
             ];
             if ($status === '0') {
                 $data['description'] = $this->postField('description');

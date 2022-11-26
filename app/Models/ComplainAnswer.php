@@ -30,7 +30,17 @@ class ComplainAnswer extends Model
         return $this->belongsTo(User::class, 'author_upload');
     }
 
+    public function upload_by()
+    {
+        return $this->belongsTo(User::class, 'author_upload');
+    }
+
     public function author_answer()
+    {
+        return $this->belongsTo(User::class, 'author_answer');
+    }
+
+    public function answer_by()
     {
         return $this->belongsTo(User::class, 'author_answer');
     }

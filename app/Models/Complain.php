@@ -21,6 +21,7 @@ class Complain extends Model
         'type',
         'status',
         'is_finish',
+        'finish_at',
         'target',
         'satker_id',
         'ppk_id',

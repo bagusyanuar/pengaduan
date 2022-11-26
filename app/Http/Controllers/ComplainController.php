@@ -74,11 +74,13 @@ class ComplainController extends CustomController
                 'description' => '-'
             ];
             $complain = Complain::create($data);
-            $admins = User::where('role', '=', 'admin')->get();
-            foreach ($admins as $admin) {
-                $target = $admin->email;
-                Mail::to($target)->send(new ComplainToAdmin($complain));
-            }
+
+            //send email to admin
+//            $admins = User::where('role', '=', 'admin')->get();
+//            foreach ($admins as $admin) {
+//                $target = $admin->email;
+//                Mail::to($target)->send(new ComplainToAdmin($complain));
+//            }
             return redirect()->route('complain.success')->with('success', 'Berhasil Mengirimkan Saran / Pengaduan...')->with('ticket', $complain->ticket_id);
         } catch (\Exception $e) {
             return redirect()->back()->withInput(request()->input())->with('failed', 'Terjadi kesalahan server...');

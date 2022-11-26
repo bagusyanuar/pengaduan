@@ -72,7 +72,7 @@
                                     </object>
                                     <form method="post">
                                         @csrf
-{{--                                        <input type="hidden" value="{{ $data->answer->id }}" name="id">--}}
+                                        {{--                                        <input type="hidden" value="{{ $data->answer->id }}" name="id">--}}
                                         <div class="form-group w-100 mb-2">
                                             <label for="status" class="form-label f14">Status</label>
                                             <select class="form-control f14" id="status" name="status">
@@ -96,7 +96,8 @@
                                         </div>
                                     </form>
                                 @else
-                                    <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
+                                    <div class="d-flex justify-content-center align-items-center"
+                                         style="height: 250px;">
                                         <p class="font-weight-bold">Belum Ada Lampiran Jawaban</p>
                                     </div>
                                 @endif
@@ -106,24 +107,16 @@
                                 <table id="table-data" class="display w-100 table table-bordered">
                                     <thead>
                                     <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Tanggal Upload</th>
-                                        <th scope="col">File</th>
-                                        <th scope="col">Aksi</th>
+                                        <th width="5%" class="text-center f12">#</th>
+                                        <th class="f12 text-center" width="12%">Tanggal Upload</th>
+                                        <th class="f12 text-center" width="12%">Tanggal Respon</th>
+                                        <th scope="col" class="f12" width="15%">Di Upload Oleh</th>
+                                        <th scope="col" class="f12">Respon</th>
+                                        <th scope="col" class="f12 text-center" width="12%">File</th>
+                                        <th scope="col" class="f12 text-center" width="8%">Status</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    @forelse($data->answers as $answer)
-                                        <tr>
-                                            <td width="5%" class="text-center f14">{{ $loop->index + 1 }}</td>
-                                            <td class="f14">{{ $answer->date_upload }}</td>
-                                            <td width="10%" class="text-center">
-                                            </td>
-                                            <td width="10%" class="text-center">
-                                            </td>
-                                        </tr>
-                                    @empty
-                                    @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -212,6 +205,9 @@
     <script src="{{ asset('/adminlte/plugins/select2/select2.full.js') }}"></script>
     <script src="{{ asset('/js/helper.js') }}"></script>
     <script type="text/javascript">
+        var table;
+        var prefix_url = '{{ env('PREFIX_URL') }}';
+
         function togglePanelStatus() {
             let cVal = $('#status').val();
             if (cVal === '1') {
@@ -223,16 +219,80 @@
             }
         }
 
+        function generateTable() {
+            let ticket_id = '{{ $data->ticket_id }}'.replaceAll('/', '-');
+            console.log(ticket_id)
+            let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban/data';
+            table = DataTableGenerator('#table-data', url, [
+                {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
+                {data: 'date_upload'},
+                {
+                    data: 'date_answer', name: 'date_answer', render: function (data) {
+                        let value = '-';
+                        if (data !== null) {
+                            value = data;
+                        }
+                        return value;
+                    }
+                },
+                {data: 'upload_by.username'},
+                {data: 'description'},
+                {
+                    data: 'file', name: 'file', render: function (data) {
+                        let url = prefix_url + data;
+                        return '<a href="' + url + '" target="_blank">Preview</a>';
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let status = data['status'];
+                        let el = '<i class="fa fa-minus" style="font-size: 16px; color: gray"></i>';
+                        switch (status) {
+                            case 0:
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #f55400"></i>';
+                                break;
+                            case 6:
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #EB1D36"></i>';
+                                break;
+                            case 9:
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #54B435"></i>';
+                                break;
+                            default:
+                                break
+                        }
+                        return el;
+                    }
+                },
+
+            ], [
+                {
+                    targets: '_all',
+                    className: 'f12'
+                },
+                {
+                    targets: [0, 1, 2, 5, 6],
+                    className: 'text-center'
+                },
+                {
+                    targets: [0, 5, 6],
+                    orderable: false
+                }
+            ], function (d) {
+                // d.q = query;
+            }, {
+                "scrollX": true,
+                "fnDrawCallback": function (settings) {
+                    // setExpand();
+                },
+            });
+        }
+
         $(document).ready(function () {
             togglePanelStatus();
             $('#status').on('change', function () {
                 togglePanelStatus();
             });
-            var table = $('#table-data').DataTable({
-                "scrollX": true,
-                "fnDrawCallback": function (setting) {
-                }
-            });
+            generateTable();
 
             $(document).on('shown.bs.tab', function (e) {
                 table.columns.adjust();
