@@ -77,6 +77,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
     Route::group(['prefix' => 'informasi'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\InformationController::class, 'index'])->name('information.index');
         Route::get('/data', [\App\Http\Controllers\Admin\InformationController::class, 'information_data'])->name('information.data');
+        Route::post('/{id}/process', [\App\Http\Controllers\Admin\InformationController::class, 'send_process'])->name('information.process.send');
     });
 
     Route::group(['prefix' => 'satker'], function () {

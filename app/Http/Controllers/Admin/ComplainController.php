@@ -55,12 +55,11 @@ class ComplainController extends CustomController
     {
         try {
             $limit = $this->field('limit');
-
-
             $completed = false;
             $status = [1];
             if ($this->field('q') === 'complete') {
                 $completed = true;
+                $status = [6, 9];
             }
             if ($this->field('q') === 'answered') {
                 $status = [6, 9];

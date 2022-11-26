@@ -90,3 +90,5 @@ function DataTableGenerator(element, url = '/', col = [], colDef = [], data = fu
     return $(element).DataTable(config);
 }
 
+
+
