@@ -70,7 +70,7 @@
                                     <object data="{{ asset($data->answer->file) }}" width="100%" height="500"
                                             type="application/pdf" onerror="alert('pdf source not found!')">
                                     </object>
-                                    <form method="post">
+                                    <form method="post" id="form-answer">
                                         @csrf
                                         {{--                                        <input type="hidden" value="{{ $data->answer->id }}" name="id">--}}
                                         <div class="form-group w-100 mb-2">
@@ -91,7 +91,7 @@
                                         </div>
                                         <hr>
                                         <div class="text-right">
-                                            <button type="submit" class="main-button"><i class="fa fa-check mr-2"></i>Simpan
+                                            <button type="submit" class="main-button" id="btn-response"><i class="fa fa-check mr-2"></i>Simpan
                                             </button>
                                         </div>
                                     </form>
@@ -296,6 +296,26 @@
 
             $(document).on('shown.bs.tab', function (e) {
                 table.columns.adjust();
+            });
+            $('#btn-response').on('click', function (e) {
+                e.preventDefault();
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
+                Swal.fire({
+                    title: 'Konfirmasi!',
+                    text: 'Ingin memproses jawaban saran / pengaduan?',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya'
+                }).then((result) => {
+                    if (result.value) {
+                        $('#form-answer').submit();
+                    }
+                });
             });
         })
     </script>

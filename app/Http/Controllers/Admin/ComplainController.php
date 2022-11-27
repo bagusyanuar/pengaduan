@@ -93,10 +93,10 @@ class ComplainController extends CustomController
                 'status' => 1
             ]);
             $users_uki = UserUki::with('user')->get();
-            foreach ($users_uki as $user_uki) {
-                $target = $user_uki->user->email;
-                Mail::to($target)->send(new NewComplain($complain));
-            }
+//            foreach ($users_uki as $user_uki) {
+//                $target = $user_uki->user->email;
+//                Mail::to($target)->send(new NewComplain($complain));
+//            }
             return $this->jsonResponse('success', 200);
         } catch (\Exception $e) {
             return $this->jsonResponse('terjadi kesalahan ' . $e->getMessage(), 500);
@@ -190,9 +190,9 @@ class ComplainController extends CustomController
                 }
             }
             $data->update($data_update);
-            foreach ($mails_to as $target) {
-                Mail::to($target['email'])->send(new ComplainDisposition($data, $target['target']));
-            }
+//            foreach ($mails_to as $target) {
+//                Mail::to($target['email'])->send(new ComplainDisposition($data, $target['target']));
+//            }
         } else {
             $data_update = [
                 'description' => $this->postField('description'),
@@ -340,10 +340,11 @@ class ComplainController extends CustomController
                 return $this->jsonResponse('Data Tidak Di Temukan...', 500);
             }
             $complain->update([
-                'is_finish' => 1
+                'is_finish' => 1,
+                'finish_at' => Carbon::now()->format('Y-m-d')
             ]);
             $target = $complain->email;
-            Mail::to($target)->send(new ReplyComplain($complain));
+//            Mail::to($target)->send(new ReplyComplain($complain));
             DB::commit();
             return $this->jsonResponse('success', 200);
         } catch (\Exception $e) {

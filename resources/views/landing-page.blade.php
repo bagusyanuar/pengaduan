@@ -90,7 +90,7 @@
                             <a href="#" class="main-button-outline">Permintaan Informasi</a>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>

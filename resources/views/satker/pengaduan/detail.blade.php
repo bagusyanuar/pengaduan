@@ -312,7 +312,7 @@
             }, {
                 "scrollX": true,
                 "fnDrawCallback": function (settings) {
-                    // setExpand();
+                    setExpand();
                 },
             });
         }

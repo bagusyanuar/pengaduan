@@ -101,7 +101,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        @if($data->target === null)
+                        @if($data->target === null && $data->status !== 6)
                             {{--                            <form method="post" id="form-disposition"--}}
                             {{--                                  action="{{ route('complain.data.send.disposition', ['id' => $data->id]) }}">--}}
                             <form method="post" id="form-disposition">

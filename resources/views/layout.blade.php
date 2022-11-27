@@ -38,7 +38,7 @@
                                     <span class="icon icon-brand mr-2 mr-md-3"><span class="fa fa-list"></span></span>
                                     <span class="d-inline-block text-left">
                                          Permohonan Informasi
-                                    </span> 
+                                    </span>
                                 </span>
                             </a>
                             <a href="/pengaduan" class="btn btn-dark btn-download-app mb-xl-0 mr-2 mr-md-3">
@@ -46,15 +46,15 @@
                                     <span class="icon icon-brand mr-2 mr-md-3"><span class="fa fa-paper-plane"></span></span>
                                     <span class="d-inline-block text-left">
                                         Pengaduan
-                                    </span> 
+                                    </span>
                                 </span>
                             </a>
-							<a href="#lacak" class="btn btn-dark btn-download-app ">
+							<a href="{{ route('tracing.index') }}" class="btn btn-dark btn-download-app ">
                                 <span class="d-flex align-items-center">
                                     <span class="icon icon-brand mr-2 mr-md-3"><span class="fa fa-search"></span></span>
                                     <span class="d-inline-block text-left">
                                         Tracing Laporan
-                                    </span> 
+                                    </span>
                                 </span>
                             </a>
                         </div>

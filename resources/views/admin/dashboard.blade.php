@@ -101,6 +101,7 @@
                             <th scope="col" width="5%" class="f12">#</th>
                             <th scope="col" class="f12">No. Tiket</th>
                             <th scope="col" width="8%" class="text-center f12">Aksi</th>
+                            <th scope="col" width="5%" class="text-center f12"></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -324,7 +325,26 @@
                 {data: 'ticket_id'},
                 {
                     data: null, render: function (data, type, row, meta) {
-                        return '<a href="#" class="btn-reply-complain" data-id="' + data['id'] + '"><i class="fa fa-envelope"></i></a>'
+                        return '<a href="#" class="btn-reply-complain" data-id="' + data['id'] + '"><i class="fa fa-envelope"></i></a>';
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let status = data['status'];
+                        let el = '-';
+                        switch (status) {
+                            case 6:
+                                // el = '<div class="pills-danger text-center">Di Tolak</div>';
+                                el = '<i class="fa fa-window-close" style="color: #EB1D36; font-size: 14px;"></i>';
+                                break;
+                            case 9:
+                                // el = '<div class="pills-success text-center">Di Setujui</div>';
+                                el = '<i class="fa fa-check-square" style="color: #54B435; font-size: 14px;"></i>';
+                                break;
+                            default:
+                                break
+                        }
+                        return el;
                     }
                 },
             ], [
@@ -333,11 +353,11 @@
                     className: 'f12'
                 },
                 {
-                    targets: [0, 2],
+                    targets: [0, 2, 3],
                     className: 'text-center'
                 },
                 {
-                    targets: [0, 2],
+                    targets: [0, 2, 3],
                     orderable: false
                 }
             ], function (d) {
@@ -348,12 +368,48 @@
                 "scrollX": true,
                 responsive: true,
                 "fnDrawCallback": function (settings) {
-                    eventProcessComplain();
+                    eventSendReplyComplain();
                 },
             });
         }
 
-        function generateTableNewInformation(){
+        function eventSendReplyComplain() {
+            $('.btn-reply-complain').on('click', function (e) {
+                e.preventDefault();
+                let id = this.dataset.id;
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
+                Swal.fire({
+                    title: 'Konfirmasi!',
+                    text: 'Selesaikan saran / pengaduan dan kirim pesan ke pelapor?',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya'
+                }).then((result) => {
+                    if (result.value) {
+                        sendReply(id);
+                    }
+                });
+            });
+        }
+
+        function sendReply(id) {
+            AjaxPost(prefix_url + '/admin/pengaduan/' + id + '/reply', function () {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Berhasil mengirimkan balasan ke pelapor...',
+                    icon: 'success',
+                }).then((result) => {
+                    window.location.reload();
+                });
+            })
+        }
+
+        function generateTableNewInformation() {
             tableInformation = DataTableGenerator('#table-data-information', prefix_url + '/admin/informasi/data', [
                 {
                     className: 'dt-control',
@@ -541,11 +597,13 @@
                 });
             })
         }
+
         $(document).ready(function () {
             generateTableNewComplain();
             setExpandTableRowComplain();
             eventProcessComplain();
             generateTableAnsweredComplain();
+            eventSendReplyComplain();
 
             generateTableNewInformation();
             setExpandTableRowInformation();
