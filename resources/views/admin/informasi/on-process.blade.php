@@ -12,7 +12,7 @@
                 <li class="breadcrumb-item">
                     <a href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">Saran / Pengaduan Selesai
+                <li class="breadcrumb-item active" aria-current="page">Permintaan Informasi Sedang Di Proses
                 </li>
             </ol>
         </div>
@@ -21,48 +21,19 @@
         <div class="card card-outline card-warning">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0">Data Saran / Pengaduan Selesai</p>
+                    <p class="mb-0">Data Permintaan Informasi Sedang Di Proses</p>
                 </div>
             </div>
             <div class="card-body">
-                <div class="row mb-2">
-                    <div class="col-md-3 col-lg-3 col-sm-12">
-                        <div class="form-group mb-2">
-                            <label for="start_date" style="font-size: 12px;">Tanggal Awal</label>
-                            <div class="input-group">
-                                <input type="date" id="start_date" value="{{ date('Y-m-d') }}" class="form-control f12"
-                                       aria-label="Recipient's username" aria-describedby="start_date_append">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="start_date_append"><i
-                                            class="fa fa-calendar f12"></i></span>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="col-md-3 col-lg-3 col-sm-12">
-                        <div class="form-group">
-                            <label for="end_date f12" style="font-size: 12px;">Tanggal Akhir</label>
-                            <div class="input-group">
-                                <input type="date" id="end_date" value="{{ date('Y-m-d') }}" class="form-control f12"
-                                       aria-label="Recipient's username" aria-describedby="end_date_append">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="end_date_append"><i
-                                            class="fa fa-calendar f12"></i></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <table id="table-data" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
-                        <th width="5%" class="text-center f14 no-sort"></th>
-                        <th width="5%" class="text-center f14">#</th>
-                        <th class="f14" width="12%">Tanggal</th>
-                        <th class="f14" width="25%">No. Ticket</th>
-                        <th class="f14">Nama</th>
-                        <th class="f14" width="15%">Legalitas</th>
+                        <th width="5%" class="text-center f12 no-sort"></th>
+                        <th width="5%" class="text-center f12">#</th>
+                        <th class="f12" width="12%">Tanggal</th>
+                        <th class="f12" width="25%">No. Ticket</th>
+                        <th class="f12">Nama</th>
+                        <th class="f12" width="15%">Legalitas</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -78,7 +49,7 @@
     <script type="text/javascript">
         var table;
         var prefix_url = '{{ env('PREFIX_URL') }}';
-        var query = 'complete';
+        var query = 'process';
 
         function reload() {
             table.ajax.reload();
@@ -106,14 +77,6 @@
                     '</div>';
             }
 
-            let action = '<div class="row mb-2">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                '<a href="#" class="main-button btn-process" data-id="' + d['id'] + '"><i class="fa fa-paper-plane mr-2"></i>Proses</a>' +
-                '</div>' +
-                '</div>';
-
             let targetDisposition = '-';
             if (d['unit'] !== null) {
                 targetDisposition = d['unit']['name'];
@@ -130,9 +93,14 @@
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + targetDisposition + '</div>' +
                 '</div>';
 
-
-            return '<div class="f14">' +
-                '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
+            return '<div class="f12">' +
+                '<p class="font-weight-bold">Detail Permintaan Informasi</p>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">No. Ktp</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['card_id'] + '</div>' +
+                '</div>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">No. Whatsapp</p>' +
@@ -151,7 +119,7 @@
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">Alamat</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['address'] + '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['address'] + '</div></div>' +
                 '</div>' +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -160,11 +128,29 @@
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
                 disposition +
-                '<div class="row mb-2">' +
+                '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p>Isi Saran / Pengaduan</p>' +
+                '<p class="mb-0">Asal Informasi</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['information_source'] + '</div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Salinan Informasi</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['source'] + '</div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Tujuan</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['purpose'] + '</div></div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Informasi</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['information'] + '</div></div>' +
                 '</div>' +
                 '</div>';
         }
@@ -183,10 +169,12 @@
                     i.addClass('fa fa-plus-square-o');
                 } else {
                     // Open this row
+                    console.log(row.data());
                     row.child(detailElement(row.data())).show();
                     tr.addClass('shown');
                     i.removeClass('fa fa-plus-square-o');
                     i.addClass('fa fa-minus-square-o');
+                    console.log(row.data());
                     // console.log(tr.closest('i'));
 
                 }
@@ -196,7 +184,7 @@
         }
 
         function generateTable() {
-            table = DataTableGenerator('#table-data', prefix_url + '/admin/pengaduan/data', [
+            table = DataTableGenerator('#table-data', prefix_url + '/admin/informasi/data', [
                 {
                     className: 'dt-control',
                     orderable: false,
@@ -205,7 +193,12 @@
                     }
                 },
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
-                {data: 'date'},
+                {
+                    data: 'date', name: 'date', render: function (data, type, row, meta) {
+                        let date = new Date(data);
+                        return date.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+                    }
+                },
                 {data: 'ticket_id'},
                 {data: 'name'},
                 {
@@ -223,17 +216,11 @@
                     className: 'f12'
                 },
                 {
-                    targets: [0, 1, 2, 3, 5],
+                    targets: [0, 5],
                     className: 'text-center'
-                },
-                {
-                    targets: [0],
-                    orderable: false
                 }
             ], function (d) {
                 d.q = query;
-                d.start_date = $('#start_date').val();
-                d.end_date = $('#end_date').val();
             }, {
                 "scrollX": true,
                 "fnDrawCallback": function (settings) {
@@ -246,12 +233,6 @@
         $(document).ready(function () {
             generateTable();
             setExpand();
-            $('#start_date').on('change', function () {
-                reload();
-            });
-            $('#end_date').on('change', function () {
-                reload();
-            });
         });
     </script>
 @endsection

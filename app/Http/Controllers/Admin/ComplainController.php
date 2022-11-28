@@ -70,6 +70,11 @@ class ComplainController extends CustomController
                 ->whereIn('status', $status)
                 ->where('is_finish', '=', $completed);
 
+            if ($this->field('q') === 'complete') {
+                $start = Carbon::parse($this->field('start_date'))->format('Y-m-d');
+                $end = Carbon::parse($this->field('end_date'))->format('Y-m-d');
+                $query->whereBetween('date', [$start, $end]);
+            }
             if ($limit !== null) {
                 $query->take((int)$limit);
             }

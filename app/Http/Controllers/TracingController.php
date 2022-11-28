@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Helper\CustomController;
 use App\Models\Complain;
+use App\Models\Information;
 
 class TracingController extends CustomController
 {
@@ -28,11 +29,38 @@ class TracingController extends CustomController
         }
         $type = $exp_ticket[4] === 'SP' ? 'complain' : 'information';
         $data = null;
+        $step = 1;
         if ($type === 'complain') {
             $data = Complain::with(['ppk', 'unit', 'answers'])
                 ->where('ticket_id', '=', $ticket_id)
                 ->firstOrFail();
+
+            if ($data->status === 1 && $data->target === null) {
+                $step = 2;
+            } elseif ($data->status === 1 && $data->target !== null) {
+                $step = 3;
+            } elseif (($data->status === 6 || $data->status === 9) && $data->is_finish == false) {
+                $step = 3;
+            } elseif (($data->status === 6 || $data->status === 9) && $data->is_finish == true) {
+                $step = 4;
+            }
+        } else {
+            $data = Information::with(['ppk', 'unit', 'answers'])
+                ->where('ticket_id', '=', $ticket_id)
+                ->firstOrFail();
+
+            if ($data->status === 1 && $data->target === null) {
+                $step = 2;
+            } elseif ($data->status === 1 && $data->target !== null) {
+                $step = 3;
+            } elseif (($data->status === 6 || $data->status === 9) && $data->is_finish == false) {
+                $step = 3;
+            } elseif (($data->status === 6 || $data->status === 9) && $data->is_finish == true) {
+                $step = 4;
+            }
         }
-        return view('tracing-result')->with(['data' => $data]);
+
+
+        return view('tracing-result')->with(['data' => $data, 'step' => $step, 'type' => $type]);
     }
 }

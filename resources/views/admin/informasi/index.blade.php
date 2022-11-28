@@ -77,12 +77,13 @@
                 <table id="table-data" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
-                        <th width="5%" class="text-center f14 no-sort"></th>
-                        <th width="5%" class="text-center f14">#</th>
-                        <th class="f14" width="12%">Tanggal</th>
-                        <th class="f14" width="20%">No. Ticket</th>
-                        <th class="f14">Nama</th>
-                        <th class="f14 text-center" width="13%">Legalitas</th>
+                        <th width="5%" class="text-center f12 no-sort"></th>
+                        <th width="5%" class="text-center f12">#</th>
+                        <th class="f12" width="12%">Tanggal</th>
+                        <th class="f12" width="20%">No. Ticket</th>
+                        <th class="f12">Nama</th>
+                        <th class="f12 text-center" width="13%">Legalitas</th>
+                        <th class="f12 text-center" width="8%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -126,30 +127,11 @@
                     '</div>';
             }
 
-            let action = '<div class="row mb-2 mt-2">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                '<a href="#" class="main-button btn-process" data-id="' + d['id'] + '"><i class="fa fa-paper-plane mr-2"></i>Kirim saran / pengaduan ke UKI</a>' +
-                '</div>' +
-                '</div>';
-
-            // let disposition = '';
-            // if (query !== 'waiting') {
-            //     disposition = '<div class="row">' +
-            //         '<div class="col-lg-3 col-md-4 col-sm-6">' +
-            //         '<p class="mb-0">Disposisi</p>' +
-            //         '</div>' +
-            //         '<div class="col-lg-9 col-md-8 col-sm-6">: -</div>' +
-            //         '</div>';
-            // }
-
-
-            return '<div class="f14">' +
+            return '<div class="f12">' +
                 '<p class="font-weight-bold">Detail Permintaan Informasi</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p class="mb-0">No. KTP</p>' +
+                '<p class="mb-0">No. Ktp</p>' +
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['card_id'] + '</div>' +
                 '</div>' +
@@ -159,7 +141,6 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['phone'] + '</div>' +
                 '</div>' +
-
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">Email</p>' +
@@ -172,7 +153,7 @@
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">Alamat</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['address'] + '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['address'] + '</div></div>' +
                 '</div>' +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -180,14 +161,30 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
-                // disposition +
-                '<div class="row">' +
+                '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p>Rincian Informasi</p>' +
+                '<p class="mb-0">Asal Informasi</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['information_source'] + '</div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Salinan Informasi</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['source'] + '</div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Tujuan</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['purpose'] + '</div></div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Informasi</p>' +
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['information'] + '</div></div>' +
                 '</div>' +
-                // action +
                 '</div>';
         }
 
@@ -219,19 +216,6 @@
 
         }
 
-        function sendProcess(id) {
-            AjaxPost(prefix_url + '/admin/pengaduan/' + id + '/process', function () {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Berhasil mengirimkan data ke admin UKI...',
-                    icon: 'success',
-                }).then((result) => {
-                    window.location.reload();
-                });
-
-            })
-        }
-
         function generateTable() {
             table = DataTableGenerator('#table-data', prefix_url + '/admin/informasi/data', [
                 {
@@ -259,14 +243,23 @@
                         return legal;
                     }
                 },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        return '<a href="#" class="btn-send-information" data-id="' + data['id'] + '"><i class="fa fa-envelope"></i></a>'
+                    }
+                },
             ], [
                 {
                     targets: '_all',
-                    className: 'f14'
+                    className: 'f12'
                 },
                 {
-                    targets: [5],
+                    targets: [0, 1, 2, 3, 5, 6],
                     className: 'text-center'
+                },
+                {
+                    targets: [0, 6],
+                    orderable: false
                 }
             ], function (d) {
                 d.q = 'waiting';
@@ -275,34 +268,51 @@
                 responsive: true,
                 "fnDrawCallback": function (settings) {
                     setExpand();
+                    eventProcessInformation();
                 },
             });
         }
 
-        function eventProcess() {
-            $('#table-data tbody').on('click', '.btn-process', function (e) {
+        function eventProcessInformation() {
+            $('.btn-send-information').on('click', function (e) {
                 e.preventDefault();
                 let id = this.dataset.id;
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
                 Swal.fire({
                     title: 'Konfirmasi!',
-                    text: 'Yakin ingin memproses data pengaduan?',
-                    icon: 'info',
+                    text: 'Ingin memproses data permintaan informasi?',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Ya'
                 }).then((result) => {
                     if (result.value) {
-                        sendProcess(id);
+                        sendProcessInformation(id);
                     }
                 });
             });
         }
 
+        function sendProcessInformation(id) {
+            AjaxPost(prefix_url + '/admin/informasi/' + id + '/process', function () {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Berhasil mengirimkan permintaan informasi data ke admin UKI...',
+                    icon: 'success',
+                }).then((result) => {
+                    window.location.reload();
+                });
+            })
+        }
+
         $(document).ready(function () {
             generateTable();
             setExpand();
-            // eventProcess();
+            eventProcessInformation();
         });
     </script>
 @endsection

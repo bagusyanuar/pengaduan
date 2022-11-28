@@ -53,4 +53,10 @@ class Information extends Model
     {
         return $this->belongsTo(PPK::class, 'ppk_id');
     }
+
+    public function getHasAnswerAttribute()
+    {
+        return $this->hasOne(InformationAnswer::class, 'information_id')
+            ->where('status', '=', 0)->first() !== null ? true : false;
+    }
 }
