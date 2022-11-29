@@ -5,9 +5,21 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Helper\CustomController;
+use App\Models\Complain;
+use App\Models\ComplainAnswer;
 use App\Models\Information;
+use App\Models\InformationAnswer;
+use App\Models\PPK;
+use App\Models\SatuanKerja;
+use App\Models\UserPPK;
+use App\Models\UserSatuanKerja;
 use App\Models\UserUki;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Symfony\Polyfill\Intl\Idn\Info;
 
 class InformationController extends CustomController
@@ -27,6 +39,7 @@ class InformationController extends CustomController
     {
         return view('admin.informasi.on-process');
     }
+
     public function information_data()
     {
         try {
@@ -118,6 +131,157 @@ class InformationController extends CustomController
             return $this->basicDataTables($data);
         } catch (\Exception $e) {
             return $this->basicDataTables([]);
+        }
+    }
+
+    public function data_detail_by_ticket($ticket)
+    {
+        Session::put('redirect', URL::current());
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Information::with(['legal', 'unit', 'ppk'])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail();
+        if ($this->request->method() === 'POST') {
+            return $this->send_disposition($data->id);
+        }
+        $unit = SatuanKerja::all();
+        $ppk = PPK::with('unit')->get();
+        Session::forget('redirect');
+        return view('uki.informasi.detail')->with(['data' => $data, 'unit' => $unit, 'ppk' => $ppk]);
+    }
+
+    private function send_disposition($id)
+    {
+        $data = Information::with('legal')
+            ->findOrFail($id);
+
+        if ($this->postField('status') === '1') {
+            $data_update = [
+                'target' => $this->postField('target'),
+                'description' => 'Approved'
+            ];
+            $mails_to = [];
+            if ($this->postField('target') === '1') {
+                //send to ppk
+                $ppk = PPK::with('unit')->find($this->postField('ppk'));
+                $data_update['ppk_id'] = $ppk->id;
+                $data_update['satker_id'] = $ppk->unit->id;
+
+                $users_ppk = UserPPK::with(['user'])->where('ppk_id', '=', $ppk->id)->get();
+                $users_satker = UserSatuanKerja::with(['user'])->where('satker_id', '=', $ppk->unit->id)->get();
+                foreach ($users_ppk as $user_ppk) {
+                    array_push($mails_to, ['email' => $user_ppk->user->email, 'target' => 'ppk']);
+                }
+
+                foreach ($users_satker as $user_satker) {
+                    array_push($mails_to, ['email' => $user_satker->user->email, 'target' => 'satker']);
+                }
+            } else {
+                //send to satker
+                $unit = SatuanKerja::find($this->postField('unit'));
+                $data_update['satker_id'] = $unit->id;
+
+                $users_satker = UserSatuanKerja::with(['user'])->where('satker_id', '=', $unit->id)->get();
+
+                foreach ($users_satker as $user_satker) {
+                    array_push($mails_to, ['email' => $user_satker->user->email, 'target' => 'satker']);
+                }
+            }
+            $data->update($data_update);
+//            foreach ($mails_to as $target) {
+//                Mail::to($target['email'])->send(new ComplainDisposition($data, $target['target']));
+//            }
+        } else {
+            $data_update = [
+                'description' => $this->postField('description'),
+                'status' => 6
+            ];
+            $data->update($data_update);
+        }
+        return redirect()->back()->with('success', 'Berhasil melakukan konfirmasi permintaan informasi...');
+    }
+
+
+    //ppk part
+    public function index_ppk()
+    {
+        return view('ppk.informasi.index');
+    }
+
+    public function information_data_ppk()
+    {
+
+        try {
+            $user_ppk = UserPPK::where('user_id', '=', Auth::id())->first();
+            if (!$user_ppk) {
+                return $this->basicDataTables([]);
+            }
+            $status = 1;
+            $query = Information::with(['legal', 'last_answer'])
+                ->where('status', '=', $status)
+                ->where('target', '=', 1);
+            if ($this->field('q') === 'waiting') {
+                $query->where('ppk_id', '=', $user_ppk->ppk_id);
+            }
+            $data = $query->get()->append(['HasAnswer', 'HasApprovedAnswer']);
+            return $this->basicDataTables($data);
+        } catch (\Exception $e) {
+            return $this->basicDataTables([]);
+        }
+    }
+
+    public function data_detail_by_ticket_ppk($ticket)
+    {
+        Session::put('redirect', URL::current());
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Information::with(['legal', 'unit', 'ppk', 'answers'])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail()->append(['HasAnswer', 'HasApprovedAnswer']);
+        if ($this->request->method() === 'POST') {
+            return $this->send_answer($data->id);
+        }
+        Session::forget('redirect');
+        return view('ppk.informasi.detail')->with(['data' => $data]);
+    }
+
+    public function information_answers_data($ticket)
+    {
+        try {
+            $ticket_id = str_replace('-', '/', $ticket);
+            $data = InformationAnswer::with(['information', 'upload_by', 'answer_by'])
+                ->whereHas('information', function ($q) use ($ticket_id) {
+                    return $q->where('ticket_id', '=', $ticket_id);
+                })
+                ->orderBy('date_upload', 'DESC')
+                ->orderBy('id', 'DESC')
+                ->get();
+            return $this->basicDataTables($data);
+        } catch (\Exception $e) {
+            return $this->basicDataTables([]);
+        }
+    }
+
+    private function send_answer($id)
+    {
+        try {
+            $data_request = [
+                'information_id' => $id,
+                'date_upload' => Carbon::now()->format('Y-m-d'),
+                'status' => 0,
+                'description' => '-',
+                'author_upload' => Auth::id()
+            ];
+            if ($this->request->hasFile('answer')) {
+                $file = $this->request->file('answer');
+                $name = $this->uuidGenerator() . '.' . $file->getClientOriginalExtension();
+                $file_name = '/assets/answers/' . $name;
+                Storage::disk('answers')->put($name, File::get($file));
+                $data_request['file'] = $file_name;
+            } else {
+                return redirect()->back()->with('failed', 'File Jawaban Belum Terlampir...');
+            }
+            InformationAnswer::create($data_request);
+            return redirect()->back()->with('success', 'Berhasil Melakukan Konfirmasi Permintaan Informasi...');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('failed', 'terjadi kesalahan server' . $e->getMessage());
         }
     }
 }

@@ -144,4 +144,11 @@ Route::group(['prefix' => 'admin-ppk', 'middleware' => ['auth', 'ppk']], functio
         Route::match(['post', 'get'], '/{ticket}/info', [\App\Http\Controllers\Admin\ComplainController::class, 'data_detail_by_ticket_ppk'])->name('complain.data.ppk.by.ticket');
         Route::get('/{ticket}/jawaban/riwayat', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_data'])->name('complain.answers.ppk.data.by.ticket');
     });
+
+    Route::group(['prefix' => 'informasi'], function () {
+        Route::get('/', [\App\Http\Controllers\Admin\InformationController::class, 'index_ppk'])->name('information.index.ppk');
+        Route::get('/data', [\App\Http\Controllers\Admin\InformationController::class, 'information_data_ppk'])->name('information.data.ppk');
+        Route::match(['post', 'get'], '/{ticket}/info', [\App\Http\Controllers\Admin\InformationController::class, 'data_detail_by_ticket_ppk'])->name('information.data.ppk.by.ticket');
+        Route::get('/{ticket}/jawaban/riwayat', [\App\Http\Controllers\Admin\InformationController::class, 'information_answers_data'])->name('information.answers.ppk.data.by.ticket');
+    });
 });

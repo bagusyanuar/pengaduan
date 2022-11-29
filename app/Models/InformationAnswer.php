@@ -24,4 +24,14 @@ class InformationAnswer extends Model
     {
         return $this->belongsTo(Information::class, 'information_id');
     }
+
+    public function upload_by()
+    {
+        return $this->belongsTo(User::class, 'author_upload');
+    }
+
+    public function answer_by()
+    {
+        return $this->belongsTo(User::class, 'author_answer');
+    }
 }

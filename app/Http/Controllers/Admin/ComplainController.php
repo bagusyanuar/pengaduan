@@ -404,7 +404,7 @@ class ComplainController extends CustomController
     {
         try {
             $ticket_id = str_replace('-', '/', $ticket);
-            $data = ComplainAnswer::with(['complain', 'author_upload', 'author_answer'])
+            $data = ComplainAnswer::with(['complain', 'answer_by', 'upload_by'])
                 ->whereHas('complain', function ($q) use ($ticket_id) {
                     return $q->where('ticket_id', '=', $ticket_id);
                 })

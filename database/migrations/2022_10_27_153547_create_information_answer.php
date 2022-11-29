@@ -22,7 +22,7 @@ class CreateInformationAnswer extends Migration
             $table->smallInteger('status')->default(0)->comment('0: menunggu 6: tolak 9: setuju');
             $table->text('description')->nullable();
             $table->bigInteger('author_upload')->unsigned();
-            $table->bigInteger('author_answer')->unsigned();
+            $table->bigInteger('author_answer')->unsigned()->nullable();
             $table->timestamps();
             $table->foreign('information_id')->references('id')->on('information');
             $table->foreign('author_upload')->references('id')->on('users');

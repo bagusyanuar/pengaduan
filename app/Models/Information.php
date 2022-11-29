@@ -30,7 +30,7 @@ class Information extends Model
         'status',
         'target',
         'satker_id',
-        'ppk_id_id',
+        'ppk_id',
         'description',
     ];
 
@@ -58,5 +58,21 @@ class Information extends Model
     {
         return $this->hasOne(InformationAnswer::class, 'information_id')
             ->where('status', '=', 0)->first() !== null ? true : false;
+    }
+
+    public function last_answer()
+    {
+        return $this->hasOne(InformationAnswer::class, 'information_id')->orderBy('id', 'DESC');
+    }
+
+    public function answer()
+    {
+        return $this->hasOne(InformationAnswer::class, 'information_id')->where('status', '=', 0);
+    }
+
+    public function getHasApprovedAnswerAttribute()
+    {
+        return $this->hasOne(InformationAnswer::class, 'information_id')
+            ->where('status', '=', 9)->first() !== null ? true : false;
     }
 }
