@@ -187,6 +187,20 @@
                                         <p>Sedang Di Proses</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('information.answered') }}"
+                                       class="nav-link {{ request()->is('admin/informasi/jawab') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>Terjawab</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('information.finished') }}"
+                                       class="nav-link {{ request()->is('admin/informasi/selesai') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>Selesai</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
                     @endif
@@ -277,6 +291,24 @@
                                 </li>
                             </ul>
                         </li>
+                            <li class="nav-item has-treeview {{ request()->is('admin-satker/informasi*') ? 'menu-open' : ''}}">
+                                <a href="#" class="nav-link {{ request()->is('admin-satker/informasi*') ? 'active' : ''}}">
+                                    <i class="nav-icon fa fa-info"></i>
+                                    <p>
+                                        Informasi
+                                        <i class="right fa fa-angle-down"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{{ route('information.index.satker') }}"
+                                           class="nav-link {{ request()->is('admin-satker/informasi') ? 'active' : ''}}">
+                                            <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                            <p>Data</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                     @endif
 
                     @if(auth()->user()->role == 'ppk')

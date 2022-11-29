@@ -16,6 +16,7 @@ use App\Models\UserSatuanKerja;
 use App\Models\UserUki;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -38,6 +39,16 @@ class InformationController extends CustomController
     public function on_process()
     {
         return view('admin.informasi.on-process');
+    }
+
+    public function answered()
+    {
+        return view('admin.informasi.answered');
+    }
+
+    public function finished()
+    {
+        return view('admin.informasi.finished');
     }
 
     public function information_data()
@@ -157,7 +168,7 @@ class InformationController extends CustomController
         if ($this->postField('status') === '1') {
             $data_update = [
                 'target' => $this->postField('target'),
-                'description' => 'Approved'
+                'description' => 'Jawaban permintaan informasi di terima'
             ];
             $mails_to = [];
             if ($this->postField('target') === '1') {
@@ -198,6 +209,88 @@ class InformationController extends CustomController
             $data->update($data_update);
         }
         return redirect()->back()->with('success', 'Berhasil melakukan konfirmasi permintaan informasi...');
+    }
+
+    public function information_answers_by_ticket($ticket)
+    {
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Information::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
+            return $q->orderBy('date_upload', 'DESC');
+        }, 'answer', 'answers.upload_by', 'answers.answer_by'])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail();
+//        return $data->toArray();
+        if ($this->request->method() === 'POST') {
+            return $this->response_answer($data);
+        }
+        return view('uki.informasi.jawaban')->with(['data' => $data]);
+    }
+
+    private function response_answer($information)
+    {
+        DB::beginTransaction();
+        try {
+            $status = $this->postField('status');
+            $data = [
+                'date_answer' => Carbon::now()->format('Y-m-d'),
+                'status' => $status === '1' ? 9 : 6,
+                'author_answer' => Auth::id(),
+                'description' => 'Jawaban permintaan informasi di terima'
+            ];
+            if ($status === '0') {
+                $data['description'] = $this->postField('description');
+            }
+            $information->answer->update($data);
+            if ($status === '1') {
+                $information->update([
+                    'status' => 9
+                ]);
+            }
+            DB::commit();
+            return redirect()->route('information.process.uki')->with('success', 'Berhasil Melakukan Konfirmasi Jawaban Permintaan Informasi...');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('failed', 'Terjadi Kesalahan Server...');
+        }
+
+    }
+
+    public function information_answers_by_ticket_data($ticket)
+    {
+        try {
+            $ticket_id = str_replace('-', '/', $ticket);
+            $data = InformationAnswer::with(['complain', 'upload_by', 'answer_by'])->whereHas('complain', function ($q) use ($ticket_id) {
+                return $q->where('ticket_id', '=', $ticket_id);
+            })
+                ->orderBy('date_upload', 'DESC')
+                ->get();
+            return $this->basicDataTables($data);
+        } catch (\Exception $e) {
+            return $this->basicDataTables([]);
+        }
+    }
+
+    public function reply_information($id)
+    {
+        try {
+            DB::beginTransaction();
+            $information = Information::with('legal')
+                ->where('id', '=', $id)
+                ->first();
+            if (!$information) {
+                return $this->jsonResponse('Data Tidak Di Temukan...', 500);
+            }
+            $information->update([
+                'is_finish' => 1,
+                'finish_at' => Carbon::now()->format('Y-m-d')
+            ]);
+            $target = $information->email;
+//            Mail::to($target)->send(new ReplyComplain($complain));
+            DB::commit();
+            return $this->jsonResponse('success', 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->jsonResponse('terjadi kesalahan ', 500);
+        }
     }
 
 
@@ -283,5 +376,46 @@ class InformationController extends CustomController
         } catch (\Exception $e) {
             return redirect()->back()->with('failed', 'terjadi kesalahan server' . $e->getMessage());
         }
+    }
+
+    //satker part
+    public function index_satker()
+    {
+        return view('satker.informasi.index');
+    }
+
+    public function information_data_satker()
+    {
+
+        try {
+            $user_satker = UserSatuanKerja::where('user_id', '=', Auth::id())->first();
+            if (!$user_satker) {
+                return $this->basicDataTables([]);
+            }
+            $status = 1;
+            $query = Information::with(['legal', 'last_answer'])
+                ->where('status', '=', $status)
+                ->where('target', '=', 1);
+            if ($this->field('q') === 'waiting') {
+                $query->where('satker_id', '=', $user_satker->satker_id);
+            }
+            $data = $query->get()->append(['HasAnswer', 'HasApprovedAnswer']);
+            return $this->basicDataTables($data);
+        } catch (\Exception $e) {
+            return $this->basicDataTables([]);
+        }
+    }
+
+    public function data_detail_by_ticket_satker($ticket)
+    {
+        Session::put('redirect', URL::current());
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Information::with(['legal', 'unit', 'ppk', 'answers'])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail()->append(['HasAnswer', 'HasApprovedAnswer']);
+        if ($this->request->method() === 'POST') {
+            return $this->send_answer($data->id);
+        }
+        Session::forget('redirect');
+        return view('satker.informasi.detail')->with(['data' => $data]);
     }
 }

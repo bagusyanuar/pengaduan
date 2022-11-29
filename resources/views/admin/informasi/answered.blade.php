@@ -50,11 +50,16 @@
             Swal.fire("Berhasil!", '{{\Illuminate\Support\Facades\Session::get('success')}}', "success")
         </script>
     @endif
+    @if (\Illuminate\Support\Facades\Session::has('failed'))
+        <script>
+            Swal.fire("Gagal!", '{{\Illuminate\Support\Facades\Session::get('failed')}}', "error")
+        </script>
+    @endif
     <div class="backdrop-loading" id="backdrop-loading">
         <div style="height: 100%; width: 100%" class="d-flex align-items-center justify-content-center">
             <div class="text-center">
                 <img src="{{ asset('/assets/icons/loading.png') }}" height="200" class="mb-2">
-                <p style="color: white">Sedang mengirim data saran / pengaduan ke admin UKI...</p>
+                <p style="color: white">Sedang mengirim data permintaan informasi ke admin UKI...</p>
             </div>
 
         </div>
@@ -65,7 +70,7 @@
                 <li class="breadcrumb-item">
                     <a href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">Saran / Pengaduan Menunggu
+                <li class="breadcrumb-item active" aria-current="page">Permintaan Informasi Terjawab
                 </li>
             </ol>
         </div>
@@ -74,20 +79,21 @@
         <div class="card card-outline card-warning">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0 f14 font-weight-bold">Data Saran / Pengaduan</p>
+                    <p class="mb-0">Data Permintaan Informasi Terjawab</p>
                 </div>
             </div>
             <div class="card-body">
                 <table id="table-data" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
-                        <th width="5%" class="text-center f12 no-sort"></th>
-                        <th width="5%" class="text-center f12">#</th>
-                        <th class="f12" width="12%">Tanggal</th>
-                        <th class="f12" width="25%">No. Ticket</th>
-                        <th class="f12">Nama</th>
-                        <th class="f12 text-center" width="13%">Legalitas</th>
-                        <th class="f12 text-center" width="8%">Aksi</th>
+                        <th width="5%" class="text-center f14"></th>
+                        <th width="5%" class="text-center f14">#</th>
+                        <th class="f14" width="12%">Tanggal</th>
+                        <th class="f14" width="25%">No. Ticket</th>
+                        <th class="f14">Nama</th>
+                        <th class="f14" width="13%">Legalitas</th>
+                        <th class="f14 text-center" width="8%">Status</th>
+                        <th class="f14 text-center" width="8%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -103,7 +109,7 @@
     <script type="text/javascript">
         var table;
         var prefix_url = '{{ env('PREFIX_URL') }}';
-        var query = 'waiting';
+        var query = 'answered';
 
         function reload() {
             table.ajax.reload();
@@ -131,8 +137,30 @@
                     '</div>';
             }
 
+            let targetDisposition = '-';
+            if (d['unit'] !== null) {
+                targetDisposition = d['unit']['name'];
+            }
+            if (d['ppk'] !== null) {
+                targetDisposition = d['ppk']['name'];
+            }
+
+
+            let disposition = '<div class="row">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Disposisi</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + targetDisposition + '</div>' +
+                '</div>';
+
             return '<div class="f12">' +
-                '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
+                '<p class="font-weight-bold">Detail Permintaan Informasi</p>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">No. Ktp</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['card_id'] + '</div>' +
+                '</div>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">No. Whatsapp</p>' +
@@ -151,7 +179,7 @@
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">Alamat</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['address'] + '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['address'] + '</div></div>' +
                 '</div>' +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -159,11 +187,30 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
-                '<div class="row">' +
+                disposition +
+                '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p>Isi Saran / Pengaduan</p>' +
+                '<p class="mb-0">Asal Informasi</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['information_source'] + '</div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Salinan Informasi</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['source'] + '</div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Tujuan</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['purpose'] + '</div></div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Informasi</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['information'] + '</div></div>' +
                 '</div>' +
                 '</div>';
         }
@@ -196,20 +243,8 @@
 
         }
 
-        function sendProcess(id) {
-            AjaxPost(prefix_url + '/admin/pengaduan/' + id + '/process', function () {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Berhasil mengirimkan data ke admin UKI...',
-                    icon: 'success',
-                }).then((result) => {
-                    window.location.reload();
-                });
-            })
-        }
-
         function generateTable() {
-            table = DataTableGenerator('#table-data', prefix_url + '/admin/pengaduan/data', [
+            table = DataTableGenerator('#table-data', prefix_url + '/admin/informasi/data', [
                 {
                     className: 'dt-control',
                     orderable: false,
@@ -218,12 +253,7 @@
                     }
                 },
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
-                {
-                    data: 'date', name: 'date', render: function (data, type, row, meta) {
-                        let date = new Date(data);
-                        return date.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
-                    }
-                },
+                {data: 'date'},
                 {data: 'ticket_id'},
                 {data: 'name'},
                 {
@@ -237,7 +267,26 @@
                 },
                 {
                     data: null, render: function (data, type, row, meta) {
-                        return '<a href="#" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-envelope"></i></a>'
+                        let status = data['status'];
+                        let el = '-';
+                        switch (status) {
+                            case 6:
+                                // el = '<div class="pills-danger text-center">Di Tolak</div>';
+                                el = '<i class="fa fa-window-close" style="color: #EB1D36; font-size: 16px;"></i>';
+                                break;
+                            case 9:
+                                // el = '<div class="pills-success text-center">Di Setujui</div>';
+                                el = '<i class="fa fa-check-square" style="color: #54B435; font-size: 16px;"></i>';
+                                break;
+                            default:
+                                break
+                        }
+                        return el;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        return '<a href="#" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-envelope" style="font-size: 16px;"></i></a>'
                     }
                 },
             ], [
@@ -246,33 +295,44 @@
                     className: 'f12'
                 },
                 {
-                    targets: [0, 1, 2, 3, 5, 6],
+                    targets: [0, 1, 2, 5, 6, 7],
                     className: 'text-center'
                 },
                 {
-                    targets: [0, 6],
-                    orderable: false
+                    targets: [0, 6, 7],
+                    orderable: false,
                 }
             ], function (d) {
-                d.q = 'waiting';
+                d.q = query;
             }, {
                 "scrollX": true,
-                responsive: true,
                 "fnDrawCallback": function (settings) {
                     setExpand();
-                    eventProcess();
+                    eventSend();
                 },
             });
         }
 
-        function eventProcess() {
+        function sendReply(id) {
+            AjaxPost(prefix_url + '/admin/informasi/' + id + '/reply', function () {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Berhasil mengirimkan balasan ke pelapor...',
+                    icon: 'success',
+                }).then((result) => {
+                    window.location.reload();
+                });
+            })
+        }
+
+        function eventSend() {
             $('.btn-send').on('click', function (e) {
                 e.preventDefault();
                 let id = this.dataset.id;
                 let iconUrl = '{{ asset('/assets/icons/question.png') }}';
                 Swal.fire({
                     title: 'Konfirmasi!',
-                    text: 'Ingin memproses data pengaduan?',
+                    text: 'Ingin mengirimkan pesan ke pelapor?',
                     iconHtml: '<img src="' + iconUrl + '" height="100">',
                     customClass: {
                         icon: 'no-border'
@@ -283,17 +343,16 @@
                     confirmButtonText: 'Ya'
                 }).then((result) => {
                     if (result.value) {
-                        sendProcess(id);
+                        sendReply(id);
                     }
                 });
             });
         }
 
-
         $(document).ready(function () {
             generateTable();
             setExpand();
-            eventProcess();
+            eventSend();
         });
     </script>
 @endsection

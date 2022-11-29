@@ -76,6 +76,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
         Route::get('/jawab', [\App\Http\Controllers\Admin\InformationController::class, 'answered'])->name('information.answered');
         Route::get('/selesai', [\App\Http\Controllers\Admin\InformationController::class, 'finished'])->name('information.finished');
         Route::post('/{id}/process', [\App\Http\Controllers\Admin\InformationController::class, 'send_process'])->name('information.process.send');
+        Route::post('/{id}/reply', [\App\Http\Controllers\Admin\InformationController::class, 'reply_information'])->name('information.process.reply');
     });
 
     Route::group(['prefix' => 'satker'], function () {
@@ -116,8 +117,8 @@ Route::group(['prefix' => 'admin-uki', 'middleware' => ['auth', 'uki']], functio
         Route::get('/proses', [\App\Http\Controllers\Admin\InformationController::class, 'on_process_uki'])->name('information.process.uki');
         Route::get('/data', [\App\Http\Controllers\Admin\InformationController::class, 'information_data_uki'])->name('information.data.uki');
         Route::match(['post', 'get'], '/{ticket}/info', [\App\Http\Controllers\Admin\InformationController::class, 'data_detail_by_ticket'])->name('information.data.uki.by.ticket');
-        Route::match(['post', 'get'], '/{ticket}/jawaban', [\App\Http\Controllers\Admin\InformationController::class, 'complain_answers_by_ticket'])->name('information.answers.uki.by.ticket');
-        Route::get('/{ticket}/jawaban/data', [\App\Http\Controllers\Admin\InformationController::class, 'complain_answers_by_ticket_data'])->name('information.answers.uki.by.ticket.data');
+        Route::match(['post', 'get'], '/{ticket}/jawaban', [\App\Http\Controllers\Admin\InformationController::class, 'information_answers_by_ticket'])->name('information.answers.uki.by.ticket');
+        Route::get('/{ticket}/jawaban/data', [\App\Http\Controllers\Admin\InformationController::class, 'information_answers_by_ticket_data'])->name('information.answers.uki.by.ticket.data');
 
     });
 });
@@ -131,6 +132,13 @@ Route::group(['prefix' => 'admin-satker', 'middleware' => ['auth', 'satker']], f
         Route::get('/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_data_satker'])->name('complain.data.satker');
         Route::match(['post', 'get'], '/{ticket}/info', [\App\Http\Controllers\Admin\ComplainController::class, 'data_detail_by_ticket_satker'])->name('complain.data.satker.by.ticket');
         Route::get('/{ticket}/jawaban/riwayat', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_data'])->name('complain.answers.satker.data.by.ticket');
+    });
+
+    Route::group(['prefix' => 'informasi'], function () {
+        Route::get('/', [\App\Http\Controllers\Admin\InformationController::class, 'index_satker'])->name('information.index.satker');
+        Route::get('/data', [\App\Http\Controllers\Admin\InformationController::class, 'information_data_satker'])->name('information.data.satker');
+        Route::match(['post', 'get'], '/{ticket}/info', [\App\Http\Controllers\Admin\InformationController::class, 'data_detail_by_ticket_satker'])->name('information.data.satker.by.ticket');
+        Route::get('/{ticket}/jawaban/riwayat', [\App\Http\Controllers\Admin\InformationController::class, 'information_answers_data'])->name('information.answers.satker.data.by.ticket');
     });
 });
 
