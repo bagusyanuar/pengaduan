@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Helper\CustomController;
 use App\Mail\ComplainToAdmin;
-use App\Mail\NewComplain;
+use App\Mail\PengaduanBaru;
 use App\Models\Complain;
 use App\Models\LegalComplain;
 use App\Models\User;
@@ -74,13 +74,12 @@ class ComplainController extends CustomController
                 'description' => '-'
             ];
             $complain = Complain::create($data);
-
-            //send email to admin
-//            $admins = User::where('role', '=', 'admin')->get();
-//            foreach ($admins as $admin) {
-//                $target = $admin->email;
-//                Mail::to($target)->send(new ComplainToAdmin($complain));
-//            }
+			$admin = User::where('role', 'admin')->first();
+			$emailpemohon = $this->postField('email');
+			$targetArray = [$admin->email, $emailpemohon];
+            foreach ($targetArray as $target) {
+                Mail::to($target)->send(new PengaduanBaru($information));
+            } 
             return redirect()->route('complain.success')->with('success', 'Berhasil Mengirimkan Saran / Pengaduan...')->with('ticket', $complain->ticket_id);
         } catch (\Exception $e) {
             return redirect()->back()->withInput(request()->input())->with('failed', 'Terjadi kesalahan server...');

@@ -11,7 +11,7 @@
         href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
         rel="stylesheet">
     <meta name="csrf-token" content="{{csrf_token()}}">
-    <title>Sistem Informasi GIS</title>
+    <title>Lapor Cak!</title>
     <link href="{{ asset('/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/sweetalert2.css') }}" rel="stylesheet">
     <link href="{{ asset('/css/style.css') }}" rel="stylesheet">
@@ -28,8 +28,7 @@
         <div class="col-lg-3 col-md-6 col-sm-11">
             <div class="card">
                 <div class="card-body">
-                    <img src="{{ asset('/assets/icons/customer-service.png') }}" class="w-100 login-icon mb-3"/>
-                    <p class="login-title w-100 text-center mb-2">SISTEM INFORMASI <span class="main-text">PENGADUAN</span></p>
+                    <img src="{{ asset('/img/logo2.png') }}" style="display:block; width:50%; margin-left:auto; margin-right:auto;" class="mb-3"/>
                     {{--                    <hr>--}}
                     <form method="post">
                         @csrf

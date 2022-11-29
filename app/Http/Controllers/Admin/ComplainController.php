@@ -93,10 +93,10 @@ class ComplainController extends CustomController
                 'status' => 1
             ]);
             $users_uki = UserUki::with('user')->get();
-//            foreach ($users_uki as $user_uki) {
-//                $target = $user_uki->user->email;
-//                Mail::to($target)->send(new NewComplain($complain));
-//            }
+            foreach ($users_uki as $user_uki) {
+                $target = $user_uki->user->email;
+                Mail::to($target)->send(new NewComplain($complain));
+            }
             return $this->jsonResponse('success', 200);
         } catch (\Exception $e) {
             return $this->jsonResponse('terjadi kesalahan ' . $e->getMessage(), 500);
