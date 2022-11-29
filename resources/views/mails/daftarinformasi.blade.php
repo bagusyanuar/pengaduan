@@ -1,19 +1,10 @@
-<html>
-<head>
-    <title>Pengaduan Baru</title>
-</head>
-<body>
-<h3>No. Ticket {{ $data->ticket_id }}</h3>
-<a href="{{ route('complain.data.uki.by.ticket', ['ticket' =>  str_replace('/', '-', $data->ticket_id)]) }}">Link</a>
-</body>
-</html>
 
 <!doctype html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Pengaduan Baru</title>
+    <title>Permohonan Informasi Baru</title>
     <style>
       /* -------------------------------------
           GLOBAL RESETS
@@ -358,36 +349,28 @@
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td>
-					  <h3>Pengaduan Baru dengan nomor ticket {{ $data->ticket_id }}</h3>
-                        <table border="1" cellpadding="0" cellspacing="0">
-							  <tbody>
-								<tr> <td>No. Ticket </td> <td> {{ $data->ticket_id }} </td></tr>
-								<tr> <td>Nama Pemohon </td> <td> {{ $data->name }} </td></tr>
-								<tr> <td>Alamat </td> <td> {{ $data->address }} </td></tr>
-								<tr> <td>Pekerjaan </td> <td> {{ $data->job }} </td></tr>
-								<tr> <td>Nomor Telp </td> <td> {{ $data->phone }} </td></tr>
-								<tr> <td>Pengaduan </td> <td> {{ $data->complain }} </td></tr>
-							  </tbody>
-                         </table>
-                      </td>
-                    </tr>
-					<tr> <td>
-					<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
-                          <tbody>
-                            <tr>
-                              <td align="left">
-                                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <p>Hai {{ $data->name }},</p>
+                        <p>Terima kasih atas permohonan informasi Anda di Layanan Permohonan Informasi dan Pengaduan Online
+						Balai Besar Pelaksanaan Jalan Nasional Jawa Timur - Bali. Berikut informasi pendaftaran Anda :</p>
+                       
+                                <table border="1" cellpadding="0" cellspacing="0">
                                   <tbody>
-                                    <tr>
-                                      <td> <a href="{{ route('complain.data.uki.by.ticket', ['ticket' =>  str_replace('/', '-', $data->ticket_id)]) }}" target="_blank">Lihat</a> </td>
-                                    </tr>
+                                    <tr> <td>No. Ticket </td> <td> {{ $data->ticket_id }} </td></tr>
+                                    <tr> <td>Nama Pemohon </td> <td> {{ $data->name }} </td></tr>
+                                    <tr> <td>Alamat </td> <td> {{ $data->address }} </td></tr>
+                                    <tr> <td>Pekerjaan </td> <td> {{ $data->job }} </td></tr>
+                                    <tr> <td>Nomor Telp </td> <td> {{ $data->phone }} </td></tr>
+                                    <tr> <td>Informasi </td> <td> {{ $data->information }} </td></tr>
+                                    <tr> <td>Tujuan </td> <td> {{ $data->purpose }} </td></tr>
+                                    
                                   </tbody>
                                 </table>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-					</td> </tr>
+                             
+                      
+                        
+                      </td>
+                    </tr>
+					  <tr> <td>Terima Kasih</td></tr>
                   </table>
                 </td>
               </tr>
@@ -397,7 +380,7 @@
             <!-- END CENTERED WHITE CONTAINER -->
 
             <!-- START FOOTER -->
-             <div class="footer">
+            <div class="footer">
               <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                 <tr>
                   <td class="content-block">

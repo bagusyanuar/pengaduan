@@ -3,15 +3,17 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Mail\InformationBaru;
 use App\Helper\CustomController;
 use App\Models\Complain;
 use App\Models\Information;
 use App\Models\LegalComplain;
 use App\Models\LegalInformation;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -78,6 +80,12 @@ class InformationController extends CustomController
                 'description' => '-'
             ];
             $information = Information::create($data);
+		 	$admin = User::where('role', 'admin')->first();
+			$emailpemohon = $this->postField('email');
+			$targetArray = [$admin->email, $emailpemohon];
+            foreach ($targetArray as $target) {
+                Mail::to($target)->send(new InformationBaru($information));
+            } 
             return redirect()->route('information.success')->with('success', 'Berhasil Mengirimkan Saran / Pengaduan...')->with('ticket', $information->ticket_id);
         } catch (\Exception $e) {
             return redirect()->back()->withInput(request()->input())->with('failed', 'Terjadi kesalahan server...' . $e->getMessage());
@@ -161,6 +169,12 @@ class InformationController extends CustomController
             }
             LegalInformation::create($data_legal);
             DB::commit();
+			$admin = User::where('role', 'admin')->first();
+			$emailpemohon = $this->postField('legal_email');
+			$targetArray = [$admin->email, $emailpemohon];
+            foreach ($targetArray as $target) {
+                Mail::to($target)->send(new InformationBaru($information));
+            } 
             return redirect()->route('information.success')->with('success', 'Berhasil Mengirimkan Saran / Pengaduan...')->with('ticket', $information->ticket_id);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -185,6 +199,7 @@ class InformationController extends CustomController
         if (!Session::has('ticket')) {
             return redirect()->route('home');
         }
+		
         return view('information-success');
     }
 }
