@@ -257,6 +257,10 @@ class ComplainController extends CustomController
                     'status' => 9
                 ]);
             }
+
+//            if ($status === '0') {
+//                Mail::to($complain->email)->send(new ReplyComplain($complain));
+//            }
             DB::commit();
             return redirect()->route('complain.process.uki')->with('success', 'Berhasil Melakukan Konfirmasi Jawaban Saran / Pengaduan...');
         } catch (\Exception $e) {

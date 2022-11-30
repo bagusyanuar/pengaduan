@@ -21,21 +21,21 @@
         <div class="card card-outline card-warning">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0">Data Saran / Pengaduan</p>
+                    <p class="mb-0 f14 font-weight-bold">Data Saran / Pengaduan</p>
                 </div>
             </div>
             <div class="card-body">
                 <table id="table-data" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
-                        <th width="5%" class="text-center f14 no-sort"></th>
-                        <th width="5%" class="text-center f14">#</th>
-                        <th class="f14" width="12%">Tanggal</th>
-                        <th class="f14" width="20%">No. Ticket</th>
-                        <th class="f14">Nama</th>
-                        <th class="f14" width="10%">Legalitas</th>
-                        <th class="f14" width="8%">Status</th>
-                        <th class="f14" width="8%">Aksi</th>
+                        <th width="5%" class="text-center f12 no-sort"></th>
+                        <th width="5%" class="text-center f12">#</th>
+                        <th class="f12" width="12%">Tanggal</th>
+                        <th class="f12" width="20%">No. Ticket</th>
+                        <th class="f12">Nama</th>
+                        <th class="f12" width="10%">Legalitas</th>
+                        <th class="f12" width="8%">Status</th>
+                        <th class="f12" width="8%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -79,18 +79,7 @@
                     '</div>';
             }
 
-
-            let ticket_id = d['ticket_id'].replaceAll('/', '-');
-            let url = prefix_url + '/admin-satker/pengaduan/' + ticket_id + '/info';
-            let action = '<div class="row mb-2 mt-2">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-info-circle mr-2"></i>Detail</a>' +
-                '</div>' +
-                '</div>';
-
-            return '<div class="f14">' +
+            return '<div class="f12">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -124,7 +113,6 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify mb-0">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
-                // action +
                 '</div>';
         }
 
@@ -208,7 +196,7 @@
             ], [
                 {
                     targets: '_all',
-                    className: 'f14'
+                    className: 'f12'
                 },
                 {
                     targets: [0, 1, 2, 5, 6, 7],

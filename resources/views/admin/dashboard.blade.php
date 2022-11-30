@@ -1,6 +1,15 @@
 @extends('admin.layout')
 
 @section('content')
+    <div class="backdrop-loading" id="backdrop-loading">
+        <div style="height: 100%; width: 100%" class="d-flex align-items-center justify-content-center">
+            <div class="text-center">
+                <img src="{{ asset('/assets/icons/loading.png') }}" height="200" class="mb-2">
+                <p style="color: white">Sedang mengirim data ke admin UKI...</p>
+            </div>
+
+        </div>
+    </div>
     <div class="d-flex align-items-center justify-content-between mb-3">
         <ol class="breadcrumb breadcrumb-transparent mb-0">
             <li class="breadcrumb-item active" aria-current="page">Dashboard
@@ -144,6 +153,22 @@
 
         .dataTables_empty {
             font-size: 12px !important;
+        }
+
+        #backdrop-loading {
+            pointer-events: all;
+            display: none;
+            z-index: 99999;
+            border: none;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            top: 0px;
+            left: 0px;
+            cursor: wait;
+            position: fixed;
+            background-color: rgba(0, 0, 0, 0.6);
         }
     </style>
 @endsection

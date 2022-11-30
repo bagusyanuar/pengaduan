@@ -21,21 +21,22 @@
         <div class="card card-outline card-warning">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0">Data Saran / Pengaduan Sedang Di Proses</p>
+                    <p class="mb-0 f14 font-weight-bold">Data Saran / Pengaduan Sedang Di Proses</p>
                 </div>
             </div>
             <div class="card-body">
                 <table id="table-data" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
-                        <th width="5%" class="text-center f14 no-sort"></th>
-                        <th width="5%" class="text-center f14">#</th>
-                        <th class="f14" width="12%">Tanggal</th>
-                        <th class="f14" width="25%">No. Ticket</th>
-                        <th class="f14">Nama</th>
-                        <th class="f14" width="12%">Legalitas</th>
-                        <th class="f14" width="8%">Status</th>
-                        <th class="f14" width="12%">Aksi</th>
+                        <th width="5%" class="text-center f12 no-sort"></th>
+                        <th width="5%" class="text-center f12">#</th>
+                        <th class="f12" width="12%">Tanggal</th>
+                        <th class="f12" width="25%">No. Ticket</th>
+                        <th class="f12">Nama</th>
+                        <th class="f12" width="12%">Legalitas</th>
+                        <th class="f12" width="10%">Disposisi</th>
+                        <th class="f12" width="8%">Status</th>
+                        <th class="f12" width="12%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -70,7 +71,7 @@
             justify-content: center;
         }
     </style>
-    @endsection
+@endsection
 @section('js')
     <script src="{{ asset('/js/helper.js') }}"></script>
     <script type="text/javascript">
@@ -113,22 +114,7 @@
                 '</div>' +
                 '</div>';
 
-            let target_disposition = '-';
-            if (d['target'] !== null) {
-                if (d['target'] === 1) {
-                    target_disposition = d['ppk']['name'];
-                } else {
-                    target_disposition = d['unit']['name'];
-                }
-            }
-            let disposition = '<div class="row">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p class="mb-0">Disposisi</p>' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + target_disposition + '</div>' +
-                '</div>';
-
-            return '<div class="f14">' +
+            return '<div class="f12">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -156,14 +142,12 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
-                disposition +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p>Isi Saran / Pengaduan</p>' +
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
-                // action +
                 '</div>';
         }
 
@@ -226,6 +210,19 @@
                 },
                 {
                     data: null, render: function (data, type, row, meta) {
+                        let target_disposition = '-';
+                        if (data['target'] !== null) {
+                            if (data['target'] === 1) {
+                                target_disposition = data['ppk']['name'];
+                            } else {
+                                target_disposition = data['unit']['name'];
+                            }
+                        }
+                        return target_disposition;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
                         let status = data['HasAnswer'];
                         let ticket_id = data['ticket_id'].replaceAll('/', '-');
                         let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
@@ -248,14 +245,14 @@
             ], [
                 {
                     targets: '_all',
-                    className: 'f14'
+                    className: 'f12'
                 },
                 {
-                    targets: [0, 1, 2, 5, 6, 7],
+                    targets: [0, 1, 2, 5, 6, 7, 8],
                     className: 'text-center'
                 },
                 {
-                    targets: [6, 7],
+                    targets: [6, 7, 8],
                     orderable: false
                 }
             ], function (d) {

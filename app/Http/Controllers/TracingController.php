@@ -35,11 +35,11 @@ class TracingController extends CustomController
                 ->where('ticket_id', '=', $ticket_id)
                 ->firstOrFail();
 
-            if ($data->status === 1 && $data->target === null) {
+            if (($data->status === 1 && $data->target === null) || ($data->status === 6 && $data->is_finish == false)) {
                 $step = 2;
             } elseif ($data->status === 1 && $data->target !== null) {
                 $step = 3;
-            } elseif (($data->status === 6 || $data->status === 9) && $data->is_finish == false) {
+            } elseif ($data->status === 9 && $data->is_finish == false) {
                 $step = 3;
             } elseif (($data->status === 6 || $data->status === 9) && $data->is_finish == true) {
                 $step = 4;
@@ -49,18 +49,16 @@ class TracingController extends CustomController
                 ->where('ticket_id', '=', $ticket_id)
                 ->firstOrFail();
 
-            if ($data->status === 1 && $data->target === null) {
+            if (($data->status === 1 && $data->target === null) || ($data->status === 6 && $data->is_finish == false)) {
                 $step = 2;
             } elseif ($data->status === 1 && $data->target !== null) {
                 $step = 3;
-            } elseif (($data->status === 6 || $data->status === 9) && $data->is_finish == false) {
+            } elseif ($data->status === 9 && $data->is_finish == false) {
                 $step = 3;
             } elseif (($data->status === 6 || $data->status === 9) && $data->is_finish == true) {
                 $step = 4;
             }
         }
-
-
         return view('tracing-result')->with(['data' => $data, 'step' => $step, 'type' => $type]);
     }
 }
