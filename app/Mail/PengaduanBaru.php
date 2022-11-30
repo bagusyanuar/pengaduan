@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Information;
 
-class InformationBaru extends Mailable
+class PengaduanBaru extends Mailable
 {
     use Queueable, SerializesModels;
     public $data;

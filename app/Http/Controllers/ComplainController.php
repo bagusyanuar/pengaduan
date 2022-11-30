@@ -78,8 +78,8 @@ class ComplainController extends CustomController
 			$emailpemohon = $this->postField('email');
 			$targetArray = [$admin->email, $emailpemohon];
             foreach ($targetArray as $target) {
-                Mail::to($target)->send(new PengaduanBaru($information));
-            } 
+                Mail::to($target)->send(new PengaduanBaru($complain));
+            }
             return redirect()->route('complain.success')->with('success', 'Berhasil Mengirimkan Saran / Pengaduan...')->with('ticket', $complain->ticket_id);
         } catch (\Exception $e) {
             return redirect()->back()->withInput(request()->input())->with('failed', 'Terjadi kesalahan server...');

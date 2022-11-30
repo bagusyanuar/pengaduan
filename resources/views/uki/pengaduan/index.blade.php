@@ -21,20 +21,20 @@
         <div class="card card-outline card-warning">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0">Data Saran / Pengaduan</p>
+                    <p class="mb-0 f4 font-weight-bold">Data Saran / Pengaduan</p>
                 </div>
             </div>
             <div class="card-body">
                 <table id="table-data" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
-                        <th width="5%" class="text-center f14 no-sort"></th>
-                        <th width="5%" class="text-center f14">#</th>
-                        <th class="f14" width="12%">Tanggal</th>
-                        <th class="f14" width="25%">No. Ticket</th>
-                        <th class="f14">Nama</th>
-                        <th class="f14" width="13%">Legalitas</th>
-                        <th class="f14" width="8%">Aksi</th>
+                        <th width="5%" class="text-center f12 no-sort"></th>
+                        <th width="5%" class="text-center f12">#</th>
+                        <th class="f12" width="12%">Tanggal</th>
+                        <th class="f12" width="25%">No. Ticket</th>
+                        <th class="f12">Nama</th>
+                        <th class="f12" width="13%">Legalitas</th>
+                        <th class="f12" width="8%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -78,28 +78,6 @@
                     '</div>';
             }
 
-            let action = '';
-            let ticket_id = d['ticket_id'].replaceAll('/', '-');
-            if (query === 'waiting') {
-                let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/info';
-                action = '<div class="row mb-2 mt-2">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                    '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-info-circle mr-2"></i>Detail</a>' +
-                    '</div>' +
-                    '</div>';
-            } else if (query === 'process') {
-                let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
-                action = '<div class="row mb-2 mt-2">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                    '<a href="' + url + '" class="main-button btn-process" data-ticket="' + d['ticket_id'] + '" data-id="' + d['id'] + '"><i class="fa fa-comments mr-2"></i>Jawaban</a>' +
-                    '</div>' +
-                    '</div>';
-            }
-
             let disposition = '';
             if (query !== 'waiting') {
                 disposition = '<div class="row">' +
@@ -111,7 +89,7 @@
             }
 
 
-            return '<div class="f14">' +
+            return '<div class="f12">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -146,7 +124,6 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
-                // action +
                 '</div>';
         }
 
@@ -216,7 +193,7 @@
             ], [
                 {
                     targets: '_all',
-                    className: 'f14'
+                    className: 'f12'
                 },
                 {
                     targets: [0, 1, 2, 5, 6],
