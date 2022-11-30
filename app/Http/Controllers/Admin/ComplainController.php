@@ -51,6 +51,10 @@ class ComplainController extends CustomController
         return view('admin.pengaduan.finished');
     }
 
+    public function detail($ticket)
+    {
+        return view('admin.pengaduan.detail-answer');
+    }
     public function complain_data()
     {
         try {

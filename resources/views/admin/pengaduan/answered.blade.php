@@ -269,7 +269,10 @@
                 },
                 {
                     data: null, render: function (data, type, row, meta) {
-                        return '<a href="#" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-envelope" style="font-size: 16px;"></i></a>'
+                        // return '<a href="#" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-envelope" style="font-size: 16px;"></i></a>';
+                        let ticket_id = data['ticket_id'].replaceAll('/', '-');
+                        let url = prefix_url + '/admin/pengaduan/jawab/' + ticket_id ;
+                        return '<a href="' + url + '" class="btn-send" data-id="' + data['id'] + '">Detail</a>';
                     }
                 },
 
@@ -292,7 +295,7 @@
                 "scrollX": true,
                 "fnDrawCallback": function (settings) {
                     setExpand();
-                    eventSend();
+                    // eventSend();
                 },
             });
         }
@@ -336,7 +339,7 @@
         $(document).ready(function () {
             generateTable();
             setExpand();
-            eventSend();
+            // eventSend();
         });
     </script>
 @endsection
