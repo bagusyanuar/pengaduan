@@ -16,7 +16,7 @@
         <div class="d-flex align-items-center justify-content-between mb-3">
             <ol class="breadcrumb breadcrumb-transparent mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('dashboard.ppk') }}">Dashboard</a>
+                    <a href="{{ route('dashboard.satker') }}">Dashboard</a>
                 </li>
                 <li class="breadcrumb-item">
                     <a href="{{ route('information.index.satker') }}">Permintaan Informasi</a>

@@ -122,6 +122,7 @@ class ComplainController extends CustomController
     public function complain_data_uki()
     {
         try {
+            $limit = $this->field('limit');
             $status = [1];
             if ($this->field('q') === 'answered') {
                 $status = [6, 9];
@@ -135,6 +136,9 @@ class ComplainController extends CustomController
 
             if ($this->field('q') === 'waiting') {
                 $query->whereNull('target');
+            }
+            if ($limit !== null) {
+                $query->take((int)$limit);
             }
             $data = $query->get()->append(['HasAnswer']);
             return $this->basicDataTables($data);
@@ -281,6 +285,7 @@ class ComplainController extends CustomController
     {
 
         try {
+            $limit = $this->field('limit');
             $user_satker = UserSatuanKerja::where('user_id', '=', Auth::id())->first();
             if (!$user_satker) {
                 return $this->basicDataTables([]);
@@ -291,6 +296,10 @@ class ComplainController extends CustomController
                 ->where('target', '=', 0);
             if ($this->field('q') === 'waiting') {
                 $query->where('satker_id', '=', $user_satker->satker_id);
+            }
+
+            if ($limit !== null) {
+                $query->take((int)$limit);
             }
             $data = $query->get()->append(['HasAnswer', 'HasApprovedAnswer']);
             return $this->basicDataTables($data);
@@ -373,6 +382,7 @@ class ComplainController extends CustomController
     {
 
         try {
+            $limit = $this->field('limit');
             $user_ppk = UserPPK::where('user_id', '=', Auth::id())->first();
             if (!$user_ppk) {
                 return $this->basicDataTables([]);
@@ -383,6 +393,10 @@ class ComplainController extends CustomController
                 ->where('target', '=', 1);
             if ($this->field('q') === 'waiting') {
                 $query->where('ppk_id', '=', $user_ppk->ppk_id);
+            }
+
+            if ($limit !== null) {
+                $query->take((int)$limit);
             }
             $data = $query->get()->append(['HasAnswer', 'HasApprovedAnswer']);
             return $this->basicDataTables($data);
