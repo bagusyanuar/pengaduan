@@ -18,6 +18,15 @@ body {
     background-color: white;
 }
 
+.my-sidebar-menu {
+    flex-grow: 1;
+    max-height: 500px;
+    font-size: 12px;
+}
+
+.my-sidebar-menu > .fa {
+    font-size: 12px;
+}
 
 .f14 {
     font-size: 14px;
@@ -36,7 +45,7 @@ body {
 .custom-nav {
     background: white !important;
     height: 80px;
-    box-shadow: 0px 8px 8px -6px rgba(0,0,0,.2);
+    box-shadow: 0px 8px 8px -6px rgba(0, 0, 0, .2);
 }
 
 .login-body {
@@ -258,7 +267,7 @@ body {
     color: white;
 }
 
-.lazy-backdrop{
+.lazy-backdrop {
     position: fixed;
     display: none;
     align-items: center;
@@ -295,7 +304,7 @@ body {
     padding-left: 70px;
     padding-right: 70px;
     padding-top: 40px;
-    box-shadow: 0px -8px 8px -6px rgba(0,0,0,.2);
+    box-shadow: 0px -8px 8px -6px rgba(0, 0, 0, .2);
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
@@ -429,6 +438,18 @@ table.dataTable {
 
 .dt-control:hover {
     cursor: pointer;
+}
+
+.dataTables_length, .dataTables_length > label > select, .dataTables_info, .dataTables_paginate {
+    font-size: 12px !important;
+}
+
+.dataTables_filter, .dataTables_filter > label > input {
+    font-size: 12px !important;
+}
+
+.dataTables_empty {
+    font-size: 12px !important;
 }
 
 /*select2*/

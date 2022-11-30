@@ -10,9 +10,9 @@
         <div class="d-flex align-items-center justify-content-between mb-3">
             <ol class="breadcrumb breadcrumb-transparent mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('dashboard') }}">Dashboard</a>
+                    <a href="{{ route('dashboard.ppk') }}">Dashboard</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">Saran / Pengaduan Sedang Di Proses
+                <li class="breadcrumb-item active" aria-current="page">Permintaan Informasi
                 </li>
             </ol>
         </div>
@@ -21,20 +21,21 @@
         <div class="card card-outline card-warning">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0 f14 font-weight-bold">Data Saran / Pengaduan Sedang Di Proses</p>
+                    <p class="mb-0">Data Permintaan Informasi</p>
                 </div>
             </div>
             <div class="card-body">
                 <table id="table-data" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
-                        <th width="5%" class="text-center f12 no-sort"></th>
-                        <th width="5%" class="text-center f12">#</th>
-                        <th class="f12" width="12%">Tanggal</th>
-                        <th class="f12" width="25%">No. Ticket</th>
-                        <th class="f12">Nama</th>
-                        <th class="f12" width="12%">Legalitas</th>
-                        <th class="f12" width="10%">Disposisi</th>
+                        <th width="5%" class="text-center f14 no-sort"></th>
+                        <th width="5%" class="text-center f14">#</th>
+                        <th class="f14" width="12%">Tanggal</th>
+                        <th class="f14" width="20%">No. Ticket</th>
+                        <th class="f14">Nama</th>
+                        <th class="f14" width="10%">Legalitas</th>
+                        <th class="f14" width="8%">Status</th>
+                        <th class="f14" width="8%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -50,7 +51,7 @@
     <script type="text/javascript">
         var table;
         var prefix_url = '{{ env('PREFIX_URL') }}';
-        var query = 'process';
+        var query = 'waiting';
 
         function reload() {
             table.ajax.reload();
@@ -78,25 +79,14 @@
                     '</div>';
             }
 
-            let targetDisposition = '-';
-            if (d['unit'] !== null) {
-                targetDisposition = d['unit']['name'];
-            }
-            if (d['ppk'] !== null) {
-                targetDisposition = d['ppk']['name'];
-            }
-
-
-            let disposition = '<div class="row">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p class="mb-0">Disposisi</p>' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + targetDisposition + '</div>' +
-                '</div>';
-
-
             return '<div class="f12">' +
-                '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
+                '<p class="font-weight-bold">Detail Permintaan Informasi</p>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">No. Ktp</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['card_id'] + '</div>' +
+                '</div>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">No. Whatsapp</p>' +
@@ -115,7 +105,7 @@
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">Alamat</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['address'] + '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['address'] + '</div></div>' +
                 '</div>' +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -123,12 +113,29 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
-                disposition +
-                '<div class="row mb-2">' +
+                '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p>Isi Saran / Pengaduan</p>' +
+                '<p class="mb-0">Asal Informasi</p>' +
                 '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['information_source'] + '</div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Salinan Informasi</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['source'] + '</div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Tujuan</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['purpose'] + '</div></div>' +
+                '</div>' +
+                '<div class="row mb-0">' +
+                '<div class="col-lg-3 col-md-4 col-sm-6">' +
+                '<p class="mb-0">Informasi</p>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['information'] + '</div></div>' +
                 '</div>' +
                 '</div>';
         }
@@ -152,30 +159,28 @@
                     tr.addClass('shown');
                     i.removeClass('fa fa-plus-square-o');
                     i.addClass('fa fa-minus-square-o');
-                    console.log(row.data());
-                    // console.log(tr.closest('i'));
-
                 }
             });
+        }
 
-
+        function sendProcess(id) {
+            AjaxPost(prefix_url + '/admin-satker/informasi/' + id + '/process', function () {
+                window.location.reload();
+            })
         }
 
         function generateTable() {
-            table = DataTableGenerator('#table-data', prefix_url + '/admin/pengaduan/data', [
+            let url = '{{ route('information.data.satker') }}';
+            table = DataTableGenerator('#table-data', prefix_url + url, [
                 {
                     className: 'dt-control',
+                    orderable: false,
                     data: null, render: function () {
                         return '<i class="fa fa-plus-square-o main-text expand-icon"></i>';
                     }
                 },
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
-                {
-                    data: 'date', name: 'date', render: function (data, type, row, meta) {
-                        let date = new Date(data);
-                        return date.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
-                    }
-                },
+                {data: 'date'},
                 {data: 'ticket_id'},
                 {data: 'name'},
                 {
@@ -189,16 +194,27 @@
                 },
                 {
                     data: null, render: function (data, type, row, meta) {
-                        let targetDisposition = '-';
-                        if (data['target'] !== null) {
-                            if (data['unit'] !== null) {
-                                targetDisposition = data['unit']['name'];
+                        let lastAnswer = data['last_answer'];
+                        let el = '<i class="fa fa-minus" style="font-size: 16px; color: gray"></i>';
+                        if (lastAnswer !== null) {
+                            let status = lastAnswer['status'];
+                            if (status === 6) {
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #EB1D36"></i>';
                             }
-                            if (data['ppk'] !== null) {
-                                targetDisposition = data['ppk']['name'];
+
+                            if (status === 0) {
+                                el = '<i class="fa fa-check-circle" style="font-size: 16px; color: #f55400"></i>';
                             }
+
                         }
-                        return targetDisposition;
+                        return el;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let ticket_id = data['ticket_id'].replaceAll('/', '-');
+                        let url = prefix_url + '/admin-satker/informasi/' + ticket_id + '/info';
+                        return '<a href="' + url + '" class="btn-send" data-id="' + data['id'] + '">Detail</a>'
                     }
                 },
             ], [
@@ -207,13 +223,13 @@
                     className: 'f12'
                 },
                 {
-                    targets: [0, 5, 6],
+                    targets: [0, 1, 2, 5, 6, 7],
                     className: 'text-center'
                 },
                 {
-                    targets: [0, 5, 6],
+                    targets: [6, 7],
                     orderable: false
-                },
+                }
             ], function (d) {
                 d.q = query;
             }, {

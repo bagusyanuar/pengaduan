@@ -92,8 +92,9 @@
                         <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
                         <th class="f14" width="13%">Legalitas</th>
-                        <th class="f14 text-center" width="8%">Status</th>
-                        <th class="f14 text-center" width="8%">Aksi</th>
+                        <th class="f12" width="10%">Disposisi</th>
+                        <th class="f14 text-center" width="5%">Status</th>
+                        <th class="f14 text-center" width="5%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -137,31 +138,6 @@
                     '</div>';
             }
 
-            let action = '<div class="row mt-2 mb-2">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">' +
-                '<a href="#" class="main-button btn-process" data-id="' + d['id'] + '"><i class="fa fa-check mr-2"></i>Selesai & Kirim Pesan</a>' +
-                '</div>' +
-                '</div>';
-
-            let targetDisposition = '-';
-
-            if (d['unit'] !== null && d['target'] === 0) {
-                targetDisposition = d['unit']['name'];
-            }
-            if (d['ppk'] !== null && d['target'] === 1) {
-                targetDisposition = d['ppk']['name'];
-            }
-
-
-            let disposition = '<div class="row">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p class="mb-0">Disposisi</p>' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + targetDisposition + '</div>' +
-                '</div>';
-
             let description = '';
             if (d['status'] === 6) {
                 description = '<div class="row mb-2">' +
@@ -200,7 +176,6 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
-                disposition +
                 '<div class="row">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p>Isi Saran / Pengaduan</p>' +
@@ -208,7 +183,6 @@
                 '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
                 description +
-                // action +
                 '</div>';
         }
 
@@ -264,15 +238,27 @@
                 },
                 {
                     data: null, render: function (data, type, row, meta) {
+                        let targetDisposition = '-';
+                        if (data['target'] !== null) {
+                            if (data['unit'] !== null) {
+                                targetDisposition = data['unit']['name'];
+                            }
+                            if (data['ppk'] !== null) {
+                                targetDisposition = data['ppk']['name'];
+                            }
+                        }
+                        return targetDisposition;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
                         let status = data['status'];
                         let el = '-';
                         switch (status) {
                             case 6:
-                                // el = '<div class="pills-danger text-center">Di Tolak</div>';
                                 el = '<i class="fa fa-window-close" style="color: #EB1D36; font-size: 16px;"></i>';
                                 break;
                             case 9:
-                                // el = '<div class="pills-success text-center">Di Setujui</div>';
                                 el = '<i class="fa fa-check-square" style="color: #54B435; font-size: 16px;"></i>';
                                 break;
                             default:
@@ -286,17 +272,18 @@
                         return '<a href="#" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-envelope" style="font-size: 16px;"></i></a>'
                     }
                 },
+
             ], [
                 {
                     targets: '_all',
-                    className: 'f14'
+                    className: 'f12'
                 },
                 {
-                    targets: [0, 1, 2, 5, 6, 7],
+                    targets: [0, 1, 2, 5, 6, 7, 8],
                     className: 'text-center'
                 },
                 {
-                    targets: [0, 6, 7],
+                    targets: [0, 7, 8],
                     orderable: false,
                 }
             ], function (d) {
