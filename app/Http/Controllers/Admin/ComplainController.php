@@ -61,31 +61,27 @@ class ComplainController extends CustomController
         }, 'approved_answer', 'answers.upload_by', 'answers.answer_by'])->where('ticket_id', '=', $ticket_id)
             ->firstOrFail();
 
-
         if ($this->request->method() === 'POST') {
             DB::beginTransaction();
             try {
-                $data->update([
-                    'is_finish' => 1,
-                    'finish_at' => Carbon::now()->format('Y-m-d')
-                ]);
                 setlocale(LC_ALL, 'IND');
                 $pdf = Pdf::loadView('admin.surat-pengantar.index', [
                     'data' => $data
                 ]);
+//                return $pdf->stream();
                 $path = 'assets/attachment/' . Uuid::uuid4() . '.pdf';
                 $pdf->save($path);
                 Mail::to($data->email)->send(new ReplyComplain($data, $path));
+                $data->update([
+                    'is_finish' => 1,
+                    'finish_at' => Carbon::now()->format('Y-m-d')
+                ]);
                 DB::commit();
                 return redirect()->back()->with('success', 'berhasil...');
-            }catch (\Exception $e) {
+            } catch (\Exception $e) {
                 DB::rollBack();
                 return redirect()->back()->with('failed', 'terjadi kesalahan server...');
             }
-
-//            dd('oke');
-//            return $pdf->stream();
-
         }
         return view('admin.pengaduan.detail-answer')->with(['data' => $data]);
     }
@@ -239,9 +235,9 @@ class ComplainController extends CustomController
                 }
             }
             $data->update($data_update);
-//            foreach ($mails_to as $target) {
-//                Mail::to($target['email'])->send(new ComplainDisposition($data, $target['target']));
-//            }
+            foreach ($mails_to as $target) {
+                Mail::to($target['email'])->send(new ComplainDisposition($data, $target['target']));
+            }
         } else {
             $data_update = [
                 'description' => $this->postField('description'),
@@ -355,22 +351,24 @@ class ComplainController extends CustomController
         $data = Complain::with(['legal', 'unit', 'ppk', 'answers'])->where('ticket_id', '=', $ticket_id)
             ->firstOrFail()->append(['HasAnswer', 'HasApprovedAnswer']);
         if ($this->request->method() === 'POST') {
-            return $this->send_answer($data->id);
+            return $this->send_answer($data);
         }
         Session::forget('redirect');
         return view('satker.pengaduan.detail')->with(['data' => $data]);
     }
 
-    private function send_answer($id)
+    private function send_answer($data)
     {
+        DB::beginTransaction();
         try {
             $data_request = [
-                'complain_id' => $id,
+                'complain_id' => $data->id,
                 'date_upload' => Carbon::now()->format('Y-m-d'),
                 'status' => 0,
                 'description' => '-',
                 'author_upload' => Auth::id()
             ];
+            //send of complain
             if ($this->request->hasFile('answer')) {
                 $file = $this->request->file('answer');
                 $name = $this->uuidGenerator() . '.' . $file->getClientOriginalExtension();
@@ -381,8 +379,15 @@ class ComplainController extends CustomController
                 return redirect()->back()->with('failed', 'File Jawaban Belum Terlampir...');
             }
             ComplainAnswer::create($data_request);
+            $users_uki = UserUki::with('user')->get();
+            foreach ($users_uki as $user_uki) {
+                $target = $user_uki->user->email;
+                Mail::to($target)->send(new \App\Mail\ComplainAnswer($data));
+            }
+            DB::commit();
             return redirect()->back()->with('success', 'Berhasil Melakukan Konfirmasi Saran / Pengaduan...');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->with('failed', 'terjadi kesalahan server');
         }
     }
@@ -447,12 +452,13 @@ class ComplainController extends CustomController
 
     public function data_detail_by_ticket_ppk($ticket)
     {
+        //detail ppk
         Session::put('redirect', URL::current());
         $ticket_id = str_replace('-', '/', $ticket);
         $data = Complain::with(['legal', 'unit', 'ppk', 'answers'])->where('ticket_id', '=', $ticket_id)
             ->firstOrFail()->append(['HasAnswer', 'HasApprovedAnswer']);
         if ($this->request->method() === 'POST') {
-            return $this->send_answer($data->id);
+            return $this->send_answer($data);
         }
         Session::forget('redirect');
         return view('ppk.pengaduan.detail')->with(['data' => $data]);

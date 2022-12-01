@@ -76,6 +76,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
         Route::get('/data', [\App\Http\Controllers\Admin\InformationController::class, 'information_data'])->name('information.data');
         Route::get('/proses', [\App\Http\Controllers\Admin\InformationController::class, 'on_process'])->name('information.process');
         Route::get('/jawab', [\App\Http\Controllers\Admin\InformationController::class, 'answered'])->name('information.answered');
+        Route::match(['post', 'get'],'/jawab/{ticket}', [\App\Http\Controllers\Admin\InformationController::class, 'detail'])->name('information.answer.by.ticket');
+        Route::get('/jawab/{ticket}/data', [\App\Http\Controllers\Admin\InformationController::class, 'information_answers_by_ticket_data'])->name('information.answer.by.ticket.data');
         Route::get('/selesai', [\App\Http\Controllers\Admin\InformationController::class, 'finished'])->name('information.finished');
         Route::post('/{id}/process', [\App\Http\Controllers\Admin\InformationController::class, 'send_process'])->name('information.process.send');
         Route::post('/{id}/reply', [\App\Http\Controllers\Admin\InformationController::class, 'reply_information'])->name('information.process.reply');

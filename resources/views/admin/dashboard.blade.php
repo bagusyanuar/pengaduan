@@ -98,7 +98,7 @@
             <div class="card card-outline card-success mt-3">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <p class="mb-0">Pengaduan Di Jawab</p>
+                        <p class="mb-0 f14 main-text font-weight-bold">Data Pengaduan Dijawab</p>
                         <a href="{{ route('complain.answered') }}" class="main-button-outline f12">Lihat Lebih <i
                                 class="fa fa-arrow-circle-right ml-2"></i></a>
                     </div>
@@ -121,8 +121,8 @@
             <div class="card card-outline card-success">
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
-                        <p class="mb-0">Permintaan Informasi Dijawab</p>
-                        <a href="{{ route('information.index') }}" class="main-button-outline f12">Lihat Lebih <i
+                        <p class="mb-0 main-text f14 font-weight-bold">Data Permintaan Informasi Dijawab</p>
+                        <a href="{{ route('information.answered') }}" class="main-button-outline f12">Lihat Lebih <i
                                 class="fa fa-arrow-circle-right ml-2"></i></a>
                     </div>
                 </div>
@@ -632,7 +632,9 @@
                 {data: 'ticket_id'},
                 {
                     data: null, render: function (data, type, row, meta) {
-                        return '<a href="#" class="btn-reply-information" data-id="' + data['id'] + '"><i class="fa fa-envelope"></i></a>';
+                        let ticket_id = data['ticket_id'].replaceAll('/', '-');
+                        let url = prefix_url + '/admin/informasi/jawab/' + ticket_id ;
+                        return '<a href="' + url + '" class="btn-send" data-id="' + data['id'] + '">Detail</a>';
                     }
                 },
                 {

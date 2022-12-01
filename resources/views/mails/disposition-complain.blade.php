@@ -6,12 +6,12 @@
 <h3>No. Ticket {{ $data->ticket_id }}</h3>
 @if($target === 'satker')
     <p>Kepada Satker</p>
-    <a href="{{ route('complain.data.uki.by.ticket', ['ticket' =>  str_replace('/', '-', $data->ticket_id)]) }}">Link</a>
+    <a href="{{ route('complain.data.satker.by.ticket', ['ticket' =>  str_replace('/', '-', $data->ticket_id)]) }}">Link</a>
 @endif
 
 @if($target === 'ppk')
     <p>Kepada PPK</p>
-    <a href="{{ route('complain.data.uki.by.ticket', ['ticket' =>  str_replace('/', '-', $data->ticket_id)]) }}">Link</a>
+    <a href="{{ route('complain.data.ppk.by.ticket', ['ticket' =>  str_replace('/', '-', $data->ticket_id)]) }}">Link</a>
 @endif
 </body>
 </html>

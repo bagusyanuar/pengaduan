@@ -32,14 +32,14 @@
 
 <div class="mb-0" class="f12">Sifat : Biasa</div>
 <div class="mb-0" class="f12">Lampiran : 1 (satu) berkas</div>
-<div class="mb-0" class="f12">Hal : Penyampaian Jawaban Saran / Pengaduan</div>
+<div class="mb-0" class="f12">Hal : Penyampaian Data Permintaan Informasi</div>
 <br>
 <div class="f12">Yth. {{ $data->name }}</div>
 <div class="f12">di {{ $data->address }}</div>
 <br>
 <div style="text-align:  justify; font-size: 12px; text-indent: 50px; line-height: 2;">Menindaklanjuti Nota Dinas dari {{ $data->name }} nomor {{ $data->ticket_id }}
-    tanggal {{ \Carbon\Carbon::parse($data->date)->formatLocalized('%d %B %Y') }}, perihal saran / pengaduan
-    atas {{ $data->complain }}, bersama ini kami sampaikan data dukung dan kronologis atas saran / pengaduan dimaksud
+    tanggal {{ \Carbon\Carbon::parse($data->date)->formatLocalized('%d %B %Y') }}, perihal permintaaan informasi
+    atas {{ $data->information }}, bersama ini kami sampaikan data dukung dan kronologis atas permintaan informasi dimaksud
     (terlampir)
 </div>
 <br>

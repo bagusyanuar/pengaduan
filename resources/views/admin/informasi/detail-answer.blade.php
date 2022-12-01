@@ -18,7 +18,7 @@
                     <a href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('complain.index') }}">Saran / Pengaduan</a>
+                    <a href="{{ route('information.index') }}">Permintaan Informasi</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $data->ticket_id }}
                 </li>
@@ -71,6 +71,8 @@
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade show active" id="pills-answer" role="tabpanel"
                                  aria-labelledby="pills-answer-tab">
+                                {{ $data->status }}
+                                {{ $data->is_finish }}
                                 @if($data->status === 9 && $data->is_finish === true)
                                     <object data="{{ asset($data->approved_answer->file) }}" width="100%"
                                             height="500"
@@ -170,9 +172,24 @@
                                    name="email" value="{{ $data->email }}" readonly>
                         </div>
                         <div class="w-100 mb-2">
-                            <label for="complain" class="form-label f14">Saran / Pengaduan</label>
-                            <textarea rows="4" class="form-control f14" id="complain" placeholder="Saran / Pengaduan"
-                                      name="complain" readonly>{{ $data->complain }}</textarea>
+                            <label for="information_source" class="form-label f14">Asal Informasi</label>
+                            <input type="text" class="form-control f14" id="information_source"
+                                   name="information_source" value="{{ $data->information_source }}" readonly>
+                        </div>
+                        <div class="w-100 mb-2">
+                            <label for="source" class="form-label f14">Salinan Informasi</label>
+                            <input type="text" class="form-control f14" id="source"
+                                   name="source" value="{{ $data->source }}" readonly>
+                        </div>
+                        <div class="w-100 mb-2">
+                            <label for="purpose" class="form-label f14">Tujuan</label>
+                            <textarea rows="4" class="form-control f14" id="purpose"
+                                      name="purpose" readonly>{{ $data->purpose }}</textarea>
+                        </div>
+                        <div class="w-100 mb-2">
+                            <label for="information" class="form-label f14">Informasi</label>
+                            <textarea rows="4" class="form-control f14" id="information"
+                                      name="information" readonly>{{ $data->information }}</textarea>
                         </div>
                         <div class="w-100 mb-2">
                             <label for="type" class="form-label f14">Legalitas</label>
@@ -217,8 +234,7 @@
 
         function generateTable() {
             let ticket_id = '{{ $data->ticket_id }}'.replaceAll('/', '-');
-            console.log(ticket_id)
-            let url = prefix_url + '/admin/pengaduan/jawab/' + ticket_id + '/data';
+            let url = prefix_url + '/admin/informasi/jawab/' + ticket_id + '/data';
             table = DataTableGenerator('#table-data', url, [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
                 {data: 'date_upload'},
@@ -302,7 +318,7 @@
                 let iconUrl = '{{ asset('/assets/icons/question.png') }}';
                 Swal.fire({
                     title: 'Konfirmasi!',
-                    text: 'Ingin mengirim jawaban saran / pengaduan ke pelapor?',
+                    text: 'Ingin mengirim jawaban permintaan informasi ke pelapor?',
                     iconHtml: '<img src="' + iconUrl + '" height="100">',
                     customClass: {
                         icon: 'no-border'

@@ -286,7 +286,10 @@
                 },
                 {
                     data: null, render: function (data, type, row, meta) {
-                        return '<a href="#" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-envelope" style="font-size: 16px;"></i></a>'
+                        let ticket_id = data['ticket_id'].replaceAll('/', '-');
+                        let url = prefix_url + '/admin/informasi/jawab/' + ticket_id ;
+                        return '<a href="' + url + '" class="" data-id="' + data['id'] + '">Detail</a>';
+                        // return '<a href="#" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-envelope" style="font-size: 16px;"></i></a>'
                     }
                 },
             ], [
