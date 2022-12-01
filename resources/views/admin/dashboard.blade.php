@@ -351,7 +351,9 @@
                 {data: 'ticket_id'},
                 {
                     data: null, render: function (data, type, row, meta) {
-                        return '<a href="#" class="btn-reply-complain" data-id="' + data['id'] + '"><i class="fa fa-envelope"></i></a>';
+                        let ticket_id = data['ticket_id'].replaceAll('/', '-');
+                        let url = prefix_url + '/admin/pengaduan/jawab/' + ticket_id ;
+                        return '<a href="' + url + '" class="btn-send" data-id="' + data['id'] + '">Detail</a>';
                     }
                 },
                 {

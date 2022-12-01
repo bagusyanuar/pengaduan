@@ -64,7 +64,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
         Route::get('/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_data'])->name('complain.data');
         Route::get('/proses', [\App\Http\Controllers\Admin\ComplainController::class, 'on_process'])->name('complain.process');
         Route::get('/jawab', [\App\Http\Controllers\Admin\ComplainController::class, 'answered'])->name('complain.answered');
-        Route::get('/jawab/{ticket}', [\App\Http\Controllers\Admin\ComplainController::class, 'detail'])->name('complain.answer.by.ticket');
+        Route::match(['post', 'get'],'/jawab/{ticket}', [\App\Http\Controllers\Admin\ComplainController::class, 'detail'])->name('complain.answer.by.ticket');
+        Route::get( '/jawab/{ticket}/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_by_ticket_data'])->name('complain.answer.by.ticket.data');
         Route::get('/selesai', [\App\Http\Controllers\Admin\ComplainController::class, 'finished'])->name('complain.finished');
         Route::post('/{id}/process', [\App\Http\Controllers\Admin\ComplainController::class, 'send_process'])->name('complain.process.send');
         Route::post('/{id}/reply', [\App\Http\Controllers\Admin\ComplainController::class, 'reply_complain'])->name('complain.process.reply');
@@ -113,7 +114,7 @@ Route::group(['prefix' => 'admin-uki', 'middleware' => ['auth', 'uki']], functio
         Route::get('/{ticket}/jawaban/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_by_ticket_data'])->name('complain.answers.uki.by.ticket.data');
     });
 
-    Route::group(['prefix' => 'informasi'], function (){
+    Route::group(['prefix' => 'informasi'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\InformationController::class, 'index_uki'])->name('information.index.uki');
         Route::get('/proses', [\App\Http\Controllers\Admin\InformationController::class, 'on_process_uki'])->name('information.process.uki');
         Route::get('/data', [\App\Http\Controllers\Admin\InformationController::class, 'information_data_uki'])->name('information.data.uki');

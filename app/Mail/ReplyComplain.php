@@ -11,15 +11,18 @@ class ReplyComplain extends Mailable
 {
     use Queueable, SerializesModels;
     public $data;
+    public $attach;
 
     /**
      * Create a new message instance.
      *
      * @param $data
+     * @param string $attach
      */
-    public function __construct($data)
+    public function __construct($data, $attach = '')
     {
         $this->data = $data;
+        $this->attach = $attach;
     }
 
     /**
@@ -29,6 +32,16 @@ class ReplyComplain extends Mailable
      */
     public function build()
     {
-        return $this->view('mails.reply-complain')->subject('Balasan Pengaduan (' . $this->data->ticket_id . ')');
+        $answer = $this->data->approved_answer;
+        return $this->view('mails.reply-complain')
+            ->attach($this->attach, [
+                'as' => 'Surat Pengantar.pdf',
+                'mime' => 'application/pdf'
+            ])
+            ->attach(substr($answer->file, 1), [
+                'as' => 'Jawaban.pdf',
+                'mime' => 'application/pdf'
+            ])
+            ->subject('Balasan Pengaduan (' . $this->data->ticket_id . ')');
     }
 }

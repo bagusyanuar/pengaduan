@@ -15,6 +15,7 @@ use App\Models\SatuanKerja;
 use App\Models\UserPPK;
 use App\Models\UserSatuanKerja;
 use App\Models\UserUki;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Ramsey\Uuid\Uuid;
 
 class ComplainController extends CustomController
 {
@@ -53,8 +55,41 @@ class ComplainController extends CustomController
 
     public function detail($ticket)
     {
-        return view('admin.pengaduan.detail-answer');
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Complain::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
+            return $q->orderBy('date_upload', 'DESC');
+        }, 'approved_answer', 'answers.upload_by', 'answers.answer_by'])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail();
+
+
+        if ($this->request->method() === 'POST') {
+            DB::beginTransaction();
+            try {
+                $data->update([
+                    'is_finish' => 1,
+                    'finish_at' => Carbon::now()->format('Y-m-d')
+                ]);
+                setlocale(LC_ALL, 'IND');
+                $pdf = Pdf::loadView('admin.surat-pengantar.index', [
+                    'data' => $data
+                ]);
+                $path = 'assets/attachment/' . Uuid::uuid4() . '.pdf';
+                $pdf->save($path);
+                Mail::to($data->email)->send(new ReplyComplain($data, $path));
+                DB::commit();
+                return redirect()->back()->with('success', 'berhasil...');
+            }catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with('failed', 'terjadi kesalahan server...');
+            }
+
+//            dd('oke');
+//            return $pdf->stream();
+
+        }
+        return view('admin.pengaduan.detail-answer')->with(['data' => $data]);
     }
+
     public function complain_data()
     {
         try {
@@ -111,6 +146,7 @@ class ComplainController extends CustomController
             return $this->jsonResponse('terjadi kesalahan ' . $e->getMessage(), 500);
         }
     }
+
 
     //uki part
     public function index_uki()
