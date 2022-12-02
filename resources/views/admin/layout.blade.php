@@ -231,9 +231,23 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('complain.process.uki') }}"
-                                       class="nav-link {{ request()->is('admin-uki/pengaduan/proses') ? 'active' : ''}}">
+                                       class="nav-link {{ request()->is('admin-uki/pengaduan/proses*') ? 'active' : ''}}">
                                         <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
                                         <p>Sedang Di Proses</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('complain.answered.uki') }}"
+                                       class="nav-link {{ request()->is('admin-uki/pengaduan/jawab*') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>Terjawab</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('complain.finished.uki') }}"
+                                       class="nav-link {{ request()->is('admin-uki/pengaduan/selesai*') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>Selesai</p>
                                     </a>
                                 </li>
                             </ul>
@@ -256,9 +270,23 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('information.process.uki') }}"
-                                       class="nav-link {{ request()->is('admin-uki/informasi/proses') ? 'active' : ''}}">
+                                       class="nav-link {{ request()->is('admin-uki/informasi/proses*') ? 'active' : ''}}">
                                         <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
                                         <p>Sedang Di Proses</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('information.answered.uki') }}"
+                                       class="nav-link {{ request()->is('admin-uki/informasi/jawab*') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>Terjawab</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('information.finished.uki') }}"
+                                       class="nav-link {{ request()->is('admin-uki/informasi/selesai*') ? 'active' : ''}}">
+                                        <i class="fa fa-circle-o nav-icon" aria-hidden="true"></i>
+                                        <p>Selesai</p>
                                     </a>
                                 </li>
                             </ul>

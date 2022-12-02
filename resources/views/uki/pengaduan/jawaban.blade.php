@@ -44,84 +44,101 @@
                             <label for="target" class="form-label f14">Disposisi</label>
                             <input type="text" class="form-control f14" id="target" placeholder="Disposisi"
                                    name="target"
-                                   value="{{ $data->target === 1 ? $data->ppk->name : $data->unit->name  }}" readonly
+                                   value="{{ ($data->status === 6 ? '-' : ($data->target === 1 ? $data->ppk->name : $data->unit->name))   }}"
+                                   readonly
                                    form="">
                         </div>
                         <hr>
-                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="pills-answer-tab" data-toggle="pill" href="#pills-answer"
-                                   role="tab" aria-controls="pills-answer" aria-selected="true">
-                                    <i class="fa fa-file-pdf-o mr-2"></i>Lampiran Jawaban
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-history-tab" data-toggle="pill" href="#pills-history"
-                                   role="tab" aria-controls="pills-history" aria-selected="false">
-                                    <i class="fa fa-history mr-2"></i>History
-                                </a>
-                            </li>
-                        </ul>
+                        @if($data->status === 6)
+                            <div style="height: 200px" class="d-flex justify-content-center align-items-center">
+                                <div>
+                                    <p class="font-weight-bold">Saran / Pengaduan Ditolak dikarenakan {{ $data->description }}</p>
+                                </div>
+                            </div>
+                        @else
+                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="pills-answer-tab" data-toggle="pill" href="#pills-answer"
+                                       role="tab" aria-controls="pills-answer" aria-selected="true">
+                                        <i class="fa fa-file-pdf-o mr-2"></i>Lampiran Jawaban
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-history-tab" data-toggle="pill" href="#pills-history"
+                                       role="tab" aria-controls="pills-history" aria-selected="false">
+                                        <i class="fa fa-history mr-2"></i>History
+                                    </a>
+                                </li>
+                            </ul>
 
-                        <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade show active" id="pills-answer" role="tabpanel"
-                                 aria-labelledby="pills-answer-tab">
-                                @if($data->answer != null)
-                                    <object data="{{ asset($data->answer->file) }}" width="100%" height="500"
-                                            type="application/pdf" onerror="alert('pdf source not found!')">
-                                    </object>
-                                    <form method="post" id="form-answer">
-                                        @csrf
-                                        {{--                                        <input type="hidden" value="{{ $data->answer->id }}" name="id">--}}
-                                        <div class="form-group w-100 mb-2">
-                                            <label for="status" class="form-label f14">Status</label>
-                                            <select class="form-control f14" id="status" name="status">
-                                                <option class="f14" value="1">Setuju</option>
-                                                <option class="f14" value="0">Tolak</option>
-                                            </select>
-                                        </div>
-                                        <div class="d-none" id="denied">
-                                            <div class="w-100 mb-2">
-                                                <label for="description" class="form-label f14">Deskripsi
-                                                    Penolakan</label>
-                                                <textarea rows="3" class="form-control f14" id="description"
-                                                          placeholder="Deskripsi Penolakan"
-                                                          name="description"></textarea>
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-answer" role="tabpanel"
+                                     aria-labelledby="pills-answer-tab">
+                                    @if($data->answer != null)
+                                        <object data="{{ asset($data->answer->file) }}" width="100%" height="500"
+                                                type="application/pdf" onerror="alert('pdf source not found!')">
+                                        </object>
+                                        <form method="post" id="form-answer">
+                                            @csrf
+                                            {{--                                        <input type="hidden" value="{{ $data->answer->id }}" name="id">--}}
+                                            <div class="form-group w-100 mb-2">
+                                                <label for="status" class="form-label f14">Status</label>
+                                                <select class="form-control f14" id="status" name="status">
+                                                    <option class="f14" value="1">Setuju</option>
+                                                    <option class="f14" value="0">Tolak</option>
+                                                </select>
                                             </div>
-                                        </div>
-                                        <hr>
-                                        <div class="text-right">
-                                            <button type="submit" class="main-button" id="btn-response"><i class="fa fa-check mr-2"></i>Simpan
-                                            </button>
-                                        </div>
-                                    </form>
-                                @else
-                                    <div class="d-flex justify-content-center align-items-center"
-                                         style="height: 250px;">
-                                        <p class="font-weight-bold">Belum Ada Lampiran Jawaban</p>
-                                    </div>
-                                @endif
+                                            <div class="d-none" id="denied">
+                                                <div class="w-100 mb-2">
+                                                    <label for="description" class="form-label f14">Deskripsi
+                                                        Penolakan</label>
+                                                    <textarea rows="3" class="form-control f14" id="description"
+                                                              placeholder="Deskripsi Penolakan"
+                                                              name="description"></textarea>
+                                                </div>
+                                            </div>
+                                            <hr>
+                                            <div class="text-right">
+                                                <button type="submit" class="main-button" id="btn-response"><i
+                                                        class="fa fa-check mr-2"></i>Simpan
+                                                </button>
+                                            </div>
+                                        </form>
+                                    @else
+                                        @if($data->approved_answer !== null)
+                                            <p class="font-weight-bold">Jawaban yang di setujui</p>
+                                            <object data="{{ asset($data->approved_answer->file) }}" width="100%"
+                                                    height="500"
+                                                    type="application/pdf" onerror="alert('pdf source not found!')">
+                                            </object>
+                                        @else
+                                            <div class="d-flex justify-content-center align-items-center"
+                                                 style="height: 250px;">
+                                                <p class="font-weight-bold">Belum Ada Lampiran Jawaban</p>
+                                            </div>
+                                        @endif
+                                    @endif
+                                </div>
+                                <div class="tab-pane fade show" id="pills-history" role="tabpanel"
+                                     aria-labelledby="pills-history-tab">
+                                    <table id="table-data" class="display w-100 table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th width="5%" class="text-center f12">#</th>
+                                            <th class="f12 text-center" width="12%">Tanggal Upload</th>
+                                            <th class="f12 text-center" width="12%">Tanggal Respon</th>
+                                            <th scope="col" class="f12" width="15%">Di Upload Oleh</th>
+                                            <th scope="col" class="f12">Respon</th>
+                                            <th scope="col" class="f12 text-center" width="12%">File</th>
+                                            <th scope="col" class="f12 text-center" width="8%">Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <div class="tab-pane fade show" id="pills-history" role="tabpanel"
-                                 aria-labelledby="pills-history-tab">
-                                <table id="table-data" class="display w-100 table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th width="5%" class="text-center f12">#</th>
-                                        <th class="f12 text-center" width="12%">Tanggal Upload</th>
-                                        <th class="f12 text-center" width="12%">Tanggal Respon</th>
-                                        <th scope="col" class="f12" width="15%">Di Upload Oleh</th>
-                                        <th scope="col" class="f12">Respon</th>
-                                        <th scope="col" class="f12 text-center" width="12%">File</th>
-                                        <th scope="col" class="f12 text-center" width="8%">Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
+                        @endif
                     </div>
                 </div>
 
