@@ -200,7 +200,6 @@
                 {data: 'name'},
                 {
                     data: null, render: function (data, type, row, meta) {
-                        console.log(data);
                         let legal = 'Individu';
                         if (data['type'] === 1) {
                             legal = 'Badan Hukum';

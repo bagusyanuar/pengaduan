@@ -68,6 +68,13 @@ class Complain extends Model
         return $this->hasOne(ComplainAnswer::class, 'complain_id')->where('status', '=', 0);
     }
 
+    public function approved_answer()
+    {
+        return $this->hasOne(ComplainAnswer::class, 'complain_id')->where('status', '=', 9)->orderBy('date_answer', 'DESC');
+    }
+
+
+
     public function getHasApprovedAnswerAttribute()
     {
         return $this->hasOne(ComplainAnswer::class, 'complain_id')

@@ -6,7 +6,6 @@
             Swal.fire("Berhasil!", '{{\Illuminate\Support\Facades\Session::get('success')}}', "success")
         </script>
     @endif
-
     @if (\Illuminate\Support\Facades\Session::has('failed'))
         <script>
             Swal.fire("Gagal!", '{{\Illuminate\Support\Facades\Session::get('failed')}}', "error")
@@ -16,10 +15,10 @@
         <div class="d-flex align-items-center justify-content-between mb-3">
             <ol class="breadcrumb breadcrumb-transparent mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('dashboard.ppk') }}">Dashboard</a>
+                    <a href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{{ route('information.index.ppk') }}">Permintaan Informasi</a>
+                    <a href="{{ route('information.index') }}">Permintaan Informasi</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $data->ticket_id }}
                 </li>
@@ -27,12 +26,115 @@
         </div>
     </div>
     <section>
-        <div class="row">
-            <div class="col-sm-12 col-md-5 col-lg-5">
-                <div class="card card-outline card-warning">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                   aria-selected="true">Jawaban</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                   aria-controls="profile" aria-selected="false">Detail</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="card mt-2 card-outline card-success">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0">Detail Permintaan Informasi</p>
+                            <p class="mb-0">Jawaban</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="w-100 mb-2">
+                            <label for="target" class="form-label f14">Disposisi</label>
+                            <input type="text" class="form-control f14" id="target" placeholder="Disposisi"
+                                   name="target"
+                                   value="{{ $data->target === 1 ? $data->ppk->name : $data->unit->name  }}" readonly
+                                   form="">
+                        </div>
+                        <hr>
+                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="pills-answer-tab" data-toggle="pill" href="#pills-answer"
+                                   role="tab" aria-controls="pills-answer" aria-selected="true">
+                                    <i class="fa fa-file-pdf-o mr-2"></i>Lampiran Jawaban
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-history-tab" data-toggle="pill" href="#pills-history"
+                                   role="tab" aria-controls="pills-history" aria-selected="false">
+                                    <i class="fa fa-history mr-2"></i>History
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-answer" role="tabpanel"
+                                 aria-labelledby="pills-answer-tab">
+                                {{ $data->status }}
+                                {{ $data->is_finish }}
+                                @if($data->status === 9 && $data->is_finish === true)
+                                    <object data="{{ asset($data->approved_answer->file) }}" width="100%"
+                                            height="500"
+                                            type="application/pdf" onerror="alert('pdf source not found!')">
+                                    </object>
+                                    <hr>
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <p class="font-weight-bold">Jawaban Saran / Pengaduan Telah Disampaikan ke
+                                            Pelapor</p>
+                                    </div>
+                                @else
+                                    @if($data->approved_answer != null)
+                                        <object data="{{ asset($data->approved_answer->file) }}" width="100%"
+                                                height="500"
+                                                type="application/pdf" onerror="alert('pdf source not found!')">
+                                        </object>
+                                        <hr>
+                                        <form method="post" id="form-answer">
+                                            @csrf
+                                            <div class="text-right">
+                                                <button type="submit" class="main-button" id="btn-response"><i
+                                                        class="fa fa-send mr-2"></i>Kirim Jawaban
+                                                </button>
+                                            </div>
+                                        </form>
+                                    @else
+                                        <div class="d-flex justify-content-center align-items-center"
+                                             style="height: 250px;">
+                                            <p class="font-weight-bold">Belum Ada Lampiran Jawaban</p>
+                                        </div>
+                                    @endif
+                                @endif
+                            </div>
+                            <div class="tab-pane fade show" id="pills-history" role="tabpanel"
+                                 aria-labelledby="pills-history-tab">
+                                <table id="table-data" class="display w-100 table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th width="5%" class="text-center f12">#</th>
+                                        <th class="f12 text-center" width="12%">Tanggal Upload</th>
+                                        <th class="f12 text-center" width="12%">Tanggal Respon</th>
+                                        <th scope="col" class="f12" width="15%">Di Upload Oleh</th>
+                                        <th scope="col" class="f12">Respon</th>
+                                        <th scope="col" class="f12 text-center" width="12%">File</th>
+                                        <th scope="col" class="f12 text-center" width="8%">Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="card mt-2 card-outline card-warning">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="mb-0">Detail Saran / Pengaduan</p>
                         </div>
                     </div>
                     <div class="card-body">
@@ -109,190 +211,50 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-12 col-md-7 col-lg-7">
-                @if($data->target === 1)
-                    <div class="card card-outline card-success mb-2">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="mb-0">Jawaban</p>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            @if($data->HasAnswer && !$data->HasApprovedAnswer)
-                                <div class="d-flex justify-content-center align-items-center" style="height: 150px">
-                                    <p class="font-weight-bold">Menunggu Persetujuan Dari Admin UKI</p>
-                                </div>
-                            @elseif($data->HasApprovedAnswer)
-                                <div class="d-flex justify-content-center align-items-center" style="height: 150px">
-                                    <p class="font-weight-bold">Jawaban Disetujui</p>
-                                </div>
-                            @else
-                                <form method="post" id="form-answer" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="form-group mb-1">
-                                        <label for="answer" class="form-label">Lampiran Jawaban</label>
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="answer" name="answer"
-                                                   accept="application/pdf">
-                                            <label class="custom-file-label f14" for="ad_art">Pilih File Lampiran
-                                                Jawaban</label>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="text-right">
-                                        <button type="submit" class="main-button" id="btn-answer"><i
-                                                class="fa fa-check mr-2"></i>Simpan
-                                        </button>
-                                    </div>
-                                </form>
-                            @endif
-                        </div>
-                    </div>
-                @endif
-                <div class="card card-outline card-info">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0">Riwayat Jawaban</p>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <table class="display w-100 table table-bordered" id="table-data">
-                            <thead>
-                            <tr>
-                                <th width="5%" class="text-center f14 no-sort"></th>
-                                <th width="5%" class="text-center f14">#</th>
-                                <th class="f14" width="17%">Tanggal</th>
-                                <th class="f14">Respon UKI</th>
-                                <th class="f14" width="8%">Status</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
-
     </section>
 @endsection
 
-@section('css')
-    <link href="{{ asset('/adminlte/plugins/select2/select2.css') }}" rel="stylesheet">
-@endsection
-
 @section('js')
-    <script src="{{ asset('/adminlte/plugins/select2/select2.js') }}"></script>
-    <script src="{{ asset('/adminlte/plugins/select2/select2.full.js') }}"></script>
     <script src="{{ asset('/js/helper.js') }}"></script>
     <script type="text/javascript">
-        let table;
+        var table;
         var prefix_url = '{{ env('PREFIX_URL') }}';
 
         function togglePanelStatus() {
             let cVal = $('#status').val();
             if (cVal === '1') {
-                $('#accepted').removeClass('d-none');
-                $('#accepted').addClass('d-block');
                 $('#denied').removeClass('d-block');
                 $('#denied').addClass('d-none');
             } else {
-                $('#accepted').removeClass('d-block');
-                $('#accepted').addClass('d-none');
                 $('#denied').removeClass('d-none');
                 $('#denied').addClass('d-block');
             }
         }
 
-        function togglePanelTarget() {
-            let rVal = $('input:radio[name=target]:checked').val();
-            console.log(rVal)
-            if (rVal === '1') {
-                $('#panel-ppk').removeClass('d-none');
-                $('#panel-ppk').addClass('d-block');
-                $('#panel-unit').removeClass('d-block');
-                $('#panel-unit').addClass('d-none');
-            } else {
-                $('#panel-ppk').removeClass('d-block');
-                $('#panel-ppk').addClass('d-none');
-                $('#panel-unit').removeClass('d-none');
-                $('#panel-unit').addClass('d-block');
-            }
-        }
-
-        function detailElement(d) {
-            let asset_file = prefix_url + d['file'];
-            let author_answer = '-';
-            let response_date = '-';
-            if (d['status'] !== 0) {
-                author_answer = d['author_answer']['username'];
-                response_date = d['date_answer'];
-            }
-            return '<div class="f14">' +
-                '<p class="font-weight-bold">Detail Respon Jawaban UKI</p>' +
-                '<div class="row mb-0">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p class="mb-0">Tanggal Respon</p>' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + response_date + '</div>' +
-                '</div>' +
-                '<div class="row mb-0">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p class="mb-0">Di Jawab Oleh</p>' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + author_answer + '</div>' +
-                '</div>' +
-                '<div class="row">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p class="mb-0">File Lampiran</p>' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: <a href="' + asset_file + '" target="_blank">Lampiran</a></div></div>' +
-                '</div>' +
-                '</div>';
-        }
-
-        function setExpand() {
-            $('#table-data tbody').on('click', 'td.dt-control', function () {
-                var tr = $(this).closest('tr');
-                var row = table.row(tr);
-                var i = $(this).children();
-
-                if (row.child.isShown()) {
-                    // This row is already open - close it
-                    row.child.hide();
-                    tr.removeClass('shown');
-                    i.removeClass('fa fa-minus-square-o');
-                    i.addClass('fa fa-plus-square-o');
-                } else {
-                    // Open this row
-                    console.log(row.data());
-                    row.child(detailElement(row.data())).show();
-                    tr.addClass('shown');
-                    i.removeClass('fa fa-plus-square-o');
-                    i.addClass('fa fa-minus-square-o');
-                }
-            });
-        }
-
         function generateTable() {
             let ticket_id = '{{ $data->ticket_id }}'.replaceAll('/', '-');
-            let url = prefix_url + '/admin-ppk/informasi/' + ticket_id + '/jawaban/riwayat';
-            table = DataTableGenerator('#table-data', prefix_url + url, [
-                {
-                    className: 'dt-control',
-                    orderable: false,
-                    data: null, render: function () {
-                        return '<i class="fa fa-plus-square-o main-text expand-icon"></i>';
-                    }
-                },
+            let url = prefix_url + '/admin/informasi/jawab/' + ticket_id + '/data';
+            table = DataTableGenerator('#table-data', url, [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable: false, orderable: false},
+                {data: 'date_upload'},
                 {
-                    data: 'date_upload', name: 'date_upload', render: function (data) {
-                        let date = new Date(data);
-                        return date.toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+                    data: 'date_answer', name: 'date_answer', render: function (data) {
+                        let value = '-';
+                        if (data !== null) {
+                            value = data;
+                        }
+                        return value;
                     }
                 },
+                {data: 'upload_by.username'},
                 {data: 'description'},
+                {
+                    data: 'file', name: 'file', render: function (data) {
+                        let url = prefix_url + data;
+                        return '<a href="' + url + '" target="_blank">Preview</a>';
+                    }
+                },
                 {
                     data: null, render: function (data, type, row, meta) {
                         let status = data['status'];
@@ -313,25 +275,26 @@
                         return el;
                     }
                 },
+
             ], [
                 {
                     targets: '_all',
                     className: 'f12'
                 },
                 {
-                    targets: [0, 1, 4],
+                    targets: [0, 1, 2, 5, 6],
                     className: 'text-center'
                 },
                 {
-                    targets: [0, 4],
+                    targets: [0, 5, 6],
                     orderable: false
                 }
             ], function (d) {
-
+                // d.q = query;
             }, {
                 "scrollX": true,
                 "fnDrawCallback": function (settings) {
-                    setExpand();
+                    // setExpand();
                 },
             });
         }
@@ -341,27 +304,21 @@
                 let fileName = $(this).val().split('\\').pop();
                 $(this).next('.custom-file-label').addClass("selected").html(fileName);
             });
-            $('.select2').select2({
-                width: 'resolve'
-            });
             togglePanelStatus();
-            togglePanelTarget();
             $('#status').on('change', function () {
                 togglePanelStatus();
             });
-
-            $('input:radio[name=target]').on('change', function () {
-                togglePanelTarget();
-            })
             generateTable();
-            setExpand();
 
-            $('#btn-answer').on('click', function (e) {
+            $(document).on('shown.bs.tab', function (e) {
+                table.columns.adjust();
+            });
+            $('#btn-response').on('click', function (e) {
                 e.preventDefault();
                 let iconUrl = '{{ asset('/assets/icons/question.png') }}';
                 Swal.fire({
                     title: 'Konfirmasi!',
-                    text: 'Ingin mengirimkan lampiran jawaban ke UKI?',
+                    text: 'Ingin mengirim jawaban permintaan informasi ke pelapor?',
                     iconHtml: '<img src="' + iconUrl + '" height="100">',
                     customClass: {
                         icon: 'no-border'

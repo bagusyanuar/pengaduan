@@ -34,6 +34,10 @@ class Information extends Model
         'description',
     ];
 
+    protected $casts = [
+        'is_finish' => 'boolean'
+    ];
+
     public function legal()
     {
         return $this->hasOne(LegalInformation::class, 'information_id');
@@ -68,6 +72,11 @@ class Information extends Model
     public function answer()
     {
         return $this->hasOne(InformationAnswer::class, 'information_id')->where('status', '=', 0);
+    }
+
+    public function approved_answer()
+    {
+        return $this->hasOne(InformationAnswer::class, 'information_id')->where('status', '=', 9)->orderBy('date_answer', 'DESC');
     }
 
     public function getHasApprovedAnswerAttribute()

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class ReplyComplain extends Mailable
+class ReplyInformation extends Mailable
 {
     use Queueable, SerializesModels;
     public $data;
@@ -33,7 +33,7 @@ class ReplyComplain extends Mailable
     public function build()
     {
         $answer = $this->data->approved_answer;
-        return $this->view('mails.reply-complain')
+        return $this->view('mails.reply-information')
             ->attach($this->attach, [
                 'as' => 'Surat Pengantar.pdf',
                 'mime' => 'application/pdf'
@@ -42,6 +42,6 @@ class ReplyComplain extends Mailable
                 'as' => 'Jawaban.pdf',
                 'mime' => 'application/pdf'
             ])
-            ->subject('Balasan Pengaduan (' . $this->data->ticket_id . ')');
+            ->subject('Balasan Permintaan Informasi (' . $this->data->ticket_id . ')');
     }
 }

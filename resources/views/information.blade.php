@@ -57,7 +57,7 @@
                             aria-labelledby="pills-home-tab">
                             <div class="card">
                                 <div class="card-body">
-                                    <form method="post">
+                                    <form method="post" id="form-information">
                                         @csrf
                                         <input type="hidden" name="type" value="0">
                                         <div class="form-group mb-1">
@@ -208,7 +208,7 @@
 
                                         <hr>
                                         <div class="text-right">
-                                            <button type="submit" class="main-button">
+                                            <button type="submit" class="main-button"  id="btn-submit-information">
                                                 Kirim
                                             </button>
                                         </div>
@@ -222,7 +222,7 @@
                             aria-labelledby="pills-profile-tab">
                             <div class="card">
                                 <div class="card-body">
-                                    <form method="post" enctype="multipart/form-data">
+                                    <form method="post" enctype="multipart/form-data" id="form-legal-information">
                                         @csrf
                                         <input type="hidden" name="type" value="1">
                                         <div class="form-group mb-1">
@@ -399,7 +399,7 @@
                                         </div>
                                         <hr>
                                         <div class="text-right">
-                                            <button type="submit" class="main-button">
+                                            <button type="submit" class="main-button" id="btn-submit-legal-information">
                                                 Kirim
                                             </button>
                                         </div>
@@ -421,7 +421,48 @@
             $('.custom-file-input').on('change', function () {
                 let fileName = $(this).val().split('\\').pop();
                 $(this).next('.custom-file-label').addClass("selected").html(fileName);
-            })
+            });
+
+            $('#btn-submit-information').on('click', function (e) {
+                e.preventDefault();
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
+                Swal.fire({
+                    title: 'Konfirmasi!',
+                    text: 'Ingin mengirimkan permintaan informasi?',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya'
+                }).then((result) => {
+                    if (result.value) {
+                        $('#form-information').submit();
+                    }
+                });
+            });
+            $('#btn-submit-legal-information').on('click', function (e) {
+                e.preventDefault();
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
+                Swal.fire({
+                    title: 'Konfirmasi!',
+                    text: 'Ingin mengirimkan permintaan informasi?',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya'
+                }).then((result) => {
+                    if (result.value) {
+                        $('#form-legal-information').submit();
+                    }
+                });
+            });
         })
     </script>
 @endsection

@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Helper\CustomController;
+use App\Mail\InformationDisposition;
+use App\Mail\ReplyComplain;
+use App\Mail\ReplyInformation;
 use App\Models\Complain;
 use App\Models\ComplainAnswer;
 use App\Models\Information;
@@ -14,13 +17,16 @@ use App\Models\SatuanKerja;
 use App\Models\UserPPK;
 use App\Models\UserSatuanKerja;
 use App\Models\UserUki;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Ramsey\Uuid\Uuid;
 use Symfony\Polyfill\Intl\Idn\Info;
 
 class InformationController extends CustomController
@@ -49,6 +55,39 @@ class InformationController extends CustomController
     public function finished()
     {
         return view('admin.informasi.finished');
+    }
+
+    public function detail($ticket)
+    {
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Information::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
+            return $q->orderBy('date_upload', 'DESC');
+        }, 'approved_answer', 'answers.upload_by', 'answers.answer_by'])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail();
+
+        if ($this->request->method() === 'POST') {
+            DB::beginTransaction();
+            try {
+                setlocale(LC_ALL, 'IND');
+                $pdf = Pdf::loadView('admin.surat-pengantar.information', [
+                    'data' => $data
+                ]);
+//                return $pdf->stream();
+                $path = 'assets/attachment/' . Uuid::uuid4() . '.pdf';
+                $pdf->save($path);
+                Mail::to($data->email)->send(new ReplyInformation($data, $path));
+                $data->update([
+                    'is_finish' => 1,
+                    'finish_at' => Carbon::now()->format('Y-m-d')
+                ]);
+                DB::commit();
+                return redirect()->back()->with('success', 'berhasil...');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return redirect()->back()->with('failed', 'terjadi kesalahan server...');
+            }
+        }
+        return view('admin.informasi.detail-answer')->with(['data' => $data]);
     }
 
     public function information_data()
@@ -109,6 +148,20 @@ class InformationController extends CustomController
         }
     }
 
+    public function information_answers_by_ticket_data($ticket)
+    {
+        try {
+            $ticket_id = str_replace('-', '/', $ticket);
+            $data = InformationAnswer::with(['information', 'upload_by', 'answer_by'])->whereHas('information', function ($q) use ($ticket_id) {
+                return $q->where('ticket_id', '=', $ticket_id);
+            })
+                ->orderBy('date_upload', 'DESC')
+                ->get();
+            return $this->basicDataTables($data);
+        } catch (\Exception $e) {
+            return $this->basicDataTables([]);
+        }
+    }
 
     //uki part
     public function index_uki()
@@ -124,6 +177,7 @@ class InformationController extends CustomController
     public function information_data_uki()
     {
         try {
+            $limit = $this->field('limit');
             $status = [1];
             if ($this->field('q') === 'answered') {
                 $status = [6, 9];
@@ -137,6 +191,10 @@ class InformationController extends CustomController
 
             if ($this->field('q') === 'waiting') {
                 $query->whereNull('target');
+            }
+
+            if ($limit !== null) {
+                $query->take((int)$limit);
             }
             $data = $query->get()->append(['HasAnswer']);
             return $this->basicDataTables($data);
@@ -198,9 +256,9 @@ class InformationController extends CustomController
                 }
             }
             $data->update($data_update);
-//            foreach ($mails_to as $target) {
-//                Mail::to($target['email'])->send(new ComplainDisposition($data, $target['target']));
-//            }
+            foreach ($mails_to as $target) {
+                Mail::to($target['email'])->send(new InformationDisposition($data, $target['target']));
+            }
         } else {
             $data_update = [
                 'description' => $this->postField('description'),
@@ -254,20 +312,6 @@ class InformationController extends CustomController
 
     }
 
-    public function information_answers_by_ticket_data($ticket)
-    {
-        try {
-            $ticket_id = str_replace('-', '/', $ticket);
-            $data = InformationAnswer::with(['complain', 'upload_by', 'answer_by'])->whereHas('complain', function ($q) use ($ticket_id) {
-                return $q->where('ticket_id', '=', $ticket_id);
-            })
-                ->orderBy('date_upload', 'DESC')
-                ->get();
-            return $this->basicDataTables($data);
-        } catch (\Exception $e) {
-            return $this->basicDataTables([]);
-        }
-    }
 
     public function reply_information($id)
     {
@@ -304,6 +348,7 @@ class InformationController extends CustomController
     {
 
         try {
+            $limit = $this->field('limit');
             $user_ppk = UserPPK::where('user_id', '=', Auth::id())->first();
             if (!$user_ppk) {
                 return $this->basicDataTables([]);
@@ -314,6 +359,9 @@ class InformationController extends CustomController
                 ->where('target', '=', 1);
             if ($this->field('q') === 'waiting') {
                 $query->where('ppk_id', '=', $user_ppk->ppk_id);
+            }
+            if ($limit !== null) {
+                $query->take((int)$limit);
             }
             $data = $query->get()->append(['HasAnswer', 'HasApprovedAnswer']);
             return $this->basicDataTables($data);
@@ -329,7 +377,7 @@ class InformationController extends CustomController
         $data = Information::with(['legal', 'unit', 'ppk', 'answers'])->where('ticket_id', '=', $ticket_id)
             ->firstOrFail()->append(['HasAnswer', 'HasApprovedAnswer']);
         if ($this->request->method() === 'POST') {
-            return $this->send_answer($data->id);
+            return $this->send_answer($data);
         }
         Session::forget('redirect');
         return view('ppk.informasi.detail')->with(['data' => $data]);
@@ -352,11 +400,12 @@ class InformationController extends CustomController
         }
     }
 
-    private function send_answer($id)
+    private function send_answer($data)
     {
+        DB::beginTransaction();
         try {
             $data_request = [
-                'information_id' => $id,
+                'information_id' => $data->id,
                 'date_upload' => Carbon::now()->format('Y-m-d'),
                 'status' => 0,
                 'description' => '-',
@@ -372,9 +421,16 @@ class InformationController extends CustomController
                 return redirect()->back()->with('failed', 'File Jawaban Belum Terlampir...');
             }
             InformationAnswer::create($data_request);
+            $users_uki = UserUki::with('user')->get();
+            foreach ($users_uki as $user_uki) {
+                $target = $user_uki->user->email;
+                Mail::to($target)->send(new \App\Mail\InformationAnswer($data));
+            }
+            DB::commit();
             return redirect()->back()->with('success', 'Berhasil Melakukan Konfirmasi Permintaan Informasi...');
         } catch (\Exception $e) {
-            return redirect()->back()->with('failed', 'terjadi kesalahan server' . $e->getMessage());
+            DB::rollBack();
+            return redirect()->back()->with('failed', 'terjadi kesalahan server');
         }
     }
 
@@ -388,6 +444,7 @@ class InformationController extends CustomController
     {
 
         try {
+            $limit = $this->field('limit');
             $user_satker = UserSatuanKerja::where('user_id', '=', Auth::id())->first();
             if (!$user_satker) {
                 return $this->basicDataTables([]);
@@ -395,9 +452,13 @@ class InformationController extends CustomController
             $status = 1;
             $query = Information::with(['legal', 'last_answer'])
                 ->where('status', '=', $status)
-                ->where('target', '=', 1);
+                ->where('target', '=', 0);
             if ($this->field('q') === 'waiting') {
                 $query->where('satker_id', '=', $user_satker->satker_id);
+            }
+
+            if ($limit !== null) {
+                $query->take((int)$limit);
             }
             $data = $query->get()->append(['HasAnswer', 'HasApprovedAnswer']);
             return $this->basicDataTables($data);
@@ -413,7 +474,7 @@ class InformationController extends CustomController
         $data = Information::with(['legal', 'unit', 'ppk', 'answers'])->where('ticket_id', '=', $ticket_id)
             ->firstOrFail()->append(['HasAnswer', 'HasApprovedAnswer']);
         if ($this->request->method() === 'POST') {
-            return $this->send_answer($data->id);
+            return $this->send_answer($data);
         }
         Session::forget('redirect');
         return view('satker.informasi.detail')->with(['data' => $data]);

@@ -95,42 +95,46 @@
                 </div>
             </div>
             <div class="col-sm-12 col-md-7 col-lg-7">
-                <div class="card card-outline card-success mb-2">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="mb-0">Jawaban</p>
+                @if($data->target === 0)
+                    <div class="card card-outline card-success mb-2">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-0">Jawaban</p>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @if($data->HasAnswer && !$data->HasApprovedAnswer)
+                                <div class="d-flex justify-content-center align-items-center" style="height: 150px">
+                                    <p class="font-weight-bold">Menunggu Persetujuan Dari Admin UKI</p>
+                                </div>
+                            @elseif($data->HasApprovedAnswer)
+                                <div class="d-flex justify-content-center align-items-center" style="height: 150px">
+                                    <p class="font-weight-bold">Jawaban Disetujui</p>
+                                </div>
+                            @else
+                                <form method="post" id="form-answer" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="form-group mb-1">
+                                        <label for="answer" class="form-label">Lampiran Jawaban</label>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="answer" name="answer"
+                                                   accept="application/pdf">
+                                            <label class="custom-file-label f14" for="ad_art">Pilih File Lampiran
+                                                Jawaban</label>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="text-right">
+                                        <button type="submit" class="main-button" id="btn-answer"><i
+                                                class="fa fa-check mr-2"></i>Simpan
+                                        </button>
+                                    </div>
+                                </form>
+                            @endif
                         </div>
                     </div>
-                    <div class="card-body">
-                        @if($data->HasAnswer && !$data->HasApprovedAnswer)
-                            <div class="d-flex justify-content-center align-items-center" style="height: 150px">
-                                <p class="font-weight-bold">Menunggu Persetujuan Dari Admin UKI</p>
-                            </div>
-                        @elseif($data->HasApprovedAnswer)
-                            <div class="d-flex justify-content-center align-items-center" style="height: 150px">
-                                <p class="font-weight-bold">Jawaban Disetujui</p>
-                            </div>
-                        @else
-                            <form method="post" id="form-answer" enctype="multipart/form-data">
-                                @csrf
-                                <div class="form-group mb-1">
-                                    <label for="answer" class="form-label">Lampiran Jawaban</label>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="answer" name="answer"
-                                               accept="application/pdf">
-                                        <label class="custom-file-label f14" for="ad_art">Pilih File Lampiran
-                                            Jawaban</label>
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="text-right">
-                                    <button type="submit" class="main-button" id="btn-answer"><i class="fa fa-check mr-2"></i>Simpan
-                                    </button>
-                                </div>
-                            </form>
-                        @endif
-                    </div>
-                </div>
+                @endif
+
                 <div class="card card-outline card-info">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
@@ -170,6 +174,7 @@
     <script type="text/javascript">
         let table;
         var prefix_url = '{{ env('PREFIX_URL') }}';
+
         function togglePanelStatus() {
             let cVal = $('#status').val();
             if (cVal === '1') {
