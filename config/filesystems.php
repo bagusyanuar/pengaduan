@@ -76,6 +76,12 @@ return [
             'url' => env('APP_URL') . '/public',
             'visibility' => 'public',
         ],
+        'attachment' => [
+            'driver' => 'local',
+            'root' => public_path() . '/assets/attachment',
+            'url' => env('APP_URL') . '/public',
+            'visibility' => 'public',
+        ],
     ],
 
     /*
