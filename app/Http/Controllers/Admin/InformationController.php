@@ -174,25 +174,49 @@ class InformationController extends CustomController
         return view('uki.informasi.on-process');
     }
 
+    public function answered_uki()
+    {
+        return view('uki.informasi.answered');
+    }
+
+    public function finished_uki()
+    {
+        return view('uki.informasi.finished');
+    }
     public function information_data_uki()
     {
         try {
             $limit = $this->field('limit');
             $status = [1];
+            $completed = false;
+
+            if ($this->field('q') === 'complete') {
+                $completed = true;
+                $status = [6, 9];
+            }
+
             if ($this->field('q') === 'answered') {
                 $status = [6, 9];
             }
-            $query = Information::with(['legal', 'unit', 'ppk'])
-                ->whereIn('status', $status);
 
-            if ($this->field('q') === 'process') {
-                $query->whereNotNull('target');
-            }
+
+            $query = Information::with(['legal', 'unit', 'ppk'])
+                ->whereIn('status', $status)
+                ->where('is_finish', '=', $completed);
 
             if ($this->field('q') === 'waiting') {
                 $query->whereNull('target');
             }
 
+            if ($this->field('q') === 'process') {
+                $query->whereNotNull('target');
+            }
+
+            if ($this->field('q') === 'complete') {
+                $start = Carbon::parse($this->field('start_date'))->format('Y-m-d');
+                $end = Carbon::parse($this->field('end_date'))->format('Y-m-d');
+                $query->whereBetween('date', [$start, $end]);
+            }
             if ($limit !== null) {
                 $query->take((int)$limit);
             }
@@ -274,9 +298,8 @@ class InformationController extends CustomController
         $ticket_id = str_replace('-', '/', $ticket);
         $data = Information::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
             return $q->orderBy('date_upload', 'DESC');
-        }, 'answer', 'answers.upload_by', 'answers.answer_by'])->where('ticket_id', '=', $ticket_id)
+        }, 'answer', 'answers.upload_by', 'answers.answer_by', 'approved_answer'])->where('ticket_id', '=', $ticket_id)
             ->firstOrFail();
-//        return $data->toArray();
         if ($this->request->method() === 'POST') {
             return $this->response_answer($data);
         }

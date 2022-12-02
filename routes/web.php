@@ -110,6 +110,8 @@ Route::group(['prefix' => 'admin-uki', 'middleware' => ['auth', 'uki']], functio
     Route::group(['prefix' => 'pengaduan'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\ComplainController::class, 'index_uki'])->name('complain.index.uki');
         Route::get('/proses', [\App\Http\Controllers\Admin\ComplainController::class, 'on_process_uki'])->name('complain.process.uki');
+        Route::get('/jawab', [\App\Http\Controllers\Admin\ComplainController::class, 'answered_uki'])->name('complain.answered.uki');
+        Route::get('/selesai', [\App\Http\Controllers\Admin\ComplainController::class, 'finished_uki'])->name('complain.finished.uki');
         Route::get('/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_data_uki'])->name('complain.data.uki');
         Route::match(['post', 'get'], '/{ticket}/info', [\App\Http\Controllers\Admin\ComplainController::class, 'data_detail_by_ticket'])->name('complain.data.uki.by.ticket');
         Route::match(['post', 'get'], '/{ticket}/jawaban', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_by_ticket'])->name('complain.answers.uki.by.ticket');
@@ -119,6 +121,8 @@ Route::group(['prefix' => 'admin-uki', 'middleware' => ['auth', 'uki']], functio
     Route::group(['prefix' => 'informasi'], function () {
         Route::get('/', [\App\Http\Controllers\Admin\InformationController::class, 'index_uki'])->name('information.index.uki');
         Route::get('/proses', [\App\Http\Controllers\Admin\InformationController::class, 'on_process_uki'])->name('information.process.uki');
+        Route::get('/jawab', [\App\Http\Controllers\Admin\InformationController::class, 'answered_uki'])->name('information.answered.uki');
+        Route::get('/selesai', [\App\Http\Controllers\Admin\InformationController::class, 'finished_uki'])->name('information.finished.uki');
         Route::get('/data', [\App\Http\Controllers\Admin\InformationController::class, 'information_data_uki'])->name('information.data.uki');
         Route::match(['post', 'get'], '/{ticket}/info', [\App\Http\Controllers\Admin\InformationController::class, 'data_detail_by_ticket'])->name('information.data.uki.by.ticket');
         Route::match(['post', 'get'], '/{ticket}/jawaban', [\App\Http\Controllers\Admin\InformationController::class, 'information_answers_by_ticket'])->name('information.answers.uki.by.ticket');

@@ -1,76 +1,18 @@
 @extends('admin.layout')
 
-@section('css')
-    <style>
-        .swal2-container {
-            display: grid;
-            position: fixed;
-            z-index: 9999;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            box-sizing: border-box;
-            grid-template-areas: "top-start  top       top-end   " "center-start center    center-end" "bottom-start bottom-center bottom-end";
-            grid-template-rows: minmax(-webkit-min-content, auto) minmax(-webkit-min-content, auto) minmax(-webkit-min-content, auto);
-            grid-template-rows: minmax(min-content, auto) minmax(min-content, auto) minmax(min-content, auto);
-            height: 100%;
-            padding: 0.625em;
-            overflow-x: hidden;
-            transition: background-color 0.1s;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .swal2-shown {
-            overflow: unset !important;
-            padding-right: 0px !important;
-        }
-
-        #backdrop-loading {
-            pointer-events: all;
-            display: none;
-            z-index: 99999;
-            border: none;
-            margin: 0px;
-            padding: 0px;
-            width: 100%;
-            height: 100%;
-            top: 0px;
-            left: 0px;
-            cursor: wait;
-            position: fixed;
-            background-color: rgba(0, 0, 0, 0.6);
-        }
-    </style>
-@endsection
-
 @section('content')
     @if (\Illuminate\Support\Facades\Session::has('success'))
         <script>
             Swal.fire("Berhasil!", '{{\Illuminate\Support\Facades\Session::get('success')}}', "success")
         </script>
     @endif
-    @if (\Illuminate\Support\Facades\Session::has('failed'))
-        <script>
-            Swal.fire("Gagal!", '{{\Illuminate\Support\Facades\Session::get('failed')}}', "error")
-        </script>
-    @endif
-    <div class="backdrop-loading" id="backdrop-loading">
-        <div style="height: 100%; width: 100%" class="d-flex align-items-center justify-content-center">
-            <div class="text-center">
-                <img src="{{ asset('/assets/icons/loading.png') }}" height="200" class="mb-2">
-                <p style="color: white">Sedang mengirim data saran / pengaduan ke admin UKI...</p>
-            </div>
-
-        </div>
-    </div>
     <div class="container-fluid">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <ol class="breadcrumb breadcrumb-transparent mb-0">
                 <li class="breadcrumb-item">
-                    <a href="{{ route('dashboard') }}">Dashboard</a>
+                    <a href="{{ route('dashboard.uki') }}">Dashboard</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">Saran / Pengaduan Terjawab
+                <li class="breadcrumb-item active" aria-current="page">Saran / Pengaduan
                 </li>
             </ol>
         </div>
@@ -79,14 +21,14 @@
         <div class="card card-outline card-warning">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <p class="mb-0">Data Saran / Pengaduan Terjawab</p>
+                    <p class="mb-0 f4 font-weight-bold">Data Saran / Pengaduan</p>
                 </div>
             </div>
             <div class="card-body">
                 <table id="table-data" class="display w-100 table table-bordered">
                     <thead>
                     <tr>
-                        <th width="5%" class="text-center f12"></th>
+                        <th width="5%" class="text-center f12 no-sort"></th>
                         <th width="5%" class="text-center f12">#</th>
                         <th class="f12" width="12%">Tanggal</th>
                         <th class="f12" width="25%">No. Ticket</th>
@@ -94,7 +36,7 @@
                         <th class="f12" width="13%">Legalitas</th>
                         <th class="f12" width="10%">Disposisi</th>
                         <th class="f12 text-center" width="5%">Status</th>
-                        <th class="f12 text-center" width="5%">Aksi</th>
+                        <th class="f12" width="8%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -138,15 +80,6 @@
                     '</div>';
             }
 
-            let description = '';
-            if (d['status'] === 6) {
-                description = '<div class="row mb-2">' +
-                    '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                    '<p>Alasan Penolakan</p>' +
-                    '</div>' +
-                    '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['description'] + '</div></div>' +
-                    '</div>';
-            }
 
             return '<div class="f12">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
@@ -182,7 +115,6 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6"><div class="text-justify">: ' + d['complain'] + '</div></div>' +
                 '</div>' +
-                description +
                 '</div>';
         }
 
@@ -204,7 +136,6 @@
                     tr.addClass('shown');
                     i.removeClass('fa fa-plus-square-o');
                     i.addClass('fa fa-minus-square-o');
-                    // console.log(tr.closest('i'));
 
                 }
             });
@@ -212,8 +143,14 @@
 
         }
 
+        function sendProcess(id) {
+            AjaxPost(prefix_url + '/admin-uki/pengaduan/' + id + '/process', function () {
+                window.location.reload();
+            })
+        }
+
         function generateTable() {
-            table = DataTableGenerator('#table-data', prefix_url + '/admin/pengaduan/data', [
+            table = DataTableGenerator('#table-data', prefix_url + '/admin-uki/pengaduan/data', [
                 {
                     className: 'dt-control',
                     orderable: false,
@@ -236,16 +173,15 @@
                 },
                 {
                     data: null, render: function (data, type, row, meta) {
-                        let targetDisposition = '-';
+                        let target_disposition = '-';
                         if (data['target'] !== null) {
-                            if (data['unit'] !== null) {
-                                targetDisposition = data['unit']['name'];
-                            }
-                            if (data['ppk'] !== null) {
-                                targetDisposition = data['ppk']['name'];
+                            if (data['target'] === 1) {
+                                target_disposition = data['ppk']['name'];
+                            } else {
+                                target_disposition = data['unit']['name'];
                             }
                         }
-                        return targetDisposition;
+                        return target_disposition;
                     }
                 },
                 {
@@ -267,25 +203,23 @@
                 },
                 {
                     data: null, render: function (data, type, row, meta) {
-                        // return '<a href="#" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-envelope" style="font-size: 16px;"></i></a>';
                         let ticket_id = data['ticket_id'].replaceAll('/', '-');
-                        let url = prefix_url + '/admin/pengaduan/jawab/' + ticket_id ;
-                        return '<a href="' + url + '" class="btn-send" data-id="' + data['id'] + '">Detail</a>';
+                        let url = prefix_url + '/admin-uki/pengaduan/' + ticket_id + '/jawaban';
+                        return '<a href="' + url + '" class="btn-detail" data-id="' + data['id'] + '">Detail</a>'
                     }
                 },
-
             ], [
                 {
                     targets: '_all',
                     className: 'f12'
                 },
                 {
-                    targets: [0, 1, 2, 5, 6, 7, 8],
+                    targets: [0, 1, 2, 5, 6, 7],
                     className: 'text-center'
                 },
                 {
-                    targets: [0, 7, 8],
-                    orderable: false,
+                    targets: [0, 6, 7],
+                    orderable: false
                 }
             ], function (d) {
                 d.q = query;
@@ -293,51 +227,14 @@
                 "scrollX": true,
                 "fnDrawCallback": function (settings) {
                     setExpand();
-                    // eventSend();
                 },
             });
         }
 
-        function sendReply(id) {
-            AjaxPost(prefix_url + '/admin/pengaduan/' + id + '/reply', function () {
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Berhasil mengirimkan balasan ke pelapor...',
-                    icon: 'success',
-                }).then((result) => {
-                    window.location.reload();
-                });
-            })
-        }
-
-        function eventSend() {
-            $('.btn-send').on('click', function (e) {
-                e.preventDefault();
-                let id = this.dataset.id;
-                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
-                Swal.fire({
-                    title: 'Konfirmasi!',
-                    text: 'Ingin mengirimkan pesan ke pelapor?',
-                    iconHtml: '<img src="' + iconUrl + '" height="100">',
-                    customClass: {
-                        icon: 'no-border'
-                    },
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya'
-                }).then((result) => {
-                    if (result.value) {
-                        sendReply(id);
-                    }
-                });
-            });
-        }
 
         $(document).ready(function () {
             generateTable();
             setExpand();
-            // eventSend();
         });
     </script>
 @endsection
