@@ -97,7 +97,7 @@
                                                     type="application/pdf" onerror="alert('pdf source not found!')">
                                             </object>
                                             <hr>
-                                            <form method="post" id="form-answer">
+                                            <form method="post" id="form-answer" enctype="multipart/form-data">
                                                 @csrf
                                                 <div class="row align-items-end">
                                                     <div class="col-sm-12 col-md-6 col-lg-7">
