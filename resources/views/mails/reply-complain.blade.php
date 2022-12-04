@@ -349,16 +349,9 @@
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                     <tr>
                       <td>
-						@if($target === 'satker')
-							<p>Kepada Admin Satker</p>
-						@endif
-
-						@if($target === 'ppk')
-							<p>Kepada Admin PPK</p>
-						@endif
 						
 					   
-						<h3>Pengaduan Baru dengan nomor ticket {{ $data->ticket_id }}</h3>
+						<h3>Balasan / Jawaban Pengaduan dengan nomor ticket {{ $data->ticket_id }}</h3>
                         <table border="1" cellpadding="0" cellspacing="0">
 							  <tbody>
 								<tr> <td>No. Ticket </td> <td> {{ $data->ticket_id }} </td></tr>
@@ -372,21 +365,7 @@
                       </td>
                     </tr>
 					<tr> <td>
-					<table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">
-                          <tbody>
-                            <tr>
-                              <td align="left">
-                                <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                                  <tbody>
-                                    <tr>
-                                      <td> <a href="{{ route('complain.data.uki.by.ticket', ['ticket' =>  str_replace('/', '-', $data->ticket_id)]) }}">Lihat</a></td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+					
 					</td> </tr>
                   </table>
                 </td>

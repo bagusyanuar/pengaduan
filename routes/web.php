@@ -15,10 +15,18 @@ use Illuminate\Support\Facades\Route;
 Route::match(['post', 'get'], '/login', [\App\Http\Controllers\Admin\AuthController::class, 'login'])->name('login');
 Route::get('/logout', [\App\Http\Controllers\Admin\AuthController::class, 'logout'])->middleware('auth:web');
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::match(['post', 'get'], '/pengaduan', [\App\Http\Controllers\ComplainController::class, 'index']);
-Route::get('/pengaduan/berhasil', [\App\Http\Controllers\ComplainController::class, 'success'])->name('complain.success');
-Route::match(['post', 'get'], '/informasi', [\App\Http\Controllers\InformationController::class, 'index']);
-Route::get('/informasi/berhasil', [\App\Http\Controllers\InformationController::class, 'success'])->name('information.success');
+//Route::match(['post', 'get'], '/pengaduan', [\App\Http\Controllers\ComplainController::class, 'index']);
+//Route::get('/pengaduan/berhasil', [\App\Http\Controllers\ComplainController::class, 'success'])->name('complain.success');
+//Route::match(['post', 'get'], '/informasi', [\App\Http\Controllers\InformationController::class, 'index']);
+//Route::get('/informasi/berhasil', [\App\Http\Controllers\InformationController::class, 'success'])->name('information.success');
+Route::group(['prefix' => 'pengaduan'], function () {
+    Route::match(['post', 'get'], '/', [\App\Http\Controllers\ComplainController::class, 'index']);
+    Route::get('/pengaduan/berhasil', [\App\Http\Controllers\ComplainController::class, 'success'])->name('complain.success');
+});
+Route::group(['prefix' => 'informasi'], function () {
+    Route::match(['post', 'get'], '/informasi', [\App\Http\Controllers\InformationController::class, 'index']);
+    Route::get('/informasi/berhasil', [\App\Http\Controllers\InformationController::class, 'success'])->name('information.success');
+});
 Route::group(['prefix' => 'lacak-laporan'], function () {
     Route::get('/', [\App\Http\Controllers\TracingController::class, 'index'])->name('tracing.index');
     Route::get('/{ticket}', [\App\Http\Controllers\TracingController::class, 'tracing_result'])->name('tracing.result');
