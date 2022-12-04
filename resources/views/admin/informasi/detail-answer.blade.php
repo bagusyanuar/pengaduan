@@ -49,83 +49,120 @@
                             <label for="target" class="form-label f14">Disposisi</label>
                             <input type="text" class="form-control f14" id="target" placeholder="Disposisi"
                                    name="target"
-                                   value="{{ $data->target === 1 ? $data->ppk->name : $data->unit->name  }}" readonly
+                                   value="{{ ($data->status === 6 ? '-' : ($data->target === 1 ? $data->ppk->name : $data->unit->name))   }}"
+                                   readonly
                                    form="">
                         </div>
                         <hr>
-                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="pills-answer-tab" data-toggle="pill" href="#pills-answer"
-                                   role="tab" aria-controls="pills-answer" aria-selected="true">
-                                    <i class="fa fa-file-pdf-o mr-2"></i>Lampiran Jawaban
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-history-tab" data-toggle="pill" href="#pills-history"
-                                   role="tab" aria-controls="pills-history" aria-selected="false">
-                                    <i class="fa fa-history mr-2"></i>History
-                                </a>
-                            </li>
-                        </ul>
-
-                        <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade show active" id="pills-answer" role="tabpanel"
-                                 aria-labelledby="pills-answer-tab">
-                                {{ $data->status }}
-                                {{ $data->is_finish }}
-                                @if($data->status === 9 && $data->is_finish === true)
-                                    <object data="{{ asset($data->approved_answer->file) }}" width="100%"
-                                            height="500"
-                                            type="application/pdf" onerror="alert('pdf source not found!')">
-                                    </object>
-                                    <hr>
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <p class="font-weight-bold">Jawaban Saran / Pengaduan Telah Disampaikan ke
-                                            Pelapor</p>
-                                    </div>
-                                @else
-                                    @if($data->approved_answer != null)
+                        @if($data->status === 6)
+                            <div style="height: 200px" class="d-flex justify-content-center align-items-center">
+                                <div>
+                                    <p class="font-weight-bold">Permintaan Informasi ditolak
+                                        dikarenakan {{ $data->description }}</p>
+                                </div>
+                            </div>
+                        @else
+                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="pills-answer-tab" data-toggle="pill"
+                                       href="#pills-answer"
+                                       role="tab" aria-controls="pills-answer" aria-selected="true">
+                                        <i class="fa fa-file-pdf-o mr-2"></i>Lampiran Jawaban
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-history-tab" data-toggle="pill" href="#pills-history"
+                                       role="tab" aria-controls="pills-history" aria-selected="false">
+                                        <i class="fa fa-history mr-2"></i>History
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-answer" role="tabpanel"
+                                     aria-labelledby="pills-answer-tab">
+                                    @if($data->status === 9 && $data->is_finish === true)
                                         <object data="{{ asset($data->approved_answer->file) }}" width="100%"
                                                 height="500"
                                                 type="application/pdf" onerror="alert('pdf source not found!')">
                                         </object>
                                         <hr>
-                                        <form method="post" id="form-answer">
-                                            @csrf
-                                            <div class="text-right">
-                                                <button type="submit" class="main-button" id="btn-response"><i
-                                                        class="fa fa-send mr-2"></i>Kirim Jawaban
-                                                </button>
-                                            </div>
-                                        </form>
-                                    @else
-                                        <div class="d-flex justify-content-center align-items-center"
-                                             style="height: 250px;">
-                                            <p class="font-weight-bold">Belum Ada Lampiran Jawaban</p>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <p class="font-weight-bold">Jawaban Saran / Pengaduan Telah Disampaikan ke
+                                                Pelapor</p>
                                         </div>
+                                    @else
+                                        @if($data->approved_answer != null)
+                                            <object data="{{ asset($data->approved_answer->file) }}" width="100%"
+                                                    height="500"
+                                                    type="application/pdf" onerror="alert('pdf source not found!')">
+                                            </object>
+                                            <hr>
+                                            <form method="post" id="form-answer" enctype="multipart/form-data">
+                                                @csrf
+                                                <div class="row align-items-end">
+                                                    <div class="col-sm-12 col-md-6 col-lg-7">
+                                                        <div class="form-group mb-0 w-100">
+                                                            <label for="attachment" class="form-label">Lampiran Surat
+                                                                Pengantar</label>
+                                                            <div class="custom-file">
+                                                                <input type="file" class="custom-file-input"
+                                                                       id="attachment"
+                                                                       name="attachment"
+                                                                       accept="application/pdf">
+                                                                <label class="custom-file-label f14" for="ad_art">Pilih
+                                                                    File
+                                                                    Lampiran
+                                                                    Surat Pengantar</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-12 col-md-6 col-lg-5">
+                                                        <div class="d-flex align-items-center justify-content-end">
+                                                            <a href="{{ route('information.attachment.by.ticket', ['ticket' => str_replace('/', '-', $data->ticket_id)]) }}"
+                                                               target="_blank" class="main-button-outline f12"><i
+                                                                    class="fa fa-download mr-2"></i>Download Surat
+                                                                Pengantar</a>
+                                                            <a href="{{ env('PREFIX_URL'). $data->approved_answer->file }}"
+                                                               target="_blank" class="main-button ml-2 f12"><i
+                                                                    class="fa fa-download mr-2"></i>Download Jawaban</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="text-right">
+                                                    <button type="submit" class="main-button" id="btn-response"><i
+                                                            class="fa fa-send mr-2"></i>Kirim Jawaban
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        @else
+                                            <div class="d-flex justify-content-center align-items-center"
+                                                 style="height: 250px;">
+                                                <p class="font-weight-bold">Belum Ada Lampiran Jawaban</p>
+                                            </div>
+                                        @endif
                                     @endif
-                                @endif
+                                </div>
+                                <div class="tab-pane fade show" id="pills-history" role="tabpanel"
+                                     aria-labelledby="pills-history-tab">
+                                    <table id="table-data" class="display w-100 table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th width="5%" class="text-center f12">#</th>
+                                            <th class="f12 text-center" width="12%">Tanggal Upload</th>
+                                            <th class="f12 text-center" width="12%">Tanggal Respon</th>
+                                            <th scope="col" class="f12" width="15%">Di Upload Oleh</th>
+                                            <th scope="col" class="f12">Respon</th>
+                                            <th scope="col" class="f12 text-center" width="12%">File</th>
+                                            <th scope="col" class="f12 text-center" width="8%">Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <div class="tab-pane fade show" id="pills-history" role="tabpanel"
-                                 aria-labelledby="pills-history-tab">
-                                <table id="table-data" class="display w-100 table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th width="5%" class="text-center f12">#</th>
-                                        <th class="f12 text-center" width="12%">Tanggal Upload</th>
-                                        <th class="f12 text-center" width="12%">Tanggal Respon</th>
-                                        <th scope="col" class="f12" width="15%">Di Upload Oleh</th>
-                                        <th scope="col" class="f12">Respon</th>
-                                        <th scope="col" class="f12 text-center" width="12%">File</th>
-                                        <th scope="col" class="f12 text-center" width="8%">Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
+                        @endif
                     </div>
                 </div>
 

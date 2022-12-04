@@ -68,19 +68,29 @@ class InformationController extends CustomController
         if ($this->request->method() === 'POST') {
             DB::beginTransaction();
             try {
-                setlocale(LC_ALL, 'IND');
-                $pdf = Pdf::loadView('admin.surat-pengantar.information', [
-                    'data' => $data
-                ]);
-//                return $pdf->stream();
-                $path = 'assets/attachment/' . Uuid::uuid4() . '.pdf';
-                $pdf->save($path);
-                Mail::to($data->email)->send(new ReplyInformation($data, $path));
-                $data->update([
-                    'is_finish' => 1,
-                    'finish_at' => Carbon::now()->format('Y-m-d')
-                ]);
-                DB::commit();
+//                setlocale(LC_ALL, 'IND');
+////                $pdf = Pdf::loadView('admin.surat-pengantar.information', [
+////                    'data' => $data
+////                ]);
+//////                return $pdf->stream();
+////                $path = 'assets/attachment/' . Uuid::uuid4() . '.pdf';
+////                $pdf->save($path);
+                if ($this->request->hasFile('attachment')) {
+                    $file = $this->request->file('attachment');
+                    $name = $this->uuidGenerator() . '.' . $file->getClientOriginalExtension();
+                    $file_name = '/assets/attachment/' . $name;
+                    Storage::disk('attachment')->put($name, File::get($file));
+                    $data_request['file'] = $file_name;
+                    Mail::to($data->email)->send(new ReplyInformation($data, $file_name));
+                    $data->update([
+                        'is_finish' => 1,
+                        'finish_at' => Carbon::now()->format('Y-m-d')
+                    ]);
+                    DB::commit();
+                } else {
+                    DB::rollBack();
+                    return redirect()->back()->with('failed', 'surat pengantar belum terlampir....');
+                }
                 return redirect()->back()->with('success', 'berhasil...');
             } catch (\Exception $e) {
                 DB::rollBack();
@@ -88,6 +98,20 @@ class InformationController extends CustomController
             }
         }
         return view('admin.informasi.detail-answer')->with(['data' => $data]);
+    }
+
+    public function generate_attachment($ticket)
+    {
+        $ticket_id = str_replace('-', '/', $ticket);
+        $data = Information::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
+            return $q->orderBy('date_upload', 'DESC');
+        }, 'approved_answer', 'answers.upload_by', 'answers.answer_by'])->where('ticket_id', '=', $ticket_id)
+            ->firstOrFail();
+        setlocale(LC_ALL, 'IND');
+        $pdf = Pdf::loadView('admin.surat-pengantar.new-attachment', [
+            'data' => $data
+        ]);
+        return $pdf->stream();
     }
 
     public function information_data()
@@ -183,6 +207,7 @@ class InformationController extends CustomController
     {
         return view('uki.informasi.finished');
     }
+
     public function information_data_uki()
     {
         try {

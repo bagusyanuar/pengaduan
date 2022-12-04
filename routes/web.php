@@ -65,6 +65,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
         Route::get('/proses', [\App\Http\Controllers\Admin\ComplainController::class, 'on_process'])->name('complain.process');
         Route::get('/jawab', [\App\Http\Controllers\Admin\ComplainController::class, 'answered'])->name('complain.answered');
         Route::match(['post', 'get'],'/jawab/{ticket}', [\App\Http\Controllers\Admin\ComplainController::class, 'detail'])->name('complain.answer.by.ticket');
+        Route::get('/jawab/{ticket}/attachment', [\App\Http\Controllers\Admin\ComplainController::class, 'generate_attachment'])->name('complain.attachment.by.ticket');
         Route::get( '/jawab/{ticket}/data', [\App\Http\Controllers\Admin\ComplainController::class, 'complain_answers_by_ticket_data'])->name('complain.answer.by.ticket.data');
         Route::get('/selesai', [\App\Http\Controllers\Admin\ComplainController::class, 'finished'])->name('complain.finished');
         Route::post('/{id}/process', [\App\Http\Controllers\Admin\ComplainController::class, 'send_process'])->name('complain.process.send');
@@ -77,6 +78,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth:web'], function () {
         Route::get('/proses', [\App\Http\Controllers\Admin\InformationController::class, 'on_process'])->name('information.process');
         Route::get('/jawab', [\App\Http\Controllers\Admin\InformationController::class, 'answered'])->name('information.answered');
         Route::match(['post', 'get'],'/jawab/{ticket}', [\App\Http\Controllers\Admin\InformationController::class, 'detail'])->name('information.answer.by.ticket');
+        Route::get('/jawab/{ticket}/attachment', [\App\Http\Controllers\Admin\InformationController::class, 'generate_attachment'])->name('information.attachment.by.ticket');
         Route::get('/jawab/{ticket}/data', [\App\Http\Controllers\Admin\InformationController::class, 'information_answers_by_ticket_data'])->name('information.answer.by.ticket.data');
         Route::get('/selesai', [\App\Http\Controllers\Admin\InformationController::class, 'finished'])->name('information.finished');
         Route::post('/{id}/process', [\App\Http\Controllers\Admin\InformationController::class, 'send_process'])->name('information.process.send');
