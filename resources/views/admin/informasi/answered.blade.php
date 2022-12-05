@@ -92,8 +92,9 @@
                         <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
                         <th class="f14" width="13%">Legalitas</th>
-                        <th class="f14 text-center" width="8%">Status</th>
-                        <th class="f14 text-center" width="8%">Aksi</th>
+                        <th class="f12" width="10%">Disposisi</th>
+                        <th class="f12 text-center" width="5%">Status</th>
+                        <th class="f12 text-center" width="5%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -137,22 +138,6 @@
                     '</div>';
             }
 
-            let targetDisposition = '-';
-            if (d['unit'] !== null) {
-                targetDisposition = d['unit']['name'];
-            }
-            if (d['ppk'] !== null) {
-                targetDisposition = d['ppk']['name'];
-            }
-
-
-            let disposition = '<div class="row">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p class="mb-0">Disposisi</p>' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + targetDisposition + '</div>' +
-                '</div>';
-
             return '<div class="f12">' +
                 '<p class="font-weight-bold">Detail Permintaan Informasi</p>' +
                 '<div class="row mb-0">' +
@@ -187,7 +172,6 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
-                disposition +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">Asal Informasi</p>' +
@@ -267,6 +251,20 @@
                 },
                 {
                     data: null, render: function (data, type, row, meta) {
+                        let targetDisposition = '-';
+                        if (data['target'] !== null) {
+                            if (data['unit'] !== null) {
+                                targetDisposition = data['unit']['name'];
+                            }
+                            if (data['ppk'] !== null) {
+                                targetDisposition = data['ppk']['name'];
+                            }
+                        }
+                        return targetDisposition;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
                         let status = data['status'];
                         let el = '-';
                         switch (status) {
@@ -298,11 +296,11 @@
                     className: 'f12'
                 },
                 {
-                    targets: [0, 1, 2, 5, 6, 7],
+                    targets: [0, 1, 2, 5, 6, 7, 8],
                     className: 'text-center'
                 },
                 {
-                    targets: [0, 6, 7],
+                    targets: [0, 7, 8],
                     orderable: false,
                 }
             ], function (d) {

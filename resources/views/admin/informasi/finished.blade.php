@@ -63,6 +63,9 @@
                         <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
                         <th class="f14" width="15%">Legalitas</th>
+                        <th class="f12" width="10%">Disposisi</th>
+                        <th class="f12 text-center" width="5%">Status</th>
+                        <th class="f12 text-center" width="5%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -106,22 +109,6 @@
                     '</div>';
             }
 
-            let targetDisposition = '-';
-            if (d['unit'] !== null) {
-                targetDisposition = d['unit']['name'];
-            }
-            if (d['ppk'] !== null) {
-                targetDisposition = d['ppk']['name'];
-            }
-
-
-            let disposition = '<div class="row">' +
-                '<div class="col-lg-3 col-md-4 col-sm-6">' +
-                '<p class="mb-0">Disposisi</p>' +
-                '</div>' +
-                '<div class="col-lg-9 col-md-8 col-sm-6">: ' + targetDisposition + '</div>' +
-                '</div>';
-
             return '<div class="f12">' +
                 '<p class="font-weight-bold">Detail Permintaan Informasi</p>' +
                 '<div class="row mb-0">' +
@@ -156,7 +143,6 @@
                 '</div>' +
                 '<div class="col-lg-9 col-md-8 col-sm-6">: ' + d['job'] + '</div>' +
                 '</div>' +
-                disposition +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
                 '<p class="mb-0">Asal Informasi</p>' +
@@ -232,18 +218,59 @@
                         return legal;
                     }
                 },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let targetDisposition = '-';
+                        if (data['target'] !== null) {
+                            if (data['unit'] !== null) {
+                                targetDisposition = data['unit']['name'];
+                            }
+                            if (data['ppk'] !== null) {
+                                targetDisposition = data['ppk']['name'];
+                            }
+                        }
+                        return targetDisposition;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let status = data['status'];
+                        let el = '-';
+                        switch (status) {
+                            case 6:
+                                // el = '<div class="pills-danger text-center">Di Tolak</div>';
+                                el = '<i class="fa fa-window-close" style="color: #EB1D36; font-size: 16px;"></i>';
+                                break;
+                            case 9:
+                                // el = '<div class="pills-success text-center">Di Setujui</div>';
+                                el = '<i class="fa fa-check-square" style="color: #54B435; font-size: 16px;"></i>';
+                                break;
+                            default:
+                                break
+                        }
+                        return el;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let ticket_id = data['ticket_id'].replaceAll('/', '-');
+                        let url = prefix_url + '/admin/informasi/jawab/' + ticket_id ;
+                        return '<a href="' + url + '" class="" data-id="' + data['id'] + '">Detail</a>';
+                        // return '<a href="#" class="btn-send" data-id="' + data['id'] + '"><i class="fa fa-envelope" style="font-size: 16px;"></i></a>'
+                    }
+                },
             ], [
                 {
                     targets: '_all',
                     className: 'f12'
                 },
                 {
-                    targets: [0, 1, 2, 3, 5],
+                    targets: [0, 1, 2, 5, 6, 7, 8],
                     className: 'text-center'
                 },
                 {
-                    targets: [0],
-                    orderable: false
+                    targets: [0, 7, 8],
+                    orderable: false,
                 }
             ], function (d) {
                 d.q = query;

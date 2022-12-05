@@ -11,6 +11,15 @@
             Swal.fire("Gagal!", '{{\Illuminate\Support\Facades\Session::get('failed')}}', "error")
         </script>
     @endif
+    <div class="backdrop-loading" id="backdrop-loading">
+        <div style="height: 100%; width: 100%" class="d-flex align-items-center justify-content-center">
+            <div class="text-center">
+                <img src="{{ asset('/assets/icons/loading.png') }}" height="200" class="mb-2">
+                <p style="color: white">Sedang mengirim email ke pelapor...</p>
+            </div>
+
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="d-flex align-items-center justify-content-between mb-3">
             <ol class="breadcrumb breadcrumb-transparent mb-0">
@@ -61,6 +70,23 @@
                                         dikarenakan {{ $data->description }}</p>
                                 </div>
                             </div>
+                            <hr>
+                            <div class="text-right">
+                                @if(!$data->is_finish)
+                                    <form method="post" id="form-answer">
+                                        @csrf
+                                        <button type="submit" class="main-button f12"
+                                                id="btn-response"><i
+                                                class="fa fa-check mr-2"></i>Selesaikan Saran / Pengaduan
+                                        </button>
+                                    </form>
+                                @else
+                                    <div class="d-flex f12 align-items-center font-weight-bold justify-content-end">
+                                        <i class="fa fa-check mr-2"
+                                           style="color: #54B435"></i><span>Saran / Pengaduan Selesai</span>
+                                    </div>
+                                @endif
+                            </div>
                         @else
                             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                                 <li class="nav-item">
@@ -80,68 +106,56 @@
                             <div class="tab-content" id="pills-tabContent">
                                 <div class="tab-pane fade show active" id="pills-answer" role="tabpanel"
                                      aria-labelledby="pills-answer-tab">
-                                    @if($data->status === 9 && $data->is_finish === true)
+                                    @if($data->approved_answer != null)
                                         <object data="{{ asset($data->approved_answer->file) }}" width="100%"
                                                 height="500"
                                                 type="application/pdf" onerror="alert('pdf source not found!')">
                                         </object>
                                         <hr>
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <p class="font-weight-bold">Jawaban Saran / Pengaduan Telah Disampaikan ke
-                                                Pelapor</p>
-                                        </div>
-                                    @else
-                                        @if($data->approved_answer != null)
-                                            <object data="{{ asset($data->approved_answer->file) }}" width="100%"
-                                                    height="500"
-                                                    type="application/pdf" onerror="alert('pdf source not found!')">
-                                            </object>
-                                            <hr>
-                                            <form method="post" id="form-answer" enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="row align-items-end">
-                                                    <div class="col-sm-12 col-md-6 col-lg-7">
-                                                        <div class="form-group mb-0 w-100">
-                                                            <label for="attachment" class="form-label">Lampiran Surat
-                                                                Pengantar</label>
-                                                            <div class="custom-file">
-                                                                <input type="file" class="custom-file-input"
-                                                                       id="attachment"
-                                                                       name="attachment"
-                                                                       accept="application/pdf">
-                                                                <label class="custom-file-label f14" for="ad_art">Pilih
-                                                                    File
-                                                                    Lampiran
-                                                                    Surat Pengantar</label>
+                                        <form method="post" id="form-answer" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="row align-items-end">
+                                                <div class="col-sm-12 col-md-6 col-lg-7">
+                                                    <div class="d-flex align-items-center justify-content-start">
+                                                        <a href="{{ route('complain.attachment.by.ticket', ['ticket' => str_replace('/', '-', $data->ticket_id)]) }}"
+                                                           target="_blank" class="f12"><i
+                                                                class="fa fa-download mr-2"></i>Download Surat
+                                                            Pengantar</a>
+                                                        <span style="color: grey" class="ml-2 mr-2">|</span>
+                                                        <a href="{{ env('PREFIX_URL'). $data->approved_answer->file }}"
+                                                           target="_blank" class="ml-2 f12"><i
+                                                                class="fa fa-download mr-2"></i>Download Jawaban</a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 col-md-6 col-lg-5">
+                                                    <div
+                                                        class="d-flex align-items-center justify-content-end w-100">
+                                                        @if(!$data->is_finish)
+                                                            <button type="submit" class="main-button f12"
+                                                                    id="btn-response"><i
+                                                                    class="fa fa-check mr-2"></i>Selesaikan
+                                                                Permohonan
+                                                            </button>
+                                                        @else
+                                                            <div class="d-flex f12 align-items-center font-weight-bold">
+                                                                <i class="fa fa-check mr-2"
+                                                                   style="color: #54B435"></i><span>Saran / Pengaduan Selesai</span>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-12 col-md-6 col-lg-5">
-                                                        <div class="d-flex align-items-center justify-content-end">
-                                                            <a href="{{ route('complain.attachment.by.ticket', ['ticket' => str_replace('/', '-', $data->ticket_id)]) }}"
-                                                               target="_blank" class="main-button-outline f12"><i
-                                                                    class="fa fa-download mr-2"></i>Download Surat
-                                                                Pengantar</a>
-                                                            <a href="{{ env('PREFIX_URL'). $data->approved_answer->file }}"
-                                                               target="_blank" class="main-button ml-2 f12"><i
-                                                                    class="fa fa-download mr-2"></i>Download Jawaban</a>
-                                                        </div>
+                                                        @endif
+                                                        <a href="#" class="main-button-outline f12 ml-2"
+                                                           id="btn-send-email" data-ticket="{{ $data->ticket_id }}"><i
+                                                                class="fa fa-envelope mr-2"></i>Kirim Email
+                                                        </a>
                                                     </div>
                                                 </div>
-
-                                                <hr>
-                                                <div class="text-right">
-                                                    <button type="submit" class="main-button" id="btn-response"><i
-                                                            class="fa fa-send mr-2"></i>Kirim Jawaban
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        @else
-                                            <div class="d-flex justify-content-center align-items-center"
-                                                 style="height: 250px;">
-                                                <p class="font-weight-bold">Belum Ada Lampiran Jawaban</p>
                                             </div>
-                                        @endif
+                                            <hr>
+                                        </form>
+                                    @else
+                                        <div class="d-flex justify-content-center align-items-center"
+                                             style="height: 250px;">
+                                            <p class="font-weight-bold">Belum Ada Lampiran Jawaban</p>
+                                        </div>
                                     @endif
                                 </div>
                                 <div class="tab-pane fade show" id="pills-history" role="tabpanel"
@@ -237,7 +251,33 @@
         </div>
     </section>
 @endsection
+@section('css')
+    <style>
+        .dataTables_length, .dataTables_length > label > select {
+            font-size: 12px !important;
+        }
 
+        .dataTables_empty {
+            font-size: 12px !important;
+        }
+
+        #backdrop-loading {
+            pointer-events: all;
+            display: none;
+            z-index: 99999;
+            border: none;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            top: 0px;
+            left: 0px;
+            cursor: wait;
+            position: fixed;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+    </style>
+@endsection
 @section('js')
     <script src="{{ asset('/js/helper.js') }}"></script>
     <script type="text/javascript">
@@ -323,6 +363,18 @@
             });
         }
 
+        function eventSendMail(ticket) {
+            AjaxPost(prefix_url + '/admin/pengaduan/jawab/' + ticket + '/email', function () {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Berhasil mengirimkan balasan ke pelapor...',
+                    icon: 'success',
+                }).then((result) => {
+                    window.location.reload();
+                });
+            })
+        }
+
         $(document).ready(function () {
             $('.custom-file-input').on('change', function () {
                 let fileName = $(this).val().split('\\').pop();
@@ -342,7 +394,7 @@
                 let iconUrl = '{{ asset('/assets/icons/question.png') }}';
                 Swal.fire({
                     title: 'Konfirmasi!',
-                    text: 'Ingin mengirim jawaban saran / pengaduan ke pelapor?',
+                    text: 'Ingin menyelesaikan saran / pengaduan?',
                     iconHtml: '<img src="' + iconUrl + '" height="100">',
                     customClass: {
                         icon: 'no-border'
@@ -354,6 +406,29 @@
                 }).then((result) => {
                     if (result.value) {
                         $('#form-answer').submit();
+                    }
+                });
+            });
+
+            $('#btn-send-email').on('click', function (e) {
+                e.preventDefault();
+                let iconUrl = '{{ asset('/assets/icons/question.png') }}';
+                Swal.fire({
+                    title: 'Konfirmasi!',
+                    text: 'Ingin mengirim jawaban saran / pengaduan ke pelapor?',
+                    iconHtml: '<img src="' + iconUrl + '" height="100">',
+                    customClass: {
+                        icon: 'no-border'
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya'
+                }).then((result) => {
+                    if (result.value) {
+                        let ticket = this.dataset.ticket;
+                        eventSendMail(ticket.replaceAll('/', '-'));
+                        // $('#form-answer').submit();
                     }
                 });
             });
