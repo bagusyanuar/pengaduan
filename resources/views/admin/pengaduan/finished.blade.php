@@ -62,7 +62,10 @@
                         <th class="f14" width="12%">Tanggal</th>
                         <th class="f14" width="25%">No. Ticket</th>
                         <th class="f14">Nama</th>
-                        <th class="f14" width="15%">Legalitas</th>
+                        <th class="f14" width="13%">Legalitas</th>
+                        <th class="f12" width="10%">Disposisi</th>
+                        <th class="f12 text-center" width="5%">Status</th>
+                        <th class="f12 text-center" width="5%">Aksi</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -131,7 +134,7 @@
                 '</div>';
 
 
-            return '<div class="f14">' +
+            return '<div class="f12">' +
                 '<p class="font-weight-bold">Detail Saran / Pengaduan</p>' +
                 '<div class="row mb-0">' +
                 '<div class="col-lg-3 col-md-4 col-sm-6">' +
@@ -217,18 +220,56 @@
                         return legal;
                     }
                 },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let targetDisposition = '-';
+                        if (data['target'] !== null) {
+                            if (data['unit'] !== null) {
+                                targetDisposition = data['unit']['name'];
+                            }
+                            if (data['ppk'] !== null) {
+                                targetDisposition = data['ppk']['name'];
+                            }
+                        }
+                        return targetDisposition;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let status = data['status'];
+                        let el = '-';
+                        switch (status) {
+                            case 6:
+                                el = '<i class="fa fa-window-close" style="color: #EB1D36; font-size: 16px;"></i>';
+                                break;
+                            case 9:
+                                el = '<i class="fa fa-check-square" style="color: #54B435; font-size: 16px;"></i>';
+                                break;
+                            default:
+                                break
+                        }
+                        return el;
+                    }
+                },
+                {
+                    data: null, render: function (data, type, row, meta) {
+                        let ticket_id = data['ticket_id'].replaceAll('/', '-');
+                        let url = prefix_url + '/admin/pengaduan/jawab/' + ticket_id ;
+                        return '<a href="' + url + '" class="btn-send" data-id="' + data['id'] + '">Detail</a>';
+                    }
+                },
             ], [
                 {
                     targets: '_all',
                     className: 'f12'
                 },
                 {
-                    targets: [0, 1, 2, 3, 5],
+                    targets: [0, 1, 2, 5, 6, 7, 8],
                     className: 'text-center'
                 },
                 {
-                    targets: [0],
-                    orderable: false
+                    targets: [0, 7, 8],
+                    orderable: false,
                 }
             ], function (d) {
                 d.q = query;

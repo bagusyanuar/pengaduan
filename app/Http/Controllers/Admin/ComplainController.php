@@ -59,40 +59,35 @@ class ComplainController extends CustomController
         $data = Complain::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
             return $q->orderBy('date_upload', 'DESC');
         }, 'approved_answer', 'answers.upload_by', 'answers.answer_by'])->where('ticket_id', '=', $ticket_id)
+            ->whereIn('status', [6, 9])
             ->firstOrFail();
 
         if ($this->request->method() === 'POST') {
             DB::beginTransaction();
             try {
-//                setlocale(LC_ALL, 'IND');
-//                $pdf = Pdf::loadView('admin.surat-pengantar.index', [
-//                    'data' => $data
-//                ]);
-////                return $pdf->stream();
-//                $path = 'assets/attachment/' . Uuid::uuid4() . '.pdf';
-//                $pdf->save($path);
 
-                if ($this->request->hasFile('attachment')) {
-                    $file = $this->request->file('attachment');
-                    $name = $this->uuidGenerator() . '.' . $file->getClientOriginalExtension();
-                    $file_name = '/assets/attachment/' . $name;
-                    Storage::disk('attachment')->put($name, File::get($file));
-                    $data_request['file'] = $file_name;
-                    Mail::to($data->email)->send(new ReplyComplain($data, $file_name));
-                    $data->update([
-                        'is_finish' => 1,
-                        'finish_at' => Carbon::now()->format('Y-m-d')
-                    ]);
-                    DB::commit();
-                } else {
-                    DB::rollBack();
-                    return redirect()->back()->with('failed', 'surat pengantar belum terlampir....');
-                }
 
-                return redirect()->back()->with('success', 'berhasil...');
+//                if ($this->request->hasFile('attachment')) {
+//                    $file = $this->request->file('attachment');
+//                    $name = $this->uuidGenerator() . '.' . $file->getClientOriginalExtension();
+//                    $file_name = '/assets/attachment/' . $name;
+//                    Storage::disk('attachment')->put($name, File::get($file));
+//                    $data_request['file'] = $file_name;
+//                    Mail::to($data->email)->send(new ReplyComplain($data, $file_name));
+//
+//                } else {
+//                    DB::rollBack();
+//                    return redirect()->back()->with('failed', 'surat pengantar belum terlampir....');
+//                }
+                $data->update([
+                    'is_finish' => 1,
+                    'finish_at' => Carbon::now()->format('Y-m-d')
+                ]);
+                DB::commit();
+                return redirect()->back()->with('success', 'Berhasil melakukan penyelesaian saran / pengaduan...');
             } catch (\Exception $e) {
                 DB::rollBack();
-                return redirect()->back()->with('failed', 'terjadi kesalahan server...'.$e->getMessage());
+                return redirect()->back()->with('failed', 'terjadi kesalahan server...' . $e->getMessage());
             }
         }
         return view('admin.pengaduan.detail-answer')->with(['data' => $data]);
@@ -104,12 +99,42 @@ class ComplainController extends CustomController
         $data = Complain::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
             return $q->orderBy('date_upload', 'DESC');
         }, 'approved_answer', 'answers.upload_by', 'answers.answer_by'])->where('ticket_id', '=', $ticket_id)
+            ->whereIn('status', [6, 9])
             ->firstOrFail();
         setlocale(LC_ALL, 'IND');
         $pdf = Pdf::loadView('admin.surat-pengantar.new-attachment', [
             'data' => $data
         ]);
         return $pdf->stream();
+    }
+
+    public function send_mail_answer($ticket)
+    {
+        try {
+            $ticket_id = str_replace('-', '/', $ticket);
+            $data = Complain::with(['legal', 'unit', 'ppk', 'answers' => function ($q) {
+                return $q->orderBy('date_upload', 'DESC');
+            }, 'approved_answer', 'answers.upload_by', 'answers.answer_by'])->where('ticket_id', '=', $ticket_id)
+                ->whereIn('status', [6, 9])
+                ->first();
+            if (!$data) {
+                return $this->jsonResponse('Data saran / pengaduan tidak ditemukan...', 500);
+            }
+
+            if (!$data->is_finish) {
+                return $this->jsonResponse('Data saran / pengaduan belum dinyatakan selesai. Silahkan melakukan penyelesaian...', 500);
+            }
+            setlocale(LC_ALL, 'IND');
+            $pdf = Pdf::loadView('admin.surat-pengantar.new-attachment', [
+                'data' => $data
+            ]);
+            $path = 'assets/attachment/' . Uuid::uuid4() . '.pdf';
+            $pdf->save($path);
+            Mail::to($data->email)->send(new ReplyComplain($data, $path));
+            return $this->jsonResponse('success', 200);
+        } catch (\Exception $e) {
+            return $this->jsonResponse('terjadi kesalahan server...' . $e->getMessage(), 500);
+        }
     }
 
     public function complain_data()
