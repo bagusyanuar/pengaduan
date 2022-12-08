@@ -137,7 +137,7 @@
             <br>
             <br>
             <br>
-            <div class="text-center f12 font-bold" style="margin-bottom: 5px;">Ir. ACHMAD SUBKI, MT.</div>
+            <div class="text-center f12 font-bold" style="margin-bottom: 5px;">Apri Artoto ST.MPPM</div>
         </td>
     </tr>
 </table>

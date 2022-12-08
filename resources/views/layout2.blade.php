@@ -22,7 +22,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light custom-nav shadow-sm">
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="{{ env('PREFIX_URL') }}/">
         <div class="d-flex align-items-center">
             <img src="{{ asset('img/logo2.png') }}" height="60" class="mr-2">
 
